@@ -336,7 +336,7 @@
    <property name="font">
     <font>
      <family>NanumGothic</family>
-     <pointsize>45</pointsize>
+     <pointsize>35</pointsize>
      <weight>50</weight>
      <bold>false</bold>
     </font>
@@ -427,7 +427,7 @@
    <property name="font">
     <font>
      <family>NanumGothic</family>
-     <pointsize>45</pointsize>
+     <pointsize>35</pointsize>
      <weight>50</weight>
      <bold>false</bold>
     </font>
