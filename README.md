@@ -1,5 +1,5 @@
 # JS-06
-JS-06 is a weather monitoring product that combines image information and artificial intelligence. It shows real-time video, visible distance, and PM2.5.
+JS-06 is a weather monitoring product that combines image information and AI. It shows real-time video, visible distance, and PM2.5.
 
 ## Setting Up Development Environment
 - Visual Studio Code with the end of line sequence to **LF**. You can set git to resolve the issue automatically:
