@@ -1,6 +1,5 @@
 
 import datetime
-from nd01_settings import ND01_Setting_Widget
 import sys
 import os
 import time
@@ -29,11 +28,11 @@ from video_thread_mp import CurveThread
 import video_thread_mp
 import save_db
 
-from nd01_settings import ND01_Setting_Widget
+from js06_settings import JS06_Setting_Widget
 
 print(pd.__version__)
 
-class ND01MainWindow(QWidget):
+class JS06MainWindow(QWidget):
 
     def __init__(self, *args, **kwargs):
 
@@ -120,9 +119,9 @@ class ND01MainWindow(QWidget):
         self._player.stop()
         # app = QApplication(sys.argv)
         if self.radio_checked == None:
-            dlg = ND01_Setting_Widget("Km")
+            dlg = JS06_Setting_Widget("Km")
         else:
-            dlg = ND01_Setting_Widget(self.radio_checked)
+            dlg = JS06_Setting_Widget(self.radio_checked)
         dlg.show()
         # sys.exit(app.exec_())
         dlg.setWindowModality(Qt.ApplicationModal)
@@ -277,7 +276,7 @@ if __name__ == '__main__':
     
     app = QApplication(sys.argv)
     MainWindow = QMainWindow()
-    ui = ND01MainWindow()
+    ui = JS06MainWindow()
     # ui.setupUi(MainWindow)
     ui.show()
     sys.exit(app.exec_())
