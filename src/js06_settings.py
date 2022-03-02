@@ -4,7 +4,6 @@ import sys
 import os
 import time
 import math
-from tkinter.messagebox import RETRY
 
 import cv2
 import numpy as np
@@ -28,7 +27,7 @@ from PyQt5.QtChart import QChart, QChartView, QLineSeries, QValueAxis
 
 import target_info
 
-class ND01_Setting_Widget(QDialog):
+class JS06_Setting_Widget(QDialog):
 
     def __init__(self, radio_flag=None, *args, **kwargs):
 
@@ -486,7 +485,7 @@ class ND01_Setting_Widget(QDialog):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     # MainWindow = QMainWindow()
-    ui = ND01_Setting_Widget()
+    ui = JS06_Setting_Widget()
     # ui.setupUi(MainWindow)
     ui.show()
     sys.exit(app.exec_())
