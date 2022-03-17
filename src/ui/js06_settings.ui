@@ -586,7 +586,7 @@
     <string notr="true">
 #target_table_pushButton
 {
-	background-image: url(C:/Users/user/Workspace/js06_fork/js06/src/ui/icon/target_table.png);
+	background-image: url(./ui/icon/target_table.png);
 	border:0px;
 }
 </string>
@@ -620,7 +620,7 @@
     <string notr="true">
 #ext_color_pushButton
 {
-	background-image: url(C:/Users/user/Workspace/js06_fork/js06/src/ui/icon/ext_color.png);
+	background-image: url(./ui/icon/ext_color.png);
 	border:0px;
 }
 </string>
@@ -654,7 +654,7 @@
     <string notr="true">
 #running_ave_pushButton
 {
-	background-image: url(C:/Users/user/Workspace/js06_fork/js06/src/ui/icon/running_ave.png);
+	background-image: url(./ui/icon/running_ave.png);
 	border:0px;
 }
 </string>
@@ -688,7 +688,7 @@
     <string notr="true">
 #check_pushButton
 {
-	background-image: url(C:/Users/user/Workspace/js06_fork/js06/src/ui/icon/check.png);
+	background-image: url(./ui/icon/check.png);
 	border:0px;
 }
 </string>

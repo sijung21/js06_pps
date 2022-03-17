@@ -33,7 +33,7 @@ class JS06_Setting_Widget(QDialog):
 
         super().__init__(*args, **kwargs)
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                               "ui/test.ui")
+                               "ui/js06_settings.ui")
         uic.loadUi(ui_path, self)
         
         self.begin = QPoint()
