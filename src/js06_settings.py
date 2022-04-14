@@ -252,6 +252,7 @@ class JS06_Setting_Widget(QDialog):
     def image_load(self):
         
         src = "rtsp://admin:sijung5520@192.168.100.100/profile2/media.smp"
+        # src = "C:/Users/user/Workspace/water_gauge/src/video_files/daejeon_1.mp4"
         try:
             cap = cv2.VideoCapture(src)
             ret, cv_img = cap.read()

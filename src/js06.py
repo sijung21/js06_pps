@@ -4,6 +4,7 @@ import sys
 import os
 import time
 import math
+import vlc
 
 import cv2
 import numpy as np
@@ -13,7 +14,7 @@ import multiprocessing as mp
 
 # print(PyQt5.__version__)
 from PyQt5.QtGui import QPixmap, QImage, QPainter, QBrush, QColor, QPen, QImage, QPixmap, QIcon
-from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QListWidgetItem, QFileDialog, QDockWidget, QGraphicsScene, QGraphicsView
+from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QListWidgetItem, QFileDialog, QDockWidget, QGraphicsScene, QGraphicsView, QFrame
 from PyQt5.QtCore import QPoint, QRect, Qt, QRectF, QSize, QCoreApplication, pyqtSlot, QTimer, QUrl
 from PyQt5 import uic
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
@@ -74,19 +75,48 @@ class JS06MainWindow(QWidget):
         self.running_ave_checked = None
         self.q_list = []
         self.q_list_scale = 300
+        self.instance = vlc.Instance()
+        self.mediaplayer = self.instance.media_player_new()
+        
+        # self.videoframe = QFrame(
+        #     frameShape=QFrame.Box, frameShadow=QFrame.Raised
+        # )
+        
+        args = [
+            "--rtsp-frame-buffer-size",
+            "1000000"
+        ]
+
+        self.instance = vlc.Instance(args)
+        self.instance.log_unset()
+        self.media_player = self.instance.media_player_new()
+
+        self.image_player = self.instance.media_list_player_new()
+        self.image_media = self.instance.media_list_new('')
+
+        self.video_frame = QFrame()
+
+        if sys.platform == 'win32':
+            self.media_player.set_hwnd(self.video_frame.winId())
+
+        
+        
+        # layout = QVBoxLayout(self)
+        # layout.addWidget(self.video_frame)
 
         self.filepath = os.path.join(os.getcwd())
     #     # self.image_label.paintEvent = self.paintEvent
 
         # Create a QGraphicsView to show the camera image
-        self.scene = QGraphicsScene(self)
-        self.video_graphicsview = QGraphicsView(self.scene)
-        self.video_graphicsview.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.video_graphicsview.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.video_item = QGraphicsVideoItem()
-        self.scene.addItem(self.video_item)
+        # self.scene = QGraphicsScene(self)
+        # self.video_graphicsview = QGraphicsView(self.scene)
+        # self.video_graphicsview.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        # self.video_graphicsview.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        # self.video_item = QGraphicsVideoItem()
+        # self.scene.addItem(self.video_item)
         
-        self.verticallayout.addWidget(self.video_graphicsview)
+        # self.verticallayout.addWidget(self.video_graphicsview)
+        self.verticallayout.addWidget(self.video_frame)
 
         self.webview = QtWebEngineWidgets.QWebEngineView()
         self.webview.setUrl(QUrl("http://localhost:3000/d/GXA3xPS7z/new-dashboard-copy?orgId=1&kiosk&from=now-1h&to=now"))
@@ -95,24 +125,26 @@ class JS06MainWindow(QWidget):
         self.web_verticalLayout.addWidget(self.webview)
 
         # Create QMediaPlayer that plays video
-        self._player = QMediaPlayer(self, QMediaPlayer.VideoSurface)
-        self._player.setVideoOutput(self.video_item)
-        self._player.setPosition(0)
+        # self._player = QMediaPlayer(self, QMediaPlayer.VideoSurface)
+        # self._player.setVideoOutput(self.video_item)
+        # self._player.setPosition(0)
   
         VIDEO_SRC3 = "rtsp://admin:sijung5520@192.168.100.100/profile2/media.smp"
+        
+        # media = self.instance.media_new(VIDEO_SRC3)
         
         CAM_NAME = "PNM_9030V"
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
         
         self.settings_button.clicked.connect(self.btn_test)
         
-        self.video_thread = CurveThread(VIDEO_SRC3, "Video", q)
-        self.video_thread.update_visibility_signal.connect(self.print_data)
-        self.video_thread.start()
+        # self.video_thread = CurveThread(VIDEO_SRC3, "Video", q)
+        # self.video_thread.update_visibility_signal.connect(self.print_data)
+        # self.video_thread.start()
 
-        self.timer = QTimer()
-        self.timer.start(1000)
-        self.timer.timeout.connect(self.timeout_run)
+        # self.timer = QTimer()
+        # self.timer.start(1000)
+        # self.timer.timeout.connect(self.timeout_run)
     
     @pyqtSlot()
     def btn_test(self):
@@ -185,11 +217,22 @@ class JS06MainWindow(QWidget):
     @pyqtSlot(str)
     def onCameraChange(self, url, camera_name, src_type):
         """Connect the IP camera and run the video thread."""
-        self.camera_name = camera_name
-        self._player.setMedia(QMediaContent(QUrl(url)))
+        # self.camera_name = camera_name
+        
+        # self._player.setMedia(QMediaContent(QUrl(url)))
         # self.video_graphicsview.fitInView(self.video_item)
-        self._player.play()
-
+        # self._player.play()
+        
+        # uri = "rtsp://admin:sijung5520@192.168.100.100/profile2/media.smp"
+        if url[:4] == "rtsp":
+            self.media_player.set_media(self.instance.media_new(url))
+            self.media_player.set_fullscreen(True)
+            self.media_player.play()
+            
+            # value = self.media_player.video_set_scale(0)
+            # print(value)
+        else:
+            pass
         # self.get_target(self.camera_name)
 
     def timeout_run(self):
