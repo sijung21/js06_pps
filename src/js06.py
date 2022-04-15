@@ -4,6 +4,7 @@ import sys
 import os
 import time
 import math
+import vlc
 
 import cv2
 import numpy as np
@@ -13,7 +14,7 @@ import multiprocessing as mp
 
 # print(PyQt5.__version__)
 from PyQt5.QtGui import QPixmap, QImage, QPainter, QBrush, QColor, QPen, QImage, QPixmap, QIcon
-from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QListWidgetItem, QFileDialog, QDockWidget, QGraphicsScene, QGraphicsView
+from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QListWidgetItem, QFileDialog, QDockWidget, QGraphicsScene, QGraphicsView, QFrame
 from PyQt5.QtCore import QPoint, QRect, Qt, QRectF, QSize, QCoreApplication, pyqtSlot, QTimer, QUrl
 from PyQt5 import uic
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
@@ -74,30 +75,37 @@ class JS06MainWindow(QWidget):
         self.running_ave_checked = None
         self.q_list = []
         self.q_list_scale = 300
+        
+        self.instance = vlc.Instance()
+        self.mediaplayer = self.instance.media_player_new()        
+        args = [
+            "--rtsp-frame-buffer-size",
+            "1000000"
+        ]
+
+        self.instance = vlc.Instance(args)
+        self.instance.log_unset()
+        self.media_player = self.instance.media_player_new()
+
+        self.image_player = self.instance.media_list_player_new()
+        self.image_media = self.instance.media_list_new('')
+
+        self.video_frame = QFrame()
+
+        if sys.platform == 'win32':
+            self.media_player.set_hwnd(self.video_frame.winId())
 
         self.filepath = os.path.join(os.getcwd())
-    #     # self.image_label.paintEvent = self.paintEvent
 
         # Create a QGraphicsView to show the camera image
-        self.scene = QGraphicsScene(self)
-        self.video_graphicsview = QGraphicsView(self.scene)
-        self.video_graphicsview.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.video_graphicsview.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.video_item = QGraphicsVideoItem()
-        self.scene.addItem(self.video_item)
-        
-        self.verticallayout.addWidget(self.video_graphicsview)
+        self.verticallayout.addWidget(self.video_frame)
 
         self.webview = QtWebEngineWidgets.QWebEngineView()
         self.webview.setUrl(QUrl("http://localhost:3000/d/GXA3xPS7z/new-dashboard-copy?orgId=1&kiosk&from=now-1h&to=now"))
-        # QWebEngineSettings.globalSettings().setAttribute(QWebEngineSettings.ShowScrollBars(False))
         self.webview.setZoomFactor(1)
         self.web_verticalLayout.addWidget(self.webview)
 
         # Create QMediaPlayer that plays video
-        self._player = QMediaPlayer(self, QMediaPlayer.VideoSurface)
-        self._player.setVideoOutput(self.video_item)
-        self._player.setPosition(0)
   
         VIDEO_SRC3 = "rtsp://admin:sijung5520@192.168.100.100/profile2/media.smp"
         
@@ -116,8 +124,6 @@ class JS06MainWindow(QWidget):
     
     @pyqtSlot()
     def btn_test(self):
-        self._player.stop()
-        # app = QApplication(sys.argv)
         if self.radio_checked == None:
             dlg = JS06_Setting_Widget("Km")
         else:
@@ -139,9 +145,6 @@ class JS06MainWindow(QWidget):
             self.q_list_scale = 150
         elif self.running_ave_checked == "Ten":
             self.q_list_scale = 300
-            
-        self._player.play()
-        self._player.play()
                 
     @pyqtSlot(str)
     def print_data(self, visibility):
@@ -185,18 +188,18 @@ class JS06MainWindow(QWidget):
     @pyqtSlot(str)
     def onCameraChange(self, url, camera_name, src_type):
         """Connect the IP camera and run the video thread."""
-        self.camera_name = camera_name
-        self._player.setMedia(QMediaContent(QUrl(url)))
-        # self.video_graphicsview.fitInView(self.video_item)
-        self._player.play()
 
-        # self.get_target(self.camera_name)
+        if url[:4] == "rtsp":
+            self.media_player.set_media(self.instance.media_new(url))
+            self.media_player.video_set_aspect_ratio("9:2")
+            self.media_player.play()
+        else:
+            pass
 
     def timeout_run(self):
         """Print the current time."""
         current_time = time.strftime("%Y.%m.%d %H:%M:%S", time.localtime(time.time()))
         self.real_time_label.setText(current_time)
-        self.video_graphicsview.fitInView(self.video_item)
 
     def convert_cv_qt(self, cv_img):
         """Convert CV image to QImage."""
