@@ -79,7 +79,7 @@ def save_rgb(r_list, g_list, b_list, epoch, distance):
     """Save the rgb information for each target."""
     try:
         save_path = os.path.join(f"rgb/PNM_9030V")
-        os.mkdir(save_path)
+        os.makedirs(save_path)
 
     except Exception as e:
         pass

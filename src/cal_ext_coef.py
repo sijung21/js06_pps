@@ -103,7 +103,7 @@ def cal_curve(hanhwa: pd.DataFrame):
     # update_extinc_signal.emit(list1, list2, list3, select_color)
 
     try:
-        os.mkdir(extsavedir)
+        os.makedirs(extsavedir)
     except Exception as e:
         pass
 

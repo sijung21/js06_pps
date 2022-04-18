@@ -405,7 +405,7 @@ class JS06_Setting_Widget(QDialog):
         """Save the target information for each camera."""
         try:
             save_path = os.path.join(f"target/PNM_9030V")
-            os.mkdir(save_path)
+            os.makedirs(save_path)
 
         except Exception as e:
             pass

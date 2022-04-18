@@ -76,6 +76,8 @@ class JS06MainWindow(QWidget):
         self.q_list = []
         self.q_list_scale = 300
         
+        # self.showFullScreen()
+        
         self.instance = vlc.Instance()
         self.mediaplayer = self.instance.media_player_new()        
         args = [
@@ -121,6 +123,8 @@ class JS06MainWindow(QWidget):
         self.timer = QTimer()
         self.timer.start(1000)
         self.timer.timeout.connect(self.timeout_run)
+        
+        
     
     @pyqtSlot()
     def btn_test(self):
@@ -257,7 +261,7 @@ class JS06MainWindow(QWidget):
         """Save the target information for each camera."""
         try:
             save_path = os.path.join(f"target/{self.camera_name}")
-            os.mkdir(save_path)
+            os.makedirs(save_path)
 
         except Exception as e:
             pass
