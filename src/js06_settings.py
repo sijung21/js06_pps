@@ -162,7 +162,7 @@ class JS06_Setting_Widget(QDialog):
         axis_x.setTickCount(7)
         axis_x.setLabelFormat("%i")
         axis_x.setTitleText("Distance(km)")
-        axis_x.setRange(0,20)        
+        axis_x.setRange(0,50)        
         chart.addAxis(axis_x, Qt.AlignBottom)        
         
         axis_y = QValueAxis()

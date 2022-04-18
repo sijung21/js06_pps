@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+from operator import index
 import os
 import pandas as pd
 import numpy as np
+from datetime import datetime
 
 import cv2
-import datetime
 import time
 import cal_ext_coef
 
@@ -102,8 +103,37 @@ def save_rgb(r_list, g_list, b_list, epoch, distance):
         visibility = extinc_print(list1, list2, list3, select_color)
         print(result)
         print("Save rgb") 
+        
+        save_ext(list3, epoch)
     
     return visibility
+
+def save_ext(ext_list, epoch):
+    
+    days = epoch[:-4]
+    extsavedir = os.path.join(f"ext/PNM_9030V")
+    try:
+        os.makedirs(extsavedir)
+    except Exception as e:
+        pass
+    
+    ext_file_path = os.path.join(extsavedir,f"{days}.csv")
+    
+    if os.path.isfile(ext_file_path):
+        ext_df = pd.read_csv(ext_file_path)
+    
+    else:        
+        cols = ["time",'r_ext','g_ext','b_ext']
+        ext_df = pd.DataFrame(columns=cols)
+    
+    dt_epoch = datetime.strptime(epoch, '%Y%m%d%H%M')
+    print(dt_epoch)
+    ext_df = ext_df.append({'time': dt_epoch,'r_ext':ext_list[0],'g_ext':ext_list[1],'b_ext':ext_list[2]}, ignore_index=True)
+    
+    ext_df.to_csv(ext_file_path,mode="w", index=False)
+    
+    print("Save extinction")
+    
 
 def extinc_print(c1_list: list = [0, 0, 0], c2_list: list = [0, 0, 0], alp_list: list = [0, 0, 0], select_color: str = ""):
     """Select an appropriate value among visibility by wavelength."""

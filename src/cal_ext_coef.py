@@ -34,7 +34,6 @@ def select_max_rgb(r, g, b):
 
 def cal_curve(hanhwa: pd.DataFrame):
     # hanhwa = pd.read_csv(f"{rgbsavedir}/{epoch}.csv")
-    print(hanhwa)
     hanhwa = hanhwa.sort_values(by=['distance'])
     hanhwa_dist = hanhwa[['distance']].squeeze().to_numpy()
     hanhwa_x = np.linspace(hanhwa_dist[0], hanhwa_dist[-1], 100, endpoint=True)
@@ -42,12 +41,6 @@ def cal_curve(hanhwa: pd.DataFrame):
     hanhwa_r = hanhwa[['r']].squeeze().to_numpy()
     hanhwa_g = hanhwa[['g']].squeeze().to_numpy()
     hanhwa_b = hanhwa[['b']].squeeze().to_numpy()
-    
-    print("오리지날 green", hanhwa_g)
-    # hanhwa_g = hanhwa_g[:-1]
-    
-    # hanhwa_g = np.append(hanhwa_g, np.array([160]))
-    print("소산계수 산출용 green 리스트 :  ", hanhwa_g)
 
     r1_init = hanhwa_r[0] * 0.7
     g1_init = hanhwa_g[0] * 0.7
@@ -101,11 +94,6 @@ def cal_curve(hanhwa: pd.DataFrame):
 
     return list1, list2, list3, select_color
     # update_extinc_signal.emit(list1, list2, list3, select_color)
-
-    try:
-        os.makedirs(extsavedir)
-    except Exception as e:
-        pass
 
 # @staticmethod
 def func(x, c1, c2, a):
