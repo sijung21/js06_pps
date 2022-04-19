@@ -79,7 +79,7 @@ def get_rgb(epoch: str, min_x, min_y, cp_image, distance):
 def save_rgb(r_list, g_list, b_list, epoch, distance):
     """Save the rgb information for each target."""
     try:
-        save_path = os.path.join(f"rgb/PNM_9030V")
+        save_path = os.path.join(f"data/rgb/PNM_9030V")
         os.makedirs(save_path)
 
     except Exception as e:
@@ -104,14 +104,58 @@ def save_rgb(r_list, g_list, b_list, epoch, distance):
         print(result)
         print("Save rgb") 
         
+        result = result.sort_values(by=['distance'])
+        
+        r_list = list(result.loc[:,'r'])
+        g_list = list(result.loc[:,'g'])
+        b_list = list(result.loc[:,'b'])
+        distance = list(result.loc[:,'distance'])        
+        
+        save_rgb_value(r_list, distance, list3[0], "red", epoch)
+        save_rgb_value(g_list, distance, list3[1], "green", epoch)
+        save_rgb_value(b_list, distance, list3[2], "blue", epoch)
+        
         save_ext(list3, epoch)
     
     return visibility
 
+def save_rgb_value(value_list, distance_list, ext_value, select_color, epoch):
+    
+    
+    days = epoch[:-4]
+    rgbsavedir = os.path.join(f"data/rgb/PNM_9030V/{select_color}")
+    try:
+        os.makedirs(rgbsavedir)
+        
+    except Exception as e:
+        pass
+    
+    rgb_file_path = os.path.join(rgbsavedir,f"{days}.csv")
+    
+    
+    if os.path.isfile(rgb_file_path):
+        rgb_df = pd.read_csv(rgb_file_path)
+    
+    else:  
+        column_list = ['time', 'target_distance', 'intensity_val', 'ext_coeff', 'visibility']
+        cols = column_list        
+        rgb_df = pd.DataFrame(columns=cols)
+    
+    
+    dt_epoch = datetime.strptime(epoch, '%Y%m%d%H%M')
+    
+    visibility_value = 3.912/ext_value
+    
+    rgb_df = rgb_df.append({'time': dt_epoch,'target_distance':distance_list,'intensity_val':value_list,'ext_coeff':ext_value, 'visibility':visibility_value}, ignore_index=True)
+    
+    rgb_df.to_csv(rgb_file_path,mode="w", index=False)
+    print(f"Save {select_color} channel value")
+    
+    
 def save_ext(ext_list, epoch):
     
     days = epoch[:-4]
-    extsavedir = os.path.join(f"ext/PNM_9030V")
+    extsavedir = os.path.join(f"data/ext/PNM_9030V")
     try:
         os.makedirs(extsavedir)
     except Exception as e:

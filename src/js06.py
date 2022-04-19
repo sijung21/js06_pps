@@ -204,27 +204,6 @@ class JS06MainWindow(QWidget):
         """Print the current time."""
         current_time = time.strftime("%Y.%m.%d %H:%M:%S", time.localtime(time.time()))
         self.real_time_label.setText(current_time)
-
-    def convert_cv_qt(self, cv_img):
-        """Convert CV image to QImage."""
-        # self.epoch = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
-        self.cp_image = cv_img.copy()
-        self.cp_image = cv2.cvtColor(self.cp_image, cv2.COLOR_BGR2RGB)
-        # img_height, img_width, ch = cv_img.shape
-        # self.image_width = int(img_width)
-        # self.image_height = int(img_height)
-        # self.video_flag = True
-        # bytes_per_line = ch * img_width
-
-        # if self.epoch[-2:] == "00":
-        # if self.pm_25 is not None and self.g_ext is not None and self.test_name is not None:
-        #     self.save_frame(cv_img, self.epoch, self.g_ext, self.pm_25)
-        #     self.g_ext = None
-        #     self.pm_25 = None
-            # return
-        
-        print("비디오 끝")
-        # return
     
     def save_frame(self, image: np.ndarray, epoch: str, g_ext, pm_25):
         """Save the image of the calculation time."""
