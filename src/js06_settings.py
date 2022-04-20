@@ -154,6 +154,7 @@ class JS06_Setting_Widget(QDialog):
         font.setPixelSize(20)        
         font.setBold(3)
         chart.setTitleFont(font)
+        chart.setAnimationOptions(QChart.SeriesAnimations)
         
         chart.setTitle('Extinction coefficient Graph')
         

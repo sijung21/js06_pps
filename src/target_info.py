@@ -98,7 +98,7 @@ def save_rgb(r_list, g_list, b_list, epoch, distance):
         result["g"] = g_list
         result["b"] = b_list
         result["distance"] = distance
-        result.to_csv(f"{save_path}/{epoch}.csv", mode="w", index=False)
+        # result.to_csv(f"{save_path}/{epoch}.csv", mode="w", index=False)
         list1, list2, list3, select_color = cal_ext_coef.cal_curve(result)
         visibility = extinc_print(list1, list2, list3, select_color)
         print(result)
