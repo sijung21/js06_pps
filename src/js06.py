@@ -256,11 +256,11 @@ class JS06MainWindow(QWidget):
 
 if __name__ == '__main__':
     
-    try:
-        os.chdir(sys._MEIPASS)
-        print(sys._MEIPASS)
-    except:
-        os.chdir(os.getcwd())
+    # try:
+    #     os.chdir(sys._MEIPASS)
+    #     print(sys._MEIPASS)
+    # except:
+    #     os.chdir(os.getcwd())
     
     
     mp.freeze_support()
