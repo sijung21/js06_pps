@@ -8,6 +8,8 @@ from datetime import datetime
 import cv2
 import time
 import cal_ext_coef
+from js06_settings import JS06_Setting_Widget
+
 
 
 def minprint(epoch, left_range, right_range, distance, cv_img):
@@ -124,6 +126,7 @@ def save_rgb_value(value_list, distance_list, ext_value, select_color, epoch):
     
     days = epoch[:-4]
     rgbsavedir = os.path.join(f"data/rgb/PNM_9030V/{select_color}")
+    
     try:
         os.makedirs(rgbsavedir)
         

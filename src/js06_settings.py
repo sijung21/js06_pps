@@ -103,6 +103,8 @@ class JS06_Setting_Widget(QDialog):
         else:
             pass
         
+        
+        
         ## 라디오 버튼, 체크박스 이벤트시 함수와 연동 설정
         
         self.km_radio_btn.clicked.connect(self.radio_function)
