@@ -39,7 +39,7 @@ class JS06MainWindow(QWidget):
 
         super().__init__(*args, **kwargs)
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                               "ui/js06_1920.ui")
+                               "ui/js06_1920_new.ui")
         uic.loadUi(ui_path, self)
 
         self.camera_name = ""
@@ -195,7 +195,7 @@ class JS06MainWindow(QWidget):
 
         if url[:4] == "rtsp":
             self.media_player.set_media(self.instance.media_new(url))
-            self.media_player.video_set_aspect_ratio("9:2")
+            self.media_player.video_set_aspect_ratio("11:3")
             self.media_player.play()
         else:
             pass
