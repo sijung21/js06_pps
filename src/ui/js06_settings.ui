@@ -863,6 +863,93 @@ p, li { white-space: pre-wrap; }
     <string>File</string>
    </property>
   </widget>
+  <widget class="QProgressBar" name="label_progressBar">
+   <property name="geometry">
+    <rect>
+     <x>1190</x>
+     <y>750</y>
+     <width>31</width>
+     <height>10</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_progressBar
+{
+	border: solid grey;
+	border-radius: 15px;
+	color:black;
+}
+
+#label_progressBar::chunk{
+	background-color:&quot;red&quot;;
+	border-radius:15px;
+}s</string>
+   </property>
+   <property name="value">
+    <number>100</number>
+   </property>
+   <property name="textVisible">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="label_progressBar_2">
+   <property name="geometry">
+    <rect>
+     <x>1310</x>
+     <y>750</y>
+     <width>31</width>
+     <height>10</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_progressBar_2
+{
+	border: &quot;solid grey&quot;;
+	border-radius: &quot;50 px&quot;;
+	color:black;
+}
+
+#label_progressBar_2::chunk{
+	background-color:green;
+	border-radius:15px;
+}</string>
+   </property>
+   <property name="value">
+    <number>100</number>
+   </property>
+   <property name="textVisible">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="label_progressBar_3">
+   <property name="geometry">
+    <rect>
+     <x>1425</x>
+     <y>750</y>
+     <width>31</width>
+     <height>10</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_progressBar_3
+{
+	border: &quot;solid grey&quot;;
+	border-radius: &quot;50 px&quot;;
+	color:black;
+}
+
+#label_progressBar_3::chunk{
+	background-color:blue;
+	border-radius:15px;
+}</string>
+   </property>
+   <property name="value">
+    <number>100</number>
+   </property>
+   <property name="textVisible">
+    <bool>false</bool>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections>
