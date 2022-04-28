@@ -156,9 +156,12 @@ class JS06_Setting_Widget(QDialog):
         font.setPixelSize(20)        
         font.setBold(3)
         chart.setTitleFont(font)
+        chart.setTitleBrush(QBrush(QColor("white")))
         chart.setAnimationOptions(QChart.SeriesAnimations)
         
         chart.setTitle('Extinction coefficient Graph')
+        
+        axisBrush = QBrush(QColor("white"))
         
         # chart.createDefaultAxes()
         axis_x = QValueAxis()
@@ -166,13 +169,17 @@ class JS06_Setting_Widget(QDialog):
         axis_x.setLabelFormat("%i")
         axis_x.setTitleText("Distance(km)")
         axis_x.setRange(0,50)        
+        axis_x.setLabelsBrush(axisBrush)
+        axis_x.setTitleBrush(axisBrush)     
         chart.addAxis(axis_x, Qt.AlignBottom)        
         
         axis_y = QValueAxis()
         axis_y.setTickCount(7)
         axis_y.setLabelFormat("%i")
         axis_y.setTitleText("Intensity")
-        axis_y.setRange(0, 255)                
+        axis_y.setRange(0, 255)
+        axis_y.setLabelsBrush(axisBrush)
+        axis_y.setTitleBrush(axisBrush)           
         chart.addAxis(axis_y, Qt.AlignLeft)
         
         # Red Graph
@@ -181,7 +188,7 @@ class JS06_Setting_Widget(QDialog):
             series1 = QLineSeries()
             series1.setName("Red")
             pen = QPen()
-            pen.setWidth(2)
+            pen.setWidth(4)
             series1.setPen(pen)
             series1.setColor(QColor("Red"))
             
@@ -197,7 +204,7 @@ class JS06_Setting_Widget(QDialog):
             series2 = QLineSeries()
             series2.setName("Green")
             pen = QPen()
-            pen.setWidth(2)
+            pen.setWidth(4)
             series2.setPen(pen)   
             series2.setColor(QColor("Green")) 
             for dis in self.x:
@@ -213,7 +220,7 @@ class JS06_Setting_Widget(QDialog):
             series3 = QLineSeries()
             series3.setName("Blue")  
             pen = QPen()
-            pen.setWidth(2)
+            pen.setWidth(4)
             series3.setPen(pen)   
             series3.setColor(QColor("Blue"))
             for dis in self.x:
@@ -224,6 +231,7 @@ class JS06_Setting_Widget(QDialog):
             series3.attachAxis(axis_y)  
 
         chart.legend().setAlignment(Qt.AlignRight)
+        chart.legend().setLabelBrush(axisBrush)
         
         # displaying chart
         chart.setBackgroundBrush(QBrush(QColor(22,32,42)))

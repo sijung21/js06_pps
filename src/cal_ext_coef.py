@@ -36,7 +36,6 @@ def cal_curve(hanhwa: pd.DataFrame):
     # hanhwa = pd.read_csv(f"{rgbsavedir}/{epoch}.csv")
     hanhwa = hanhwa.sort_values(by=['distance'])
     hanhwa_dist = hanhwa[['distance']].squeeze().to_numpy()
-    print("distance 리스트 1", hanhwa_dist)
     hanhwa_x = np.linspace(hanhwa_dist[0], hanhwa_dist[-1], 100, endpoint=True)
     hanhwa_x.sort()
     hanhwa_r = hanhwa[['r']].squeeze().to_numpy()
