@@ -216,6 +216,7 @@ def get_target(camera_name: str):
     print("Get target information")
     if os.path.isfile(f"{save_path}/{camera_name}.csv"):
         target_df = pd.read_csv(f"{save_path}/{camera_name}.csv")
+        target_df = target_df.sort_values(by=['distance'])
         target_name = target_df["target_name"].tolist()
         left_range = target_df["left_range"].tolist()
         left_range = str_to_tuple(left_range)
