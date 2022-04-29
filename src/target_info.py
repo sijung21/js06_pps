@@ -8,9 +8,7 @@ from datetime import datetime
 import cv2
 import time
 import cal_ext_coef
-from js06_settings import JS06_Setting_Widget
-
-
+import save_path_info
 
 def minprint(epoch, left_range, right_range, distance, cv_img):
     """A function that outputs pixels for calculating the dissipation coefficient in the specified areas"""
@@ -80,8 +78,10 @@ def get_rgb(epoch: str, min_x, min_y, cp_image, distance):
 
 def save_rgb(r_list, g_list, b_list, epoch, distance):
     """Save the rgb information for each target."""
+    
+    data_save_path = save_path_info.get_data_path("data_path")
     try:
-        save_path = os.path.join(f"data/rgb/PNM_9030V")
+        save_path = os.path.join(f"{data_save_path}/rgb/PNM_9030V")
         os.makedirs(save_path)
 
     except Exception as e:
@@ -123,9 +123,9 @@ def save_rgb(r_list, g_list, b_list, epoch, distance):
 
 def save_rgb_value(value_list, distance_list, ext_value, select_color, epoch):
     
-    
+    data_save_path = save_path_info.get_data_path("data_path")
     days = epoch[:-4]
-    rgbsavedir = os.path.join(f"data/rgb/PNM_9030V/{select_color}")
+    rgbsavedir = os.path.join(f"{data_save_path}/data/rgb/PNM_9030V/{select_color}")
     
     try:
         os.makedirs(rgbsavedir)
@@ -142,8 +142,7 @@ def save_rgb_value(value_list, distance_list, ext_value, select_color, epoch):
     else:  
         column_list = ['time', 'target_distance', 'intensity_val', 'ext_coeff', 'visibility']
         cols = column_list        
-        rgb_df = pd.DataFrame(columns=cols)
-    
+        rgb_df = pd.DataFrame(columns=cols)    
     
     dt_epoch = datetime.strptime(epoch, '%Y%m%d%H%M')
     
@@ -157,8 +156,9 @@ def save_rgb_value(value_list, distance_list, ext_value, select_color, epoch):
     
 def save_ext(ext_list, epoch):
     
+    data_save_path = save_path_info.get_data_path("data_path")
     days = epoch[:-4]
-    extsavedir = os.path.join(f"data/ext/PNM_9030V")
+    extsavedir = os.path.join(f"{data_save_path}/data/ext/PNM_9030V")
     try:
         os.makedirs(extsavedir)
     except Exception as e:
