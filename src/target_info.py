@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
+from operator import index
 import os
 import pandas as pd
 import numpy as np
+from datetime import datetime
 
 import cv2
-import datetime
 import time
 import cal_ext_coef
-
+import save_path_info
 
 def minprint(epoch, left_range, right_range, distance, cv_img):
     """A function that outputs pixels for calculating the dissipation coefficient in the specified areas"""
@@ -77,9 +78,11 @@ def get_rgb(epoch: str, min_x, min_y, cp_image, distance):
 
 def save_rgb(r_list, g_list, b_list, epoch, distance):
     """Save the rgb information for each target."""
+    
+    data_save_path = save_path_info.get_data_path("data_path")
     try:
-        save_path = os.path.join(f"rgb/PNM_9030V")
-        os.mkdir(save_path)
+        save_path = os.path.join(f"{data_save_path}/rgb/PNM_9030V")
+        os.makedirs(save_path)
 
     except Exception as e:
         pass
@@ -97,13 +100,87 @@ def save_rgb(r_list, g_list, b_list, epoch, distance):
         result["g"] = g_list
         result["b"] = b_list
         result["distance"] = distance
-        result.to_csv(f"{save_path}/{epoch}.csv", mode="w", index=False)
+        # result.to_csv(f"{save_path}/{epoch}.csv", mode="w", index=False)
         list1, list2, list3, select_color = cal_ext_coef.cal_curve(result)
         visibility = extinc_print(list1, list2, list3, select_color)
         print(result)
         print("Save rgb") 
+        
+        result = result.sort_values(by=['distance'])
+        
+        r_list = list(result.loc[:,'r'])
+        g_list = list(result.loc[:,'g'])
+        b_list = list(result.loc[:,'b'])
+        distance = list(result.loc[:,'distance'])        
+        
+        save_rgb_value(r_list, distance, list3[0], "red", epoch)
+        save_rgb_value(g_list, distance, list3[1], "green", epoch)
+        save_rgb_value(b_list, distance, list3[2], "blue", epoch)
+        
+        save_ext(list3, epoch)
     
     return visibility
+
+def save_rgb_value(value_list, distance_list, ext_value, select_color, epoch):
+    
+    data_save_path = save_path_info.get_data_path("data_path")
+    days = epoch[:-4]
+    rgbsavedir = os.path.join(f"{data_save_path}/data/rgb/PNM_9030V/{select_color}")
+    
+    try:
+        os.makedirs(rgbsavedir)
+        
+    except Exception as e:
+        pass
+    
+    rgb_file_path = os.path.join(rgbsavedir,f"{days}.csv")
+    
+    
+    if os.path.isfile(rgb_file_path):
+        rgb_df = pd.read_csv(rgb_file_path)
+    
+    else:  
+        column_list = ['time', 'target_distance', 'intensity_val', 'ext_coeff', 'visibility']
+        cols = column_list        
+        rgb_df = pd.DataFrame(columns=cols)    
+    
+    dt_epoch = datetime.strptime(epoch, '%Y%m%d%H%M')
+    
+    visibility_value = 3.912/ext_value
+    
+    rgb_df = rgb_df.append({'time': dt_epoch,'target_distance':distance_list,'intensity_val':value_list,'ext_coeff':ext_value, 'visibility':visibility_value}, ignore_index=True)
+    
+    rgb_df.to_csv(rgb_file_path,mode="w", index=False)
+    print(f"Save {select_color} channel value")
+    
+    
+def save_ext(ext_list, epoch):
+    
+    data_save_path = save_path_info.get_data_path("data_path")
+    days = epoch[:-4]
+    extsavedir = os.path.join(f"{data_save_path}/data/ext/PNM_9030V")
+    try:
+        os.makedirs(extsavedir)
+    except Exception as e:
+        pass
+    
+    ext_file_path = os.path.join(extsavedir,f"{days}.csv")
+    
+    if os.path.isfile(ext_file_path):
+        ext_df = pd.read_csv(ext_file_path)
+    
+    else:        
+        cols = ["time",'r_ext','g_ext','b_ext']
+        ext_df = pd.DataFrame(columns=cols)
+    
+    dt_epoch = datetime.strptime(epoch, '%Y%m%d%H%M')
+    print(dt_epoch)
+    ext_df = ext_df.append({'time': dt_epoch,'r_ext':ext_list[0],'g_ext':ext_list[1],'b_ext':ext_list[2]}, ignore_index=True)
+    
+    ext_df.to_csv(ext_file_path,mode="w", index=False)
+    
+    print("Save extinction")
+    
 
 def extinc_print(c1_list: list = [0, 0, 0], c2_list: list = [0, 0, 0], alp_list: list = [0, 0, 0], select_color: str = ""):
     """Select an appropriate value among visibility by wavelength."""
@@ -139,6 +216,7 @@ def get_target(camera_name: str):
     print("Get target information")
     if os.path.isfile(f"{save_path}/{camera_name}.csv"):
         target_df = pd.read_csv(f"{save_path}/{camera_name}.csv")
+        target_df = target_df.sort_values(by=['distance'])
         target_name = target_df["target_name"].tolist()
         left_range = target_df["left_range"].tolist()
         left_range = str_to_tuple(left_range)

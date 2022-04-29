@@ -40,7 +40,6 @@ def producer(q):
                 
                 if ret:
                     visibility = target_info.minprint(epoch[:-2], left_range, right_range, distance, cv_img)
-                    visibility = visibility
                     cap.release()
                     
                     q.put(visibility)

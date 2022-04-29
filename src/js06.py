@@ -28,8 +28,9 @@ from PyQt5.QtWebEngineWidgets import QWebEngineSettings
 from video_thread_mp import CurveThread
 import video_thread_mp
 import save_db
-
+import save_path_info
 from js06_settings import JS06_Setting_Widget
+
 
 print(pd.__version__)
 
@@ -39,7 +40,7 @@ class JS06MainWindow(QWidget):
 
         super().__init__(*args, **kwargs)
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                               "ui/js06_1920.ui")
+                               "ui/js06_1920_new.ui")
         uic.loadUi(ui_path, self)
 
         self.camera_name = ""
@@ -75,6 +76,8 @@ class JS06MainWindow(QWidget):
         self.running_ave_checked = None
         self.q_list = []
         self.q_list_scale = 300
+        
+        # self.showFullScreen()
         
         self.instance = vlc.Instance()
         self.mediaplayer = self.instance.media_player_new()        
@@ -121,6 +124,14 @@ class JS06MainWindow(QWidget):
         self.timer = QTimer()
         self.timer.start(1000)
         self.timer.timeout.connect(self.timeout_run)
+        
+        if os.path.isdir("./path_info"):
+            pass
+        
+        else:
+            save_path_info.init_data_path()
+        
+        
     
     @pyqtSlot()
     def btn_test(self):
@@ -191,7 +202,7 @@ class JS06MainWindow(QWidget):
 
         if url[:4] == "rtsp":
             self.media_player.set_media(self.instance.media_new(url))
-            self.media_player.video_set_aspect_ratio("9:2")
+            self.media_player.video_set_aspect_ratio("11:3")
             self.media_player.play()
         else:
             pass
@@ -200,27 +211,6 @@ class JS06MainWindow(QWidget):
         """Print the current time."""
         current_time = time.strftime("%Y.%m.%d %H:%M:%S", time.localtime(time.time()))
         self.real_time_label.setText(current_time)
-
-    def convert_cv_qt(self, cv_img):
-        """Convert CV image to QImage."""
-        # self.epoch = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
-        self.cp_image = cv_img.copy()
-        self.cp_image = cv2.cvtColor(self.cp_image, cv2.COLOR_BGR2RGB)
-        # img_height, img_width, ch = cv_img.shape
-        # self.image_width = int(img_width)
-        # self.image_height = int(img_height)
-        # self.video_flag = True
-        # bytes_per_line = ch * img_width
-
-        # if self.epoch[-2:] == "00":
-        # if self.pm_25 is not None and self.g_ext is not None and self.test_name is not None:
-        #     self.save_frame(cv_img, self.epoch, self.g_ext, self.pm_25)
-        #     self.g_ext = None
-        #     self.pm_25 = None
-            # return
-        
-        print("비디오 끝")
-        # return
     
     def save_frame(self, image: np.ndarray, epoch: str, g_ext, pm_25):
         """Save the image of the calculation time."""
@@ -257,7 +247,7 @@ class JS06MainWindow(QWidget):
         """Save the target information for each camera."""
         try:
             save_path = os.path.join(f"target/{self.camera_name}")
-            os.mkdir(save_path)
+            os.makedirs(save_path)
 
         except Exception as e:
             pass
@@ -272,6 +262,14 @@ class JS06MainWindow(QWidget):
             result.to_csv(f"{save_path}/{self.camera_name}.csv", mode="w", index=False)
 
 if __name__ == '__main__':
+    
+    # try:
+    #     os.chdir(sys._MEIPASS)
+    #     print(sys._MEIPASS)
+    # except:
+    #     os.chdir(os.getcwd())
+    
+    
     mp.freeze_support()
     q = Queue()
     p = Process(name="producer", target=video_thread_mp.producer, args=(q, ), daemon=True)
