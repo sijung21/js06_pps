@@ -28,8 +28,9 @@ from PyQt5.QtWebEngineWidgets import QWebEngineSettings
 from video_thread_mp import CurveThread
 import video_thread_mp
 import save_db
-
+import save_path_info
 from js06_settings import JS06_Setting_Widget
+
 
 print(pd.__version__)
 
@@ -123,6 +124,12 @@ class JS06MainWindow(QWidget):
         self.timer = QTimer()
         self.timer.start(1000)
         self.timer.timeout.connect(self.timeout_run)
+        
+        if os.path.isdir("./path_info"):
+            pass
+        
+        else:
+            save_path_info.init_data_path()
         
         
     

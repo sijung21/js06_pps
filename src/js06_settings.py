@@ -13,7 +13,7 @@ from scipy.optimize import curve_fit
 # import PyQt5
 # print(PyQt5.__version__)
 from PyQt5.QtGui import QPixmap, QImage, QPainter, QBrush, QColor, QPen, QImage, QPixmap, QIcon, QFont
-from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QDialog, QTableWidgetItem, QHeaderView
+from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QDialog, QTableWidgetItem, QHeaderView, QFileDialog
 from PyQt5.QtCore import QPoint, QRect, Qt, QRectF, QSize, QCoreApplication, pyqtSlot, QTimer, QUrl
 from PyQt5 import uic
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
@@ -26,6 +26,7 @@ from PyQt5.QtWebEngineWidgets import QWebEngineSettings
 from PyQt5.QtChart import QChart, QChartView, QLineSeries, QValueAxis
 
 import target_info
+import save_path_info
 
 class JS06_Setting_Widget(QDialog):
 
@@ -103,7 +104,22 @@ class JS06_Setting_Widget(QDialog):
         else:
             pass
         
+        data_path_text = save_path_info.get_data_path('data_path')
         
+        self.data_path_textEdit.setPlainText(data_path_text)
+        
+        image_path_text = save_path_info.get_data_path('image_path')
+        
+        self.image_path_textEdit.setPlainText(image_path_text)
+        
+        log_path_text = save_path_info.get_data_path('log_path')
+        
+        self.log_path_textEdit.setPlainText(log_path_text)
+        
+        
+        self.data_path_pbtn.clicked.connect(self.data_path_folder_open)
+        self.image_path_pbtn.clicked.connect(self.image_path_folder_open)
+        self.log_path_pbtn.clicked.connect(self.log_path_folder_open)
         
         ## 라디오 버튼, 체크박스 이벤트시 함수와 연동 설정
         
@@ -113,14 +129,51 @@ class JS06_Setting_Widget(QDialog):
         self.red_checkBox.clicked.connect(self.chart_update)
         self.green_checkBox.clicked.connect(self.chart_update)
         self.blue_checkBox.clicked.connect(self.chart_update)
-
         
         self.one_radio_btn.clicked.connect(self.running_avr_time_settings_function)
         self.five_radio_btn.clicked.connect(self.running_avr_time_settings_function)
         self.ten_radio_btn.clicked.connect(self.running_avr_time_settings_function)
     
+    
+    # path_setting
+    def data_path_folder_open(self):
+        folder = None
+        
+        folder = QFileDialog.getExistingDirectory(self, "Select Directory")
+        
+        if folder is not None:
+            self.data_path_textEdit.clear()
+            self.data_path_textEdit.setPlainText(folder)
+            save_path_info.set_data_path('data_path', folder)
+        else:
+            pass
+            
+    def image_path_folder_open(self):
+        folder = None
+        
+        folder = QFileDialog.getExistingDirectory(self, "Select Directory")
+        
+        if folder is not None:
+            self.image_path_textEdit.clear()
+            self.image_path_textEdit.setPlainText(folder)
+            save_path_info.set_data_path('image_path', folder)
+        else:
+            pass
+            
+    def log_path_folder_open(self):
+        folder = None
+        
+        folder = QFileDialog.getExistingDirectory(self, "Select Directory")
+        
+        if folder is not None:
+            self.log_path_textEdit.clear()
+            self.log_path_textEdit.setPlainText(folder)
+            save_path_info.set_data_path('log_path', folder)        
+        else:
+            pass
+            
     def func(self, x, c1, c2, a):
-        return c2 + (c1 - c2) * np.exp(-a * x)
+        return c2 + (c1 - c2) * np.exp(-a * x)    
     
     def chart_update(self):
         """세팅창 그래프를 업데이트 하는 함수"""
