@@ -210,6 +210,9 @@ class JS06_Setting_Widget(QDialog):
         chart.setTitleFont(font)
         chart.setTitleBrush(QBrush(QColor("white")))
         chart.setAnimationOptions(QChart.SeriesAnimations)
+        chart.layout().setContentsMargins(0,0,0,0)
+        chart.setBackgroundRoundness(0)
+        
         
         chart.setTitle('Extinction coefficient Graph')
         
