@@ -104,11 +104,15 @@ class JS06MainWindow(QWidget):
         self.verticallayout.addWidget(self.video_frame)
 
         self.webview = QtWebEngineWidgets.QWebEngineView()
-        self.webview.setUrl(QUrl("http://localhost:3000/d/GXA3xPS7z/new-dashboard-copy?orgId=1&kiosk&from=now-1h&to=now"))
+        # self.webview.setUrl(QUrl("http://localhost:3000/d/GXA3xPS7z/new-dashboard-copy?orgId=1&kiosk&from=now-1h&to=now"))
+        self.webview.setUrl(QUrl("http://localhost:3000"))
         self.webview.setZoomFactor(1)
+        self.webview.settings().setAttribute(QWebEngineSettings.PluginsEnabled, True)
+        self.webview.settings().setAttribute(QWebEngineSettings.JavascriptEnabled, True)
+        self.webview.settings().setAttribute(QWebEngineSettings.FullScreenSupportEnabled, True)
         self.web_verticalLayout.addWidget(self.webview)
 
-        # Create QMediaPlayer that plays video
+        # # Create QMediaPlayer that plays video
   
         VIDEO_SRC3 = "rtsp://admin:sijung5520@192.168.100.100/profile2/media.smp"
         
@@ -126,12 +130,9 @@ class JS06MainWindow(QWidget):
         self.timer.timeout.connect(self.timeout_run)
         
         if os.path.isdir("./path_info"):
-            pass
-        
+            pass        
         else:
-            save_path_info.init_data_path()
-        
-        
+            save_path_info.init_data_path()       
     
     @pyqtSlot()
     def btn_test(self):
@@ -235,6 +236,12 @@ class JS06MainWindow(QWidget):
         if e.key() == Qt.Key_Escape:
             sys.exit()
         if e.key() == Qt.Key_F:
+            self.widget_toggle_flag()
+        
+    def widget_toggle_flag(self):
+        if self.windowState() & Qt.WindowFullScreen:
+            self.showNormal()
+        else:
             self.showFullScreen()
         
     def data_storage(self, vis_data):

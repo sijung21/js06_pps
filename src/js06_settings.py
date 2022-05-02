@@ -140,8 +140,7 @@ class JS06_Setting_Widget(QDialog):
         folder = None
         
         folder = QFileDialog.getExistingDirectory(self, "Select Directory")
-        
-        if folder is not None:
+        if folder is not None and len(folder) > 0:
             self.data_path_textEdit.clear()
             self.data_path_textEdit.setPlainText(folder)
             save_path_info.set_data_path('data_path', folder)
@@ -153,7 +152,7 @@ class JS06_Setting_Widget(QDialog):
         
         folder = QFileDialog.getExistingDirectory(self, "Select Directory")
         
-        if folder is not None:
+        if folder is not None and len(folder) > 0:
             self.image_path_textEdit.clear()
             self.image_path_textEdit.setPlainText(folder)
             save_path_info.set_data_path('image_path', folder)
@@ -165,7 +164,7 @@ class JS06_Setting_Widget(QDialog):
         
         folder = QFileDialog.getExistingDirectory(self, "Select Directory")
         
-        if folder is not None:
+        if folder is not None and len(folder) > 0:
             self.log_path_textEdit.clear()
             self.log_path_textEdit.setPlainText(folder)
             save_path_info.set_data_path('log_path', folder)        
