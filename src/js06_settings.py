@@ -16,13 +16,7 @@ from PyQt5.QtGui import QPixmap, QImage, QPainter, QBrush, QColor, QPen, QImage,
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QDialog, QTableWidgetItem, QHeaderView, QFileDialog
 from PyQt5.QtCore import QPoint, QRect, Qt, QRectF, QSize, QCoreApplication, pyqtSlot, QTimer, QUrl
 from PyQt5 import uic
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from PyQt5.QtMultimediaWidgets import QGraphicsVideoItem
 
-
-from PyQt5 import QtWebEngineWidgets
-from PyQt5 import QtWebEngineCore
-from PyQt5.QtWebEngineWidgets import QWebEngineSettings
 from PyQt5.QtChart import QChart, QChartView, QLineSeries, QValueAxis
 
 import target_info
@@ -283,8 +277,9 @@ class JS06_Setting_Widget(QDialog):
             chart.addSeries(series3)  # data feeding
             
             series3.attachAxis(axis_x)
-            series3.attachAxis(axis_y)  
-
+            series3.attachAxis(axis_y) 
+        
+        # legend
         chart.legend().setAlignment(Qt.AlignRight)
         chart.legend().setLabelBrush(axisBrush)
         

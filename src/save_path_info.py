@@ -13,7 +13,7 @@ def init_data_path():
     except Exception as e:
         pass
     
-    data_path = [('./data', './data/image', './log')]
+    data_path = [('./', './data/image', './log')]
     
     cols = ['data_path', 'image_path', 'log_path']
     path_info_df = pd.DataFrame(data_path, columns=cols)

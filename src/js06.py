@@ -4,6 +4,7 @@ import sys
 import os
 import time
 import math
+from typing_extensions import Self
 import vlc
 
 import cv2
@@ -13,7 +14,7 @@ from multiprocessing import Process, Queue
 import multiprocessing as mp
 
 # print(PyQt5.__version__)
-from PyQt5.QtGui import QPixmap, QImage, QPainter, QBrush, QColor, QPen, QImage, QPixmap, QIcon
+from PyQt5.QtGui import QPixmap, QImage, QPainter, QBrush, QColor, QPen, QImage, QPixmap, QIcon, QFont
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QListWidgetItem, QFileDialog, QDockWidget, QGraphicsScene, QGraphicsView, QFrame
 from PyQt5.QtCore import QPoint, QRect, Qt, QRectF, QSize, QCoreApplication, pyqtSlot, QTimer, QUrl
 from PyQt5 import uic
@@ -23,6 +24,7 @@ from PyQt5.QtMultimediaWidgets import QGraphicsVideoItem
 from PyQt5 import QtWebEngineWidgets
 from PyQt5 import QtWebEngineCore
 from PyQt5.QtWebEngineWidgets import QWebEngineSettings
+from PyQt5.QtChart import QChart, QChartView, QLineSeries, QValueAxis
 
 
 from video_thread_mp import CurveThread
@@ -33,6 +35,80 @@ from js06_settings import JS06_Setting_Widget
 
 
 print(pd.__version__)
+
+
+class Vis_Chart(QWidget):
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        
+                # chart object
+        self.chart = QChart()
+        self.font = QFont()
+        self.font.setPixelSize(20)        
+        self.font.setBold(3)
+        self.chart.setTitle("Visibility Graph")
+        self.chart.setTitleFont(self.font)
+        self.chart.setTitleBrush(QBrush(QColor("white")))
+        self.chart.setAnimationOptions(QChart.SeriesAnimations)
+        self.chart.layout().setContentsMargins(0,0,0,0)
+        self.chart.setBackgroundRoundness(0)
+        
+        self.series = QLineSeries()
+        self.series.setPointLabelsVisible()
+        
+        axisBrush = QBrush(QColor("white"))
+
+        self.series.setName("Visibility")
+        
+        axis_x = QValueAxis()
+        axis_x.setTickCount(7)
+        axis_x.setLabelFormat("%i")
+        axis_x.setTitleText("Time")
+        axis_x.setRange(0,50)        
+        axis_x.setLabelsBrush(axisBrush)
+        axis_x.setTitleBrush(axisBrush)     
+        self.chart.addAxis(axis_x, Qt.AlignBottom)        
+        
+        axis_y = QValueAxis()
+        axis_y.setTickCount(7)
+        axis_y.setLabelFormat("%i")
+        axis_y.setTitleText("Visibility(km)")
+        axis_y.setRange(0, 20)
+        axis_y.setLabelsBrush(axisBrush)
+        axis_y.setTitleBrush(axisBrush)
+        self.chart.addAxis(axis_y, Qt.AlignLeft) 
+        
+        self.series.append(1, 15)
+        self.series.append(10, 15)
+        self.series.append(20, 15)
+        self.series.append(30, 15)
+        self.series.append(40, 15)
+        
+        pen = QPen()
+        pen.setWidth(4)
+        self.series.setPen(pen)
+        self.series.setColor(QColor("Blue"))
+        self.chart.addSeries(self.series)
+        
+        # legend
+        self.chart.legend().setAlignment(Qt.AlignRight)
+        self.chart.legend().setLabelBrush(axisBrush)
+        
+        self.series.attachAxis(axis_x)
+        self.series.attachAxis(axis_y)
+        
+        self.chart.setBackgroundBrush(QBrush(QColor(22,32,42)))
+        self.chart_view = QChartView(self.chart)
+        
+        # return chart_view
+        
+        
+               
+    
+    
+        
+        
 
 class JS06MainWindow(QWidget):
 
@@ -77,10 +153,10 @@ class JS06MainWindow(QWidget):
         self.q_list = []
         self.q_list_scale = 300
         
-        # self.showFullScreen()
+        self.chart_view = Vis_Chart()
         
         self.instance = vlc.Instance()
-        self.mediaplayer = self.instance.media_player_new()        
+        self.mediaplayer = self.instance.media_player_new()
         args = [
             "--rtsp-frame-buffer-size",
             "1000000"
@@ -103,14 +179,15 @@ class JS06MainWindow(QWidget):
         # Create a QGraphicsView to show the camera image
         self.verticallayout.addWidget(self.video_frame)
 
-        self.webview = QtWebEngineWidgets.QWebEngineView()
+        # self.webview = QtWebEngineWidgets.QWebEngineView()
         # self.webview.setUrl(QUrl("http://localhost:3000/d/GXA3xPS7z/new-dashboard-copy?orgId=1&kiosk&from=now-1h&to=now"))
-        self.webview.setUrl(QUrl("http://localhost:3000"))
-        self.webview.setZoomFactor(1)
-        self.webview.settings().setAttribute(QWebEngineSettings.PluginsEnabled, True)
-        self.webview.settings().setAttribute(QWebEngineSettings.JavascriptEnabled, True)
-        self.webview.settings().setAttribute(QWebEngineSettings.FullScreenSupportEnabled, True)
-        self.web_verticalLayout.addWidget(self.webview)
+        # self.webview.setZoomFactor(1)
+        # self.webview.settings().setAttribute(QWebEngineSettings.PluginsEnabled, True)
+        # self.webview.settings().setAttribute(QWebEngineSettings.JavascriptEnabled, True)
+        # self.webview.settings().setAttribute(QWebEngineSettings.FullScreenSupportEnabled, True)
+        # self.web_verticalLayout.addWidget(self.webview)
+        self.web_verticalLayout.addWidget(self.chart_view.chart_view)
+        
 
         # # Create QMediaPlayer that plays video
   
@@ -267,6 +344,8 @@ class JS06MainWindow(QWidget):
             result["right_range"] = self.right_range
             result["distance"] = self.distance
             result.to_csv(f"{save_path}/{self.camera_name}.csv", mode="w", index=False)
+
+
 
 if __name__ == '__main__':
     
