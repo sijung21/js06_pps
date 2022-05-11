@@ -35,7 +35,7 @@ def producer(q):
                 else:
                     pass
                 
-                cap = cv2.VideoCapture("rtsp://admin:sijung5520@192.168.100.100/profile2/media.smp")
+                cap = cv2.VideoCapture("rtsp://admin:sijung5520@192.168.100.132/profile2/media.smp")
                 ret, cv_img = cap.read()
                 
                 if ret:
@@ -47,7 +47,7 @@ def producer(q):
             except Exception as e:
                 print(e)
                 cap.release()
-                cap = cv2.VideoCapture("rtsp://admin:sijung5520@192.168.100.100/profile2/media.smp")
+                cap = cv2.VideoCapture("rtsp://admin:sijung5520@192.168.100.132/profile2/media.smp")
                 continue
 
 class CurveThread(QtCore.QThread):

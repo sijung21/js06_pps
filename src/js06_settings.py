@@ -16,13 +16,7 @@ from PyQt5.QtGui import QPixmap, QImage, QPainter, QBrush, QColor, QPen, QImage,
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QDialog, QTableWidgetItem, QHeaderView, QFileDialog
 from PyQt5.QtCore import QPoint, QRect, Qt, QRectF, QSize, QCoreApplication, pyqtSlot, QTimer, QUrl
 from PyQt5 import uic
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from PyQt5.QtMultimediaWidgets import QGraphicsVideoItem
 
-
-from PyQt5 import QtWebEngineWidgets
-from PyQt5 import QtWebEngineCore
-from PyQt5.QtWebEngineWidgets import QWebEngineSettings
 from PyQt5.QtChart import QChart, QChartView, QLineSeries, QValueAxis
 
 import target_info
@@ -140,8 +134,7 @@ class JS06_Setting_Widget(QDialog):
         folder = None
         
         folder = QFileDialog.getExistingDirectory(self, "Select Directory")
-        
-        if folder is not None:
+        if folder is not None and len(folder) > 0:
             self.data_path_textEdit.clear()
             self.data_path_textEdit.setPlainText(folder)
             save_path_info.set_data_path('data_path', folder)
@@ -153,7 +146,7 @@ class JS06_Setting_Widget(QDialog):
         
         folder = QFileDialog.getExistingDirectory(self, "Select Directory")
         
-        if folder is not None:
+        if folder is not None and len(folder) > 0:
             self.image_path_textEdit.clear()
             self.image_path_textEdit.setPlainText(folder)
             save_path_info.set_data_path('image_path', folder)
@@ -165,7 +158,7 @@ class JS06_Setting_Widget(QDialog):
         
         folder = QFileDialog.getExistingDirectory(self, "Select Directory")
         
-        if folder is not None:
+        if folder is not None and len(folder) > 0:
             self.log_path_textEdit.clear()
             self.log_path_textEdit.setPlainText(folder)
             save_path_info.set_data_path('log_path', folder)        
@@ -211,6 +204,9 @@ class JS06_Setting_Widget(QDialog):
         chart.setTitleFont(font)
         chart.setTitleBrush(QBrush(QColor("white")))
         chart.setAnimationOptions(QChart.SeriesAnimations)
+        chart.layout().setContentsMargins(0,0,0,0)
+        chart.setBackgroundRoundness(0)
+        
         
         chart.setTitle('Extinction coefficient Graph')
         
@@ -281,8 +277,9 @@ class JS06_Setting_Widget(QDialog):
             chart.addSeries(series3)  # data feeding
             
             series3.attachAxis(axis_x)
-            series3.attachAxis(axis_y)  
-
+            series3.attachAxis(axis_y) 
+        
+        # legend
         chart.legend().setAlignment(Qt.AlignRight)
         chart.legend().setLabelBrush(axisBrush)
         
@@ -315,7 +312,7 @@ class JS06_Setting_Widget(QDialog):
         
     def image_load(self):
         
-        src = "rtsp://admin:sijung5520@192.168.100.100/profile2/media.smp"
+        src = "rtsp://admin:sijung5520@192.168.100.132/profile2/media.smp"
         # src = "C:/Users/user/Workspace/water_gauge/src/video_files/daejeon_1.mp4"
         try:
             cap = cv2.VideoCapture(src)
