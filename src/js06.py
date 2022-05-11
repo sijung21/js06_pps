@@ -15,7 +15,7 @@ import multiprocessing as mp
 
 # print(PyQt5.__version__)
 from PyQt5.QtGui import QPixmap, QImage, QPainter, QBrush, QColor, QPen, QImage, QPixmap, QIcon, QFont
-from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QListWidgetItem, QFileDialog, QDockWidget, QGraphicsScene, QGraphicsView, QFrame
+from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QGraphicsScene, QGraphicsView, QFrame, QTabWidget
 from PyQt5.QtCore import QPoint, QRect, Qt, QRectF, QSize, QCoreApplication, pyqtSlot, QTimer, QUrl
 from PyQt5 import uic
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
@@ -32,6 +32,7 @@ import video_thread_mp
 import save_db
 import save_path_info
 from js06_settings import JS06_Setting_Widget
+from grafana_view_widget import GraFanaMainWindow
 
 
 print(pd.__version__)
@@ -191,7 +192,7 @@ class JS06MainWindow(QWidget):
 
         # # Create QMediaPlayer that plays video
   
-        VIDEO_SRC3 = "rtsp://admin:sijung5520@192.168.100.100/profile2/media.smp"
+        VIDEO_SRC3 = "rtsp://admin:sijung5520@192.168.100.132/profile2/media.smp"
         
         CAM_NAME = "PNM_9030V"
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
@@ -362,8 +363,13 @@ if __name__ == '__main__':
     p.start()
     
     app = QApplication(sys.argv)
-    MainWindow = QMainWindow()
+    # MainWindow = QMainWindow()
     ui = JS06MainWindow()
+    tabs = QTabWidget()
+    tabs.addTab(ui, 'tab1')
+    ui2 = GraFanaMainWindow()
+    tabs.addTab(ui2, 'tab2')
     # ui.setupUi(MainWindow)
-    ui.show()
+    # tabs.showFullScreen()
+    tabs.show()
     sys.exit(app.exec_())
