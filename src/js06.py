@@ -40,7 +40,7 @@ print(pd.__version__)
 
 class Vis_Chart(QWidget):
     
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, max_value = 50):
         super().__init__(parent)
         
                 # chart object
@@ -66,7 +66,7 @@ class Vis_Chart(QWidget):
         axis_x.setTickCount(7)
         axis_x.setLabelFormat("%i")
         axis_x.setTitleText("Time")
-        axis_x.setRange(0,50)        
+        axis_x.setRange(0,max_value)     
         axis_x.setLabelsBrush(axisBrush)
         axis_x.setTitleBrush(axisBrush)     
         self.chart.addAxis(axis_x, Qt.AlignBottom)        
@@ -365,11 +365,13 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     # MainWindow = QMainWindow()
     ui = JS06MainWindow()
-    tabs = QTabWidget()
-    tabs.addTab(ui, 'tab1')
-    ui2 = GraFanaMainWindow()
-    tabs.addTab(ui2, 'tab2')
+    # tabs = QTabWidget()
+    # tabs.addTab(ui, 'tab1')
+    # ui2 = GraFanaMainWindow()
+    # tabs.addTab(ui2, 'tab2')
     # ui.setupUi(MainWindow)
     # tabs.showFullScreen()
-    tabs.show()
-    sys.exit(app.exec_())
+    # tabs.show()
+    ui.show()
+    # sys.exit(p)    
+    sys.exit(app.exec_(), p)

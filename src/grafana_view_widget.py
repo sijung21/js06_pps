@@ -42,4 +42,4 @@ class GraFanaMainWindow(QWidget):
         self.webview.settings().setAttribute(QWebEngineSettings.PluginsEnabled, True)
         self.webview.settings().setAttribute(QWebEngineSettings.JavascriptEnabled, True)
         self.webview.settings().setAttribute(QWebEngineSettings.FullScreenSupportEnabled, True)
-        self.web_verticalLayout.addWidget(self.webview)
+        self.web_horizontalLayout.addWidget(self.webview, 0)

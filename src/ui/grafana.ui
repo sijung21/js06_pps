@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QWidget" name="verticalLayoutWidget">
+  <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -22,7 +22,7 @@
      <height>1081</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="web_verticalLayout"/>
+   <layout class="QHBoxLayout" name="web_horizontalLayout"/>
   </widget>
  </widget>
  <resources/>
