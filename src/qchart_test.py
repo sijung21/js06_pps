@@ -26,7 +26,7 @@ class ValueWorker(QThread):
         
     def run(self):
         while self.alive:
-            data = 5 * random.random()
+            data = 5*random.random()
             time.sleep(10)
             self.dataSent.emit(data)
     
