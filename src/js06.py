@@ -25,7 +25,7 @@ from PyQt5.QtMultimediaWidgets import QGraphicsVideoItem
 from PyQt5 import QtWebEngineWidgets
 from PyQt5 import QtWebEngineCore
 from PyQt5.QtWebEngineWidgets import QWebEngineSettings
-from PyQt5.QtChart import QChart, QChartView, QLineSeries, QValueAxis, QDateTimeAxis
+from PyQt5.QtChart import QChart, QChartView, QLineSeries, QValueAxis, QDateTimeAxis, QScatterSeries
 
 
 from video_thread_mp import CurveThread
@@ -62,7 +62,7 @@ class ValueWorker(QThread):
                 print(data)
                 
             client.close()
-            time.sleep(10)
+            time.sleep(30)
             self.dataSent.emit(data)
     
     def close(self):
@@ -71,108 +71,76 @@ class ValueWorker(QThread):
 class Vis_Chart(QWidget):
     
     def __init__(self, parent=None, max_value = 50):
-        super().__init__(parent)
-        
-                # chart object
-        # self.chart = QChart()
-        # self.font = QFont()
-        # self.font.setPixelSize(20)        
-        # self.font.setBold(3)
-        # self.chart.setTitle("Visibility Graph")
-        # self.chart.setTitleFont(self.font)
-        # self.chart.setTitleBrush(QBrush(QColor("white")))
-        # self.chart.setAnimationOptions(QChart.SeriesAnimations)
-        # self.chart.layout().setContentsMargins(0,0,0,0)
-        # self.chart.setBackgroundRoundness(0)
-        
-        # self.series = QLineSeries()
-        # self.series.setPointLabelsVisible()
-        
-        # axisBrush = QBrush(QColor("white"))
-
-        # self.series.setName("Visibility")
-        
-        # axis_x = QValueAxis()
-        # axis_x.setTickCount(7)
-        # axis_x.setLabelFormat("%i")
-        # axis_x.setTitleText("Time")
-        # axis_x.setRange(0,max_value)     
-        # axis_x.setLabelsBrush(axisBrush)
-        # axis_x.setTitleBrush(axisBrush)     
-        # self.chart.addAxis(axis_x, Qt.AlignBottom)        
-        
-        # axis_y = QValueAxis()
-        # axis_y.setTickCount(7)
-        # axis_y.setLabelFormat("%i")
-        # axis_y.setTitleText("Visibility(km)")
-        # axis_y.setRange(0, 20)
-        # axis_y.setLabelsBrush(axisBrush)
-        # axis_y.setTitleBrush(axisBrush)
-        # self.chart.addAxis(axis_y, Qt.AlignLeft) 
-        
-        # self.series.append(1, 15)
-        # self.series.append(10, 15)
-        # self.series.append(20, 15)
-        # self.series.append(30, 15)
-        # self.series.append(40, 15)
-        
-        # pen = QPen()
-        # pen.setWidth(4)
-        # self.series.setPen(pen)
-        # self.series.setColor(QColor("Blue"))
-        # self.chart.addSeries(self.series)
-        
-        # # legend
-        # self.chart.legend().setAlignment(Qt.AlignRight)
-        # self.chart.legend().setLabelBrush(axisBrush)
-        
-        # self.series.attachAxis(axis_x)
-        # self.series.attachAxis(axis_y)
-        
-        # self.chart.setBackgroundBrush(QBrush(QColor(22,32,42)))
-        # self.chart_view = QChartView(self.chart)
+        super().__init__(parent)       
+                
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                     "ui/qchart_test.ui")
         uic.loadUi(ui_path, self)
         
-        self.cur_series = QLineSeries()
-        self.now = QDateTime.currentDateTime()
-        self.viewLimit = 300
+        self.vis_series = QLineSeries()
+        self.vis_scatter = QScatterSeries()
+        pen = QPen(QColor(32,159,223))        
+        pen.setWidth(3)
         
-        for i in range(self.viewLimit, 1, -1):
+        pen2 = QPen(QColor(32,159,223))
+        pen2.setWidth(3)
+        self.vis_series.setPen(pen)
+        self.vis_scatter.setBorderColor(QColor(32,159,223))
+        self.vis_scatter.setBrush(QColor(32,159,223))
+        self.vis_series.setName("Visibility")
+        self.vis_series.setPointsVisible()
+        self.now = QDateTime.currentDateTime()
+        self.viewLimit = 600
+        self.timetick = 30
+        for i in range(self.viewLimit, 1, -self.timetick):
             cur = 20 * random.random()
             time = self.now.addSecs(-i).toMSecsSinceEpoch()  #Processing to append to QLineSeries
-            self.cur_series.append(time, cur)
+            self.vis_series.append(time, cur)
+            self.vis_scatter.append(time, cur)
 
         self.chart = QChart()
         # self.chart.setAnimationOptions(QChart.SeriesAnimations)
         
         self.chart.legend().hide()
-        self.chart.addSeries(self.cur_series)
+        self.chart.addSeries(self.vis_series)
+        self.chart.addSeries(self.vis_scatter)
         self.font = QFont()
         self.font.setPixelSize(20)        
         self.font.setBold(3)
         self.chart.setTitle("Visibility Graph")
         self.chart.setTitleFont(self.font)
+        self.chart.setTitleBrush(QBrush(QColor("white")))
+        self.chart.layout().setContentsMargins(0,0,0,0)
+        self.chart.setBackgroundRoundness(0)
+        self.chart.setBackgroundBrush(QBrush(QColor(22,32,42)))
+
         self.chart_view = QChartView()
         self.chart_view.setChart(self.chart)
         self.chart_view.setRenderHint(QPainter.Antialiasing)
-        # self.chart_view.show()
-        # self.verticalLayout.addWidget(self.chart_view)
         
+        axisBrush = QBrush(QColor("white"))
+
         #Create X axis
         time_axis_x = QDateTimeAxis()
         time_axis_x.setFormat("hh:mm:ss")
+        time_axis_x.setTitleText("Time")
+        time_axis_x.setTitleBrush(axisBrush)
+        time_axis_x.setLabelsBrush(axisBrush)
         self.chart.addAxis(time_axis_x, Qt.AlignBottom)
-        self.cur_series.attachAxis(time_axis_x)
+
+        self.vis_series.attachAxis(time_axis_x)
+        self.vis_scatter.attachAxis(time_axis_x)
 
         #Create Y1 axis
         cur_axis_y = QValueAxis()
         cur_axis_y.setTitleText("Visibility(km)")
-        cur_axis_y.setLinePenColor(self.cur_series.pen().color())  #Make the axis and chart colors the same
-        cur_axis_y.setRange(0, 20)
+        cur_axis_y.setLinePenColor(self.vis_series.pen().color())  #Make the axis and chart colors the same
+        cur_axis_y.setTitleBrush(axisBrush)
+        cur_axis_y.setLabelsBrush(axisBrush)
+        cur_axis_y.setRange(0, 25)
         self.chart.addAxis(cur_axis_y, Qt.AlignLeft)
-        self.cur_series.attachAxis(cur_axis_y)
+        self.vis_series.attachAxis(cur_axis_y)
+        self.vis_scatter.attachAxis(cur_axis_y)
 
         self.pw = ValueWorker("Test")
         self.pw.dataSent.connect(self.appendData)
@@ -180,16 +148,18 @@ class Vis_Chart(QWidget):
         
     
     def appendData(self, value):
-        if len(self.cur_series) == self.viewLimit:
-            self.cur_series.remove(0)
+        if len(self.vis_series) == (self.viewLimit//self.timetick):
+            self.vis_series.remove(0)
+            self.vis_scatter.remove(0)
         dt = QDateTime.currentDateTime()
-        self.cur_series.append(dt.toMSecsSinceEpoch(), value)
+        self.vis_series.append(dt.toMSecsSinceEpoch(), value)
+        self.vis_scatter.append(dt.toMSecsSinceEpoch(), value)
         self.__updateAxis()
     
     def __updateAxis(self):
-        pvs = self.cur_series.pointsVector()
+        pvs = self.vis_series.pointsVector()
         dtStart = QDateTime.fromMSecsSinceEpoch(int(pvs[0].x()))
-        if len(self.cur_series) == self.viewLimit:
+        if len(self.vis_series) == self.viewLimit:
             dtLast = QDateTime.fromMSecsSinceEpoch(int(pvs[-1].x()))
         else:
             dtLast = dtStart.addSecs(self.viewLimit)
@@ -198,13 +168,6 @@ class Vis_Chart(QWidget):
         ax.setRange(dtStart, dtLast)
         # return chart_view
         
-        
-               
-    
-    
-        
-        
-
 class JS06MainWindow(QWidget):
 
     def __init__(self, *args, **kwargs):
