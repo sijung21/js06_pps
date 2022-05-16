@@ -39,7 +39,6 @@ from influxdb import InfluxDBClient
 
 print(pd.__version__)
 
-
 class ValueWorker(QThread):
     dataSent = pyqtSignal(float)
     
@@ -50,7 +49,6 @@ class ValueWorker(QThread):
         
     def run(self):
         while self.alive:
-            # data = 5 * random.random()
             client = InfluxDBClient('localhost', 8086)
             save_time = time.time_ns()
             client.switch_database("Sijung")
@@ -79,14 +77,18 @@ class Vis_Chart(QWidget):
         
         self.vis_series = QLineSeries()
         self.vis_scatter = QScatterSeries()
+        self.vis_scatter_2 = QScatterSeries()
         pen = QPen(QColor(32,159,223))        
         pen.setWidth(3)
-        
-        pen2 = QPen(QColor(32,159,223))
-        pen2.setWidth(3)
+
         self.vis_series.setPen(pen)
         self.vis_scatter.setBorderColor(QColor(32,159,223))
         self.vis_scatter.setBrush(QColor(32,159,223))
+        
+        self.vis_scatter_2.setMarkerSize(8)
+        self.vis_scatter_2.setBorderColor(QColor(225,225,225))
+        self.vis_scatter_2.setBrush(QColor(225,225,225))
+        
         self.vis_series.setName("Visibility")
         self.vis_series.setPointsVisible()
         self.now = QDateTime.currentDateTime()
@@ -97,6 +99,7 @@ class Vis_Chart(QWidget):
             time = self.now.addSecs(-i).toMSecsSinceEpoch()  #Processing to append to QLineSeries
             self.vis_series.append(time, cur)
             self.vis_scatter.append(time, cur)
+            self.vis_scatter_2.append(time, cur)
 
         self.chart = QChart()
         # self.chart.setAnimationOptions(QChart.SeriesAnimations)
@@ -104,6 +107,7 @@ class Vis_Chart(QWidget):
         self.chart.legend().hide()
         self.chart.addSeries(self.vis_series)
         self.chart.addSeries(self.vis_scatter)
+        self.chart.addSeries(self.vis_scatter_2)
         self.font = QFont()
         self.font.setPixelSize(20)        
         self.font.setBold(3)
@@ -130,6 +134,7 @@ class Vis_Chart(QWidget):
 
         self.vis_series.attachAxis(time_axis_x)
         self.vis_scatter.attachAxis(time_axis_x)
+        self.vis_scatter_2.attachAxis(time_axis_x)
 
         #Create Y1 axis
         cur_axis_y = QValueAxis()
@@ -141,6 +146,7 @@ class Vis_Chart(QWidget):
         self.chart.addAxis(cur_axis_y, Qt.AlignLeft)
         self.vis_series.attachAxis(cur_axis_y)
         self.vis_scatter.attachAxis(cur_axis_y)
+        self.vis_scatter_2.attachAxis(cur_axis_y)
 
         self.pw = ValueWorker("Test")
         self.pw.dataSent.connect(self.appendData)
@@ -151,9 +157,11 @@ class Vis_Chart(QWidget):
         if len(self.vis_series) == (self.viewLimit//self.timetick):
             self.vis_series.remove(0)
             self.vis_scatter.remove(0)
+            self.vis_scatter_2.remove(0)
         dt = QDateTime.currentDateTime()
         self.vis_series.append(dt.toMSecsSinceEpoch(), value)
         self.vis_scatter.append(dt.toMSecsSinceEpoch(), value)
+        self.vis_scatter_2.append(dt.toMSecsSinceEpoch(), value)
         self.__updateAxis()
     
     def __updateAxis(self):
