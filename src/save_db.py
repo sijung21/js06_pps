@@ -12,11 +12,15 @@ from influxdb import InfluxDBClient, exceptions
 
 
 def SaveDB(vis_value):
-
-    try:
-        client = InfluxDBClient('localhost', 8086)
-        save_time = time.time_ns()
+    client = InfluxDBClient('localhost', 8086)
+    save_time = time.time_ns()
+    try:        
         client.create_database("Sijung")
+    except TypeError:
+        print(e)
+        print("create except")
+        pass    
+    try:
         client.switch_database("Sijung")
         points = [{"measurement": "JS06",
                 "tags": {"name": "Sijung"},
@@ -24,13 +28,14 @@ def SaveDB(vis_value):
                 "time": save_time}]
         client.write_points(points=points, protocol="json")
         client.close()
-
+    except Exception as e:
+        print(e)
+        print("save error")
         # Save every 1 minute.
         # time.sleep(3)
         return
 
-    except TypeError:
-        pass
+    
 
 
 def main():
