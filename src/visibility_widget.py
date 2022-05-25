@@ -150,6 +150,7 @@ class Vis_Chart(QWidget):
         self.pw = ValueWorker("Test")
         # 전송 받은 시정 값을 appendData 함수의 value 인자값에 직접 전달
         self.pw.dataSent.connect(self.appendData)
+        # QThread 시작
         self.pw.start()
         
     

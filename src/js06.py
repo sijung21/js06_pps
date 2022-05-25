@@ -1,10 +1,7 @@
 
-import datetime
 import sys
 import os
 import time
-import math
-from typing_extensions import Self
 import vlc
 
 
@@ -15,30 +12,17 @@ from multiprocessing import Process, Queue
 import multiprocessing as mp
 
 # print(PyQt5.__version__)
-from PyQt5.QtGui import QPixmap, QImage, QPainter, QBrush, QColor, QPen, QImage, QPixmap, QIcon, QFont
-from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QGraphicsScene, QGraphicsView, QFrame, QTabWidget
-from PyQt5.QtCore import QPoint, QRect, Qt, QRectF, QSize, QCoreApplication, pyqtSlot, QTimer, QUrl, QDateTime, pyqtSignal, QThread
+from PyQt5.QtGui import QPixmap, QPixmap
+from PyQt5.QtWidgets import QApplication, QWidget, QFrame
+from PyQt5.QtCore import QPoint, Qt, pyqtSlot, QTimer
 from PyQt5 import uic
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from PyQt5.QtMultimediaWidgets import QGraphicsVideoItem
-
-from PyQt5 import QtWebEngineWidgets
-from PyQt5 import QtWebEngineCore
-from PyQt5.QtWebEngineWidgets import QWebEngineSettings
-from PyQt5.QtChart import QChart, QChartView, QLineSeries, QValueAxis, QDateTimeAxis, QScatterSeries
-
 
 from video_thread_mp import CurveThread
 import video_thread_mp
 import save_db
 import save_path_info
 from js06_settings import JS06_Setting_Widget
-from grafana_view_widget import GraFanaMainWindow
 from visibility_widget import Vis_Chart
-
-print(pd.__version__)
-
-
         
 class JS06MainWindow(QWidget):
 
@@ -88,8 +72,10 @@ class JS06MainWindow(QWidget):
         self.instance = vlc.Instance()
         self.mediaplayer = self.instance.media_player_new()
         args = [
+            "--aspect-ratio",
+            "11:3"
             "--rtsp-frame-buffer-size",
-            "1000000"
+            "1500000"
         ]
 
         self.instance = vlc.Instance(args)
@@ -109,13 +95,6 @@ class JS06MainWindow(QWidget):
         # Create a QGraphicsView to show the camera image
         self.verticallayout.addWidget(self.video_frame)
 
-        # self.webview = QtWebEngineWidgets.QWebEngineView()
-        # self.webview.setUrl(QUrl("http://localhost:3000/d/GXA3xPS7z/new-dashboard-copy?orgId=1&kiosk&from=now-1h&to=now"))
-        # self.webview.setZoomFactor(1)
-        # self.webview.settings().setAttribute(QWebEngineSettings.PluginsEnabled, True)
-        # self.webview.settings().setAttribute(QWebEngineSettings.JavascriptEnabled, True)
-        # self.webview.settings().setAttribute(QWebEngineSettings.FullScreenSupportEnabled, True)
-        # self.web_verticalLayout.addWidget(self.webview)
         self.web_verticalLayout.addWidget(self.chart_view.chart_view)
         
 
@@ -202,7 +181,6 @@ class JS06MainWindow(QWidget):
         self.c_pm_label.setText(pm_text)
         
         self.data_storage(self.visibility_copy)
-        # self.statusBar().showMessage(data)
         
     @pyqtSlot(str)
     def onCameraChange(self, url, camera_name, src_type):
@@ -277,14 +255,7 @@ class JS06MainWindow(QWidget):
 
 
 
-if __name__ == '__main__':
-    
-    # try:
-    #     os.chdir(sys._MEIPASS)
-    #     print(sys._MEIPASS)
-    # except:
-    #     os.chdir(os.getcwd())
-    
+if __name__ == '__main__':    
     
     mp.freeze_support()
     q = Queue()
@@ -292,15 +263,6 @@ if __name__ == '__main__':
     p.start()
     
     app = QApplication(sys.argv)
-    # MainWindow = QMainWindow()
     ui = JS06MainWindow()
-    # tabs = QTabWidget()
-    # tabs.addTab(ui, 'tab1')
-    # ui2 = GraFanaMainWindow()
-    # tabs.addTab(ui2, 'tab2')
-    # ui.setupUi(MainWindow)
-    # tabs.showFullScreen()
-    # tabs.show()
-    ui.show()
-    # sys.exit(p)    
+    ui.show()  
     sys.exit(app.exec_())
