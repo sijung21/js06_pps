@@ -4,14 +4,12 @@ import os
 import time
 import vlc
 
-
 import cv2
 import numpy as np
 import pandas as pd
 from multiprocessing import Process, Queue
 import multiprocessing as mp
 
-# print(PyQt5.__version__)
 from PyQt5.QtGui import QPixmap, QPixmap
 from PyQt5.QtWidgets import QApplication, QWidget, QFrame
 from PyQt5.QtCore import QPoint, Qt, pyqtSlot, QTimer
@@ -35,7 +33,6 @@ class JS06MainWindow(QWidget):
 
         self.camera_name = ""
         self.video_thread = None
-        # self.ipcam_start()
         self.begin = QPoint()
         self.end = QPoint()
         self.qt_img = QPixmap()
@@ -105,7 +102,7 @@ class JS06MainWindow(QWidget):
         CAM_NAME = "PNM_9030V"
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
         
-        self.settings_button.clicked.connect(self.btn_test)
+        self.settings_button.clicked.connect(self.setting_btn_click)
         
         self.video_thread = CurveThread(VIDEO_SRC3, "Video", q)
         self.video_thread.update_visibility_signal.connect(self.print_data)
@@ -121,13 +118,13 @@ class JS06MainWindow(QWidget):
             save_path_info.init_data_path()       
     
     @pyqtSlot()
-    def btn_test(self):
+    def setting_btn_click(self):
+        """ 설정 버튼 클릭 이벤트를 했을 때 환경설정(Setting) 창을 띄우는 함수 """
         if self.radio_checked == None:
             dlg = JS06_Setting_Widget("Km")
         else:
             dlg = JS06_Setting_Widget(self.radio_checked)
         dlg.show()
-        # sys.exit(app.exec_())
         dlg.setWindowModality(Qt.ApplicationModal)
         dlg.exec_()
         
@@ -166,10 +163,8 @@ class JS06MainWindow(QWidget):
         
         if self.radio_checked == None or self.radio_checked == "Km":
             visibility_text = str(self.visibility_copy) + " km"
-            print(visibility_text)
         elif self.radio_checked == "Mile":
             visibility_mile = round(self.visibility_copy / 1.609, 1)
-            print(visibility_mile)
             visibility_text = str(visibility_mile) + " mi"
         
         self.c_vis_label.setText(visibility_text)
@@ -234,26 +229,6 @@ class JS06MainWindow(QWidget):
 
         save_db.SaveDB(vis_data)
         print("data storage!")
-
-    def save_target(self):
-        """Save the target information for each camera."""
-        try:
-            save_path = os.path.join(f"target/{self.camera_name}")
-            os.makedirs(save_path)
-
-        except Exception as e:
-            pass
-
-        if self.left_range:
-            col = ["target_name", "left_range", "right_range", "distance"]
-            result = pd.DataFrame(columns=col)
-            result["target_name"] = self.target_name
-            result["left_range"] = self.left_range
-            result["right_range"] = self.right_range
-            result["distance"] = self.distance
-            result.to_csv(f"{save_path}/{self.camera_name}.csv", mode="w", index=False)
-
-
 
 if __name__ == '__main__':    
     
