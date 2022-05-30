@@ -330,7 +330,6 @@ class JS06_Setting_Widget(QDialog):
             cap = cv2.VideoCapture(src)
             ret, cv_img = cap.read()
             cp_image = cv_img.copy()
-            self.cp_image = cv_img.copy()
             cap.release()
         except Exception as e:
             print(e)
@@ -342,7 +341,8 @@ class JS06_Setting_Widget(QDialog):
         """Convert CV image to QImage."""
         # self.epoch = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
         cv_img = cv_img.copy()
-        cv_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)        
+        cv_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
+        self.cp_image = cv_img.copy()        
         img_height, img_width, ch = cv_img.shape
         self.image_width = int(img_width)
         self.image_height = int(img_height)
@@ -555,6 +555,9 @@ class JS06_Setting_Widget(QDialog):
         
         imageLabel_1.setPixmap(QPixmap.fromImage(qImg))
         return imageLabel_1
+
+    def no_data_print():
+        return
     
 if __name__ == '__main__':
     app = QApplication(sys.argv)
