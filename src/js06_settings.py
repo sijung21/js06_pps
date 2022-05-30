@@ -24,7 +24,7 @@ import save_path_info
 
 class JS06_Setting_Widget(QDialog):
 
-    def __init__(self, radio_flag=None, *args, **kwargs):
+    def __init__(self, radio_flag=None, run_ave_flag=None, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
@@ -54,14 +54,13 @@ class JS06_Setting_Widget(QDialog):
         self.pm_25 = None
         self.test_name = None
         self.end_drawing = None
-        self.cp_image = None
         self.r_list = []
         self.g_list = []
         self.b_list = []
         self.x = None
         self.chart_view = None
         
-        self.running_ave_checked = None
+        self.running_ave_checked = run_ave_flag
         
         self.radio_flag = radio_flag
         
@@ -83,7 +82,13 @@ class JS06_Setting_Widget(QDialog):
         
         self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target("PNM_9030V")
     
-        self.ten_radio_btn.setChecked(True)
+        if run_ave_flag == "Ten":
+            self.ten_radio_btn.setChecked(True)
+        elif run_ave_flag == "Five":
+            self.five_radio_btn.setChecked(True)
+        else:
+            self.one_radio_btn.setChecked(True)
+        
         self.red_checkBox.setChecked(True)
         self.green_checkBox.setChecked(True)
         self.blue_checkBox.setChecked(True)
@@ -318,6 +323,7 @@ class JS06_Setting_Widget(QDialog):
             cap = cv2.VideoCapture(src)
             ret, cv_img = cap.read()
             cp_image = cv_img.copy()
+            self.cp_image = cv_img.copy()
             cap.release()
         except Exception as e:
             print(e)
@@ -329,18 +335,15 @@ class JS06_Setting_Widget(QDialog):
         """Convert CV image to QImage."""
         # self.epoch = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
         cv_img = cv_img.copy()
-        cv_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
-        self.cp_image = cv_img.copy()
+        cv_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)        
         img_height, img_width, ch = cv_img.shape
         self.image_width = int(img_width)
         self.image_height = int(img_height)
         # self.video_flag = True
         bytes_per_line = ch * img_width
-        print(img_width, img_height)
         convert_to_Qt_format = QImage(cv_img.data, img_width, img_height, bytes_per_line, QImage.Format_RGB888)
         p = convert_to_Qt_format.scaled(1200, 500, Qt.KeepAspectRatio,
                                     Qt.SmoothTransformation)
-        print(self.target_setting_image_label.width(), self.target_setting_image_label.height())
         return QPixmap.fromImage(p)
     
     
@@ -503,6 +506,7 @@ class JS06_Setting_Widget(QDialog):
             min_x.append(result[0])
             min_y.append(result[1])
             
+            print(result)
             self.r_list.append(copy_image[result[1],result[0],0])
             self.g_list.append(copy_image[result[1],result[0],1])
             self.b_list.append(copy_image[result[1],result[0],2])
@@ -511,6 +515,7 @@ class JS06_Setting_Widget(QDialog):
             
             # 이미지 넣기            
             crop_image = copy_image[min_y[i] - 50: min_y[i] + 50, min_x[i] - 50: min_x[i] + 50, :].copy()
+            print(crop_image.shape)
             cv2.rectangle(crop_image, (40, 40), (60, 60), (127, 0, 255), 2)
             item1 = self.getImagelabel(crop_image)
             self.tableWidget.setCellWidget(i, 0, item1)

@@ -49,7 +49,7 @@ class JS06MainWindow(QWidget):
         self.verticallayout.addWidget(self.video_frame)     
   
         # 카메라 IP 주소, 계정, 비밀번호를 rtsp 문법 구조에 맞게 선언
-        VIDEO_SRC3 = "rtsp://admin:sijung5520@192.168.100.132/profile2/media.smp"        
+        VIDEO_SRC3 = "rtsp://admin:sijung5520@192.168.100.132/profile5/media.smp"        
         CAM_NAME = "PNM_9030V"
         # 송수신 시작 함수
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")        
@@ -169,9 +169,9 @@ class JS06MainWindow(QWidget):
     def setting_btn_click(self):
         """ 설정 버튼 클릭 이벤트를 했을 때 환경설정(Setting) 창을 띄우는 함수 """
         if self.radio_checked == None:
-            dlg = JS06_Setting_Widget("Km")
+            dlg = JS06_Setting_Widget("Km","Ten")
         else:
-            dlg = JS06_Setting_Widget(self.radio_checked)
+            dlg = JS06_Setting_Widget(self.radio_checked, self.running_ave_checked)
         dlg.show()
         dlg.setWindowModality(Qt.ApplicationModal)
         dlg.exec_()
