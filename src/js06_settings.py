@@ -175,6 +175,13 @@ class JS06_Setting_Widget(QDialog):
     
     def chart_update(self):
         """세팅창 그래프를 업데이트 하는 함수"""
+        
+        if len(self.left_range) < 4:
+            print("Target을 추가해주세요")
+            return
+        else:
+            pass
+            
         if self.html_verticalLayout.count() == 0:
             self.chart_view = self.chart_draw()
             self.html_verticalLayout.addWidget(self.chart_view)        
