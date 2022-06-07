@@ -178,8 +178,10 @@ class JS06_Setting_Widget(QDialog):
         
         if len(self.left_range) < 4:
             print("Target을 추가해주세요")
+            self.no_graph_label.show()
             return
         else:
+            self.no_graph_label.hide()
             pass
             
         if self.html_verticalLayout.count() == 0:
@@ -429,17 +431,11 @@ class JS06_Setting_Widget(QDialog):
 
         # 우 클릭시 실행
         elif event.buttons() == Qt.RightButton:
-            self.isDrawing = False
-            if len(self.left_range) > 0:
-                del self.distance[-1]
-                del self.target_name[-1]
-                del self.left_range[-1]
-                del self.right_range[-1]
-                self.save_target()
-                self.rightflag = True
+            self.isDrawing = False            
+            self.rightflag = True
             self.leftflag = False
-            self.blank_lbl.update()
-            self.show_target_table()
+            
+            
 
     def lbl_mouseMoveEvent(self, event):
         """마우스가 움직일 때 발생하는 이벤트, QLabel method overriding"""
@@ -471,6 +467,22 @@ class JS06_Setting_Widget(QDialog):
             
             if len(self.left_range) > 4:
                 self.chart_update()
+        else:
+            if len(self.left_range) > 0:
+                text, ok = QInputDialog.getText(self, '타겟 제거', '제거할 타겟 번호 입력')                
+                if ok:
+                    rm_target_name = "target_" + text
+                    print(self.target_name)
+                    del self.distance[self.target_name.index(rm_target_name)]                    
+                    del self.left_range[self.target_name.index(rm_target_name)]
+                    del self.right_range[self.target_name.index(rm_target_name)]
+                    del self.target_name[self.target_name.index(rm_target_name)]
+                self.save_target()
+                self.show_target_table()
+                self.blank_lbl.update()
+                
+                if len(self.left_range) > 4:
+                    self.chart_update()
     
     def save_target(self):
         """Save the target information for each camera."""
@@ -483,6 +495,7 @@ class JS06_Setting_Widget(QDialog):
         
         
         print("target name 갯수 : ", len(self.target_name))
+        print(self.target_name)
         print("left 좌표 갯수 : ", len(self.left_range))
         if self.left_range:
             col = ["target_name", "left_range", "right_range", "distance"]
@@ -492,6 +505,8 @@ class JS06_Setting_Widget(QDialog):
             result["right_range"] = self.right_range
             result["distance"] = self.distance
             result.to_csv(f"{save_path}/PNM_9030V.csv", mode="w", index=False)
+            self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target("PNM_9030V")
+            
         else:
             col = ["target_name", "left_range", "right_range", "distance"]
             result = pd.DataFrame(columns=col)

@@ -214,7 +214,7 @@ def get_target(camera_name: str):
     if os.path.isfile(f"{save_path}/{camera_name}.csv"):
         target_df = pd.read_csv(f"{save_path}/{camera_name}.csv")
         target_df = target_df.sort_values(by=['distance'])
-        target_name = target_df["target_name"].tolist()
+        target_name = ["target_" + str(i+1) for i in range(target_df.shape[0])]
         left_range = target_df["left_range"].tolist()
         left_range = str_to_tuple(left_range)
         right_range = target_df["right_range"].tolist()
