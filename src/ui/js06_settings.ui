@@ -973,7 +973,7 @@ p, li { white-space: pre-wrap; }
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="target_label">
+  <widget class="QLabel" name="no_target_label">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -989,7 +989,7 @@ p, li { white-space: pre-wrap; }
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">#target_label{
+    <string notr="true">#no_target_label{
 	color:rgb(50,153,50);
 }</string>
    </property>
@@ -1001,7 +1001,7 @@ p, li { white-space: pre-wrap; }
    </property>
   </widget>
   <zorder>tableWidget</zorder>
-  <zorder>target_label</zorder>
+  <zorder>no_target_label</zorder>
   <zorder>buttonBox</zorder>
   <zorder>target_setting_label</zorder>
   <zorder>target_setting_image_label</zorder>

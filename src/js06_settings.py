@@ -324,7 +324,7 @@ class JS06_Setting_Widget(QDialog):
         
     def image_load(self):
         
-        src = "rtsp://admin:sijung5520@192.168.100.132/profile2/media.smp"
+        src = "rtsp://admin:sijung5520@192.168.100.132/profile5/media.smp"
         # src = "C:/Users/user/Workspace/water_gauge/src/video_files/daejeon_1.mp4"
         try:
             cap = cv2.VideoCapture(src)
@@ -492,9 +492,19 @@ class JS06_Setting_Widget(QDialog):
             result["right_range"] = self.right_range
             result["distance"] = self.distance
             result.to_csv(f"{save_path}/PNM_9030V.csv", mode="w", index=False)
+        else:
+            col = ["target_name", "left_range", "right_range", "distance"]
+            result = pd.DataFrame(columns=col)
+            result.to_csv(f"{save_path}/PNM_9030V.csv", mode="w", index=False)
     
     def show_target_table(self):
         """ Target의 정보들을 테이블로 보여준다 """
+        
+        if len(self.left_range) > 0:
+            self.no_target_label.hide()
+        else:
+            self.no_target_label.show()
+            
         min_x = []
         min_y = []
         self.r_list = []
