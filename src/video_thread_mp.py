@@ -31,11 +31,12 @@ def producer(q):
                 target_name, left_range, right_range, distance = target_info.get_target("PNM_9030V")
                 
                 if len(left_range) < 4:
+                    time.sleep(10)
                     continue
-                else:
+                else:                    
                     pass
                 
-                cap = cv2.VideoCapture("rtsp://admin:sijung5520@192.168.100.132/profile2/media.smp")
+                cap = cv2.VideoCapture("rtsp://admin:sijung5520@192.168.100.132/profile5/media.smp")
                 ret, cv_img = cap.read()
                 
                 if ret:
@@ -47,7 +48,7 @@ def producer(q):
             except Exception as e:
                 print(e)
                 cap.release()
-                cap = cv2.VideoCapture("rtsp://admin:sijung5520@192.168.100.132/profile2/media.smp")
+                cap = cv2.VideoCapture("rtsp://admin:sijung5520@192.168.100.132/profile5/media.smp")
                 continue
 
 class CurveThread(QtCore.QThread):

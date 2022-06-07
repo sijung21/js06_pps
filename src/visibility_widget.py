@@ -31,7 +31,6 @@ class ValueWorker(QThread):
             # 쿼리 조회 결과문에서 시정 값만 추출 및 저장
             for item in list(visiblity):
                 data = item['visbility']
-                print(data)
                 
             client.close()
             # QThread를 선언한 곳에 전송

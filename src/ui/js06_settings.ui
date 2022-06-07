@@ -138,7 +138,7 @@
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="graph_label">
+  <widget class="QLabel" name="no_graph_label">
    <property name="geometry">
     <rect>
      <x>570</x>
@@ -147,16 +147,25 @@
      <height>451</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>48</pointsize>
+    </font>
+   </property>
    <property name="styleSheet">
-    <string notr="true">#graph_label
+    <string notr="true">#no_graph_label
 {
 	background-color:rgb(25,39,52);
+	color:rgb(255,255,102);
 }
-
 </string>
    </property>
    <property name="text">
-    <string/>
+    <string>No Data</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="alpha_value">
@@ -964,6 +973,69 @@ p, li { white-space: pre-wrap; }
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QLabel" name="no_target_label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>670</y>
+     <width>531</width>
+     <height>380</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>48</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#no_target_label{
+	color:rgb(50,153,50);
+}</string>
+   </property>
+   <property name="text">
+    <string>No Target</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <zorder>tableWidget</zorder>
+  <zorder>no_target_label</zorder>
+  <zorder>buttonBox</zorder>
+  <zorder>target_setting_label</zorder>
+  <zorder>target_setting_image_label</zorder>
+  <zorder>km_mile_setting</zorder>
+  <zorder>target_table_label</zorder>
+  <zorder>no_graph_label</zorder>
+  <zorder>alpha_value</zorder>
+  <zorder>ext_alpha_label</zorder>
+  <zorder>km_radio_btn</zorder>
+  <zorder>mile_radio_btn</zorder>
+  <zorder>km_mile_setting_2</zorder>
+  <zorder>verticalLayoutWidget</zorder>
+  <zorder>red_checkBox</zorder>
+  <zorder>green_checkBox</zorder>
+  <zorder>blue_checkBox</zorder>
+  <zorder>run_aver_label</zorder>
+  <zorder>runaver_value</zorder>
+  <zorder>groupBox</zorder>
+  <zorder>target_table_pushButton</zorder>
+  <zorder>ext_color_pushButton</zorder>
+  <zorder>running_ave_pushButton</zorder>
+  <zorder>check_pushButton</zorder>
+  <zorder>data_path_textEdit</zorder>
+  <zorder>image_path_textEdit</zorder>
+  <zorder>log_path_textEdit</zorder>
+  <zorder>data_path_label</zorder>
+  <zorder>image_path_label</zorder>
+  <zorder>log_path_label</zorder>
+  <zorder>data_path_pbtn</zorder>
+  <zorder>image_path_pbtn</zorder>
+  <zorder>log_path_pbtn</zorder>
+  <zorder>label_progressBar</zorder>
+  <zorder>label_progressBar_2</zorder>
+  <zorder>label_progressBar_3</zorder>
  </widget>
  <resources/>
  <connections>

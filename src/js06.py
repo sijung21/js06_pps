@@ -4,14 +4,12 @@ import os
 import time
 import vlc
 
-
 import cv2
 import numpy as np
 import pandas as pd
 from multiprocessing import Process, Queue
 import multiprocessing as mp
 
-# print(PyQt5.__version__)
 from PyQt5.QtGui import QPixmap, QPixmap
 from PyQt5.QtWidgets import QApplication, QWidget, QFrame
 from PyQt5.QtCore import QPoint, Qt, pyqtSlot, QTimer
@@ -35,42 +33,61 @@ class JS06MainWindow(QWidget):
 
         self.camera_name = ""
         self.video_thread = None
-        # self.ipcam_start()
-        self.begin = QPoint()
-        self.end = QPoint()
-        self.qt_img = QPixmap()
-        self.isDrawing = False
-        self.curved_thread = None
-
-        self.upper_left = ()
-        self.lower_right = ()
-        self.left_range = []
-        self.right_range = []
-        self.distance = []
-        self.target_name = []
-        self.min_x = []
-        self.min_y = []
-        self.min_xy = ()
-        self.leftflag = False
-        self.rightflag = False
-        self.image_width = None
-        self.image_height = None
-        self.video_flag = False
-        self.cp_image = None
         self.g_ext = None
         self.pm_25 = None
         self.test_name = None
-        self.end_drawing = None
         self.radio_checked = None
         self.visibility_copy = 0
         self.running_ave_checked = None
         self.q_list = []
-        self.q_list_scale = 300
+        self.q_list_scale = 300        
         
+
+        # 실시간 카메라 영상을 출력할 QFrame을 선언
+        self.video_frame = QFrame()        
+        # layout 위젯에 QFrame 위젯을 탑재
+        self.verticallayout.addWidget(self.video_frame)     
+  
+        # 카메라 IP 주소, 계정, 비밀번호를 rtsp 문법 구조에 맞게 선언
+        VIDEO_SRC3 = "rtsp://admin:sijung5520@192.168.100.132/profile5/media.smp"        
+        CAM_NAME = "PNM_9030V"
+        # 송수신 시작 함수
+        self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")        
+        
+        # 시정 실시간 출력 차트 클래스 선언
         self.chart_view = Vis_Chart()
+        self.web_verticalLayout.addWidget(self.chart_view.chart_view)
         
-        self.instance = vlc.Instance()
-        self.mediaplayer = self.instance.media_player_new()
+        # 소산계수, 시정, 미세먼지 산출하는 쓰레드 선언
+        self.video_thread = CurveThread(VIDEO_SRC3, "Video", q)
+        # 쓰레드와 시정, 미세먼지 출력 함수를 Signal 연결
+        self.video_thread.update_visibility_signal.connect(self.print_data)
+        # 쓰레드 시작
+        self.video_thread.start()
+
+        # 실제 지금 PC 시간을 출력
+        self.timer = QTimer()
+        self.timer.start(1000)
+        self.timer.timeout.connect(self.timeout_run)
+        
+        # JS06의 설정 정보들을 초기화 하거나 이미 있으면 패쓰
+        if os.path.isdir("./path_info"):
+            pass        
+        else:
+            save_path_info.init_data_path()
+        
+        # 설정 버튼 클릭시 설정창 출력
+        self.settings_button.clicked.connect(self.setting_btn_click)
+        
+        # 현재 실행 파일 위치 확인
+        self.filepath = os.path.join(os.getcwd())      
+    
+    @pyqtSlot(str)
+    def onCameraChange(self, url, camera_name, src_type):
+        """Connect the IP camera and run the video thread."""
+        
+        # 실시간 카메라 영상 출력 부분        
+        # Vlc 옵션 설정
         args = [
             "--aspect-ratio",
             "11:3"
@@ -81,72 +98,25 @@ class JS06MainWindow(QWidget):
         self.instance = vlc.Instance(args)
         self.instance.log_unset()
         self.media_player = self.instance.media_player_new()
-
-        self.image_player = self.instance.media_list_player_new()
-        self.image_media = self.instance.media_list_new('')
-
-        self.video_frame = QFrame()
-
+        
+        # 실행 OS가 윈도우일 경우 설정
         if sys.platform == 'win32':
             self.media_player.set_hwnd(self.video_frame.winId())
-
-        self.filepath = os.path.join(os.getcwd())
-
-        # Create a QGraphicsView to show the camera image
-        self.verticallayout.addWidget(self.video_frame)
-
-        self.web_verticalLayout.addWidget(self.chart_view.chart_view)
-        
-
-        # # Create QMediaPlayer that plays video
-  
-        VIDEO_SRC3 = "rtsp://admin:sijung5520@192.168.100.132/profile2/media.smp"
-        
-        CAM_NAME = "PNM_9030V"
-        self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
-        
-        self.settings_button.clicked.connect(self.btn_test)
-        
-        self.video_thread = CurveThread(VIDEO_SRC3, "Video", q)
-        self.video_thread.update_visibility_signal.connect(self.print_data)
-        self.video_thread.start()
-
-        self.timer = QTimer()
-        self.timer.start(1000)
-        self.timer.timeout.connect(self.timeout_run)
-        
-        if os.path.isdir("./path_info"):
-            pass        
+            
+        # 전송방식이 rtsp일 경우
+        if url[:4] == "rtsp":
+            # vlc instance에 url 입력
+            self.media_player.set_media(self.instance.media_new(url))
+            self.media_player.video_set_aspect_ratio("11:3")
+            # vlc 시작
+            self.media_player.play()
         else:
-            save_path_info.init_data_path()       
-    
-    @pyqtSlot()
-    def btn_test(self):
-        if self.radio_checked == None:
-            dlg = JS06_Setting_Widget("Km")
-        else:
-            dlg = JS06_Setting_Widget(self.radio_checked)
-        dlg.show()
-        # sys.exit(app.exec_())
-        dlg.setWindowModality(Qt.ApplicationModal)
-        dlg.exec_()
-        
-        self.radio_checked = dlg.radio_flag
-        print(self.radio_checked, "변환 완료")
-        
-        self.running_ave_checked = dlg.running_ave_checked
-        print(self.running_ave_checked, "변환 완료")
-        
-        if self.running_ave_checked == "One":
-            self.q_list_scale = 30
-        elif self.running_ave_checked == "Five":
-            self.q_list_scale = 150
-        elif self.running_ave_checked == "Ten":
-            self.q_list_scale = 300
-                
+            pass
+                        
     @pyqtSlot(str)
     def print_data(self, visibility):
-        print(visibility)
+        """ 메인 화면에 산출된 소산계수로 시정과 미세먼지를 계산 및 표시하는 함수"""
+        
         visibility_float = round(float(visibility), 3)
         
         if len(self.q_list) == 0 or self.q_list_scale != len(self.q_list):
@@ -166,10 +136,8 @@ class JS06MainWindow(QWidget):
         
         if self.radio_checked == None or self.radio_checked == "Km":
             visibility_text = str(self.visibility_copy) + " km"
-            print(visibility_text)
         elif self.radio_checked == "Mile":
             visibility_mile = round(self.visibility_copy / 1.609, 1)
-            print(visibility_mile)
             visibility_text = str(visibility_mile) + " mi"
         
         self.c_vis_label.setText(visibility_text)
@@ -180,23 +148,46 @@ class JS06MainWindow(QWidget):
         pm_text = str(pm_value) + " ㎍/㎥"
         self.c_pm_label.setText(pm_text)
         
+        # influxdb에 시정 값 저장
         self.data_storage(self.visibility_copy)
         
-    @pyqtSlot(str)
-    def onCameraChange(self, url, camera_name, src_type):
-        """Connect the IP camera and run the video thread."""
+        
+    def data_storage(self, vis_data):
+        """Store visibility and fine dust values ​​in the database."""
 
-        if url[:4] == "rtsp":
-            self.media_player.set_media(self.instance.media_new(url))
-            self.media_player.video_set_aspect_ratio("11:3")
-            self.media_player.play()
-        else:
-            pass
+        save_db.SaveDB(vis_data)
+        print("data storage!")    
+
 
     def timeout_run(self):
         """Print the current time."""
         current_time = time.strftime("%Y.%m.%d %H:%M:%S", time.localtime(time.time()))
         self.real_time_label.setText(current_time)
+        
+        
+    @pyqtSlot()
+    def setting_btn_click(self):
+        """ 설정 버튼 클릭 이벤트를 했을 때 환경설정(Setting) 창을 띄우는 함수 """
+        if self.radio_checked == None:
+            dlg = JS06_Setting_Widget("Km","Ten")
+        else:
+            dlg = JS06_Setting_Widget(self.radio_checked, self.running_ave_checked)
+        dlg.show()
+        dlg.setWindowModality(Qt.ApplicationModal)
+        dlg.exec_()
+        
+        self.radio_checked = dlg.radio_flag
+        print(self.radio_checked, "변환 완료")
+        
+        self.running_ave_checked = dlg.running_ave_checked
+        print(self.running_ave_checked, "변환 완료")
+        
+        if self.running_ave_checked == "One":
+            self.q_list_scale = 30
+        elif self.running_ave_checked == "Five":
+            self.q_list_scale = 150
+        elif self.running_ave_checked == "Ten":
+            self.q_list_scale = 300
     
     def save_frame(self, image: np.ndarray, epoch: str, g_ext, pm_25):
         """Save the image of the calculation time."""
@@ -224,44 +215,22 @@ class JS06MainWindow(QWidget):
             self.widget_toggle_flag()
         
     def widget_toggle_flag(self):
+        """ JS06 메인 화면 풀 스크린 토글 기능 함수"""
         if self.windowState() & Qt.WindowFullScreen:
             self.showNormal()
         else:
             self.showFullScreen()
-        
-    def data_storage(self, vis_data):
-        """Store visibility and fine dust values ​​in the database."""
-
-        save_db.SaveDB(vis_data)
-        print("data storage!")
-
-    def save_target(self):
-        """Save the target information for each camera."""
-        try:
-            save_path = os.path.join(f"target/{self.camera_name}")
-            os.makedirs(save_path)
-
-        except Exception as e:
-            pass
-
-        if self.left_range:
-            col = ["target_name", "left_range", "right_range", "distance"]
-            result = pd.DataFrame(columns=col)
-            result["target_name"] = self.target_name
-            result["left_range"] = self.left_range
-            result["right_range"] = self.right_range
-            result["distance"] = self.distance
-            result.to_csv(f"{save_path}/{self.camera_name}.csv", mode="w", index=False)
-
-
 
 if __name__ == '__main__':    
     
+    # MultiProcess 선언
+    # MultiProcess의 프로세스 수 고정
     mp.freeze_support()
     q = Queue()
     p = Process(name="producer", target=video_thread_mp.producer, args=(q, ), daemon=True)
     p.start()
     
+    # JS06 메인 윈도우 실행
     app = QApplication(sys.argv)
     ui = JS06MainWindow()
     ui.show()  

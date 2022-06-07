@@ -36,8 +36,6 @@ def SaveDB(vis_value):
         return
 
     
-
-
 def main():
     for i in range(10000):
         num = i % 10

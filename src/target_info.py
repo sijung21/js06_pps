@@ -100,10 +100,8 @@ def save_rgb(r_list, g_list, b_list, epoch, distance):
         result["g"] = g_list
         result["b"] = b_list
         result["distance"] = distance
-        # result.to_csv(f"{save_path}/{epoch}.csv", mode="w", index=False)
         list1, list2, list3, select_color = cal_ext_coef.cal_curve(result)
         visibility = extinc_print(list1, list2, list3, select_color)
-        print(result)
         print("Save rgb") 
         
         result = result.sort_values(by=['distance'])
@@ -174,7 +172,6 @@ def save_ext(ext_list, epoch):
         ext_df = pd.DataFrame(columns=cols)
     
     dt_epoch = datetime.strptime(epoch, '%Y%m%d%H%M')
-    print(dt_epoch)
     ext_df = ext_df.append({'time': dt_epoch,'r_ext':ext_list[0],'g_ext':ext_list[1],'b_ext':ext_list[2]}, ignore_index=True)
     
     ext_df.to_csv(ext_file_path,mode="w", index=False)
@@ -217,7 +214,7 @@ def get_target(camera_name: str):
     if os.path.isfile(f"{save_path}/{camera_name}.csv"):
         target_df = pd.read_csv(f"{save_path}/{camera_name}.csv")
         target_df = target_df.sort_values(by=['distance'])
-        target_name = target_df["target_name"].tolist()
+        target_name = ["target_" + str(i+1) for i in range(target_df.shape[0])]
         left_range = target_df["left_range"].tolist()
         left_range = str_to_tuple(left_range)
         right_range = target_df["right_range"].tolist()

@@ -24,7 +24,7 @@ import save_path_info
 
 class JS06_Setting_Widget(QDialog):
 
-    def __init__(self, radio_flag=None, *args, **kwargs):
+    def __init__(self, radio_flag=None, run_ave_flag=None, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
@@ -54,14 +54,13 @@ class JS06_Setting_Widget(QDialog):
         self.pm_25 = None
         self.test_name = None
         self.end_drawing = None
-        self.cp_image = None
         self.r_list = []
         self.g_list = []
         self.b_list = []
         self.x = None
         self.chart_view = None
         
-        self.running_ave_checked = None
+        self.running_ave_checked = run_ave_flag
         
         self.radio_flag = radio_flag
         
@@ -83,7 +82,13 @@ class JS06_Setting_Widget(QDialog):
         
         self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target("PNM_9030V")
     
-        self.ten_radio_btn.setChecked(True)
+        if run_ave_flag == "Ten":
+            self.ten_radio_btn.setChecked(True)
+        elif run_ave_flag == "Five":
+            self.five_radio_btn.setChecked(True)
+        else:
+            self.one_radio_btn.setChecked(True)
+        
         self.red_checkBox.setChecked(True)
         self.green_checkBox.setChecked(True)
         self.blue_checkBox.setChecked(True)
@@ -170,6 +175,15 @@ class JS06_Setting_Widget(QDialog):
     
     def chart_update(self):
         """세팅창 그래프를 업데이트 하는 함수"""
+        
+        if len(self.left_range) < 4:
+            print("Target을 추가해주세요")
+            self.no_graph_label.show()
+            return
+        else:
+            self.no_graph_label.hide()
+            pass
+            
         if self.html_verticalLayout.count() == 0:
             self.chart_view = self.chart_draw()
             self.html_verticalLayout.addWidget(self.chart_view)        
@@ -312,7 +326,7 @@ class JS06_Setting_Widget(QDialog):
         
     def image_load(self):
         
-        src = "rtsp://admin:sijung5520@192.168.100.132/profile2/media.smp"
+        src = "rtsp://admin:sijung5520@192.168.100.132/profile5/media.smp"
         # src = "C:/Users/user/Workspace/water_gauge/src/video_files/daejeon_1.mp4"
         try:
             cap = cv2.VideoCapture(src)
@@ -330,17 +344,15 @@ class JS06_Setting_Widget(QDialog):
         # self.epoch = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
         cv_img = cv_img.copy()
         cv_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
-        self.cp_image = cv_img.copy()
+        self.cp_image = cv_img.copy()        
         img_height, img_width, ch = cv_img.shape
         self.image_width = int(img_width)
         self.image_height = int(img_height)
         # self.video_flag = True
         bytes_per_line = ch * img_width
-        print(img_width, img_height)
         convert_to_Qt_format = QImage(cv_img.data, img_width, img_height, bytes_per_line, QImage.Format_RGB888)
         p = convert_to_Qt_format.scaled(1200, 500, Qt.KeepAspectRatio,
                                     Qt.SmoothTransformation)
-        print(self.target_setting_image_label.width(), self.target_setting_image_label.height())
         return QPixmap.fromImage(p)
     
     
@@ -419,17 +431,11 @@ class JS06_Setting_Widget(QDialog):
 
         # 우 클릭시 실행
         elif event.buttons() == Qt.RightButton:
-            self.isDrawing = False
-            if len(self.left_range) > 0:
-                del self.distance[-1]
-                del self.target_name[-1]
-                del self.left_range[-1]
-                del self.right_range[-1]
-                self.save_target()
-                self.rightflag = True
+            self.isDrawing = False            
+            self.rightflag = True
             self.leftflag = False
-            self.blank_lbl.update()
-            self.show_target_table()
+            
+            
 
     def lbl_mouseMoveEvent(self, event):
         """마우스가 움직일 때 발생하는 이벤트, QLabel method overriding"""
@@ -461,6 +467,22 @@ class JS06_Setting_Widget(QDialog):
             
             if len(self.left_range) > 4:
                 self.chart_update()
+        else:
+            if len(self.left_range) > 0:
+                text, ok = QInputDialog.getText(self, '타겟 제거', '제거할 타겟 번호 입력')                
+                if ok:
+                    rm_target_name = "target_" + text
+                    print(self.target_name)
+                    del self.distance[self.target_name.index(rm_target_name)]                    
+                    del self.left_range[self.target_name.index(rm_target_name)]
+                    del self.right_range[self.target_name.index(rm_target_name)]
+                    del self.target_name[self.target_name.index(rm_target_name)]
+                self.save_target()
+                self.show_target_table()
+                self.blank_lbl.update()
+                
+                if len(self.left_range) > 4:
+                    self.chart_update()
     
     def save_target(self):
         """Save the target information for each camera."""
@@ -473,6 +495,7 @@ class JS06_Setting_Widget(QDialog):
         
         
         print("target name 갯수 : ", len(self.target_name))
+        print(self.target_name)
         print("left 좌표 갯수 : ", len(self.left_range))
         if self.left_range:
             col = ["target_name", "left_range", "right_range", "distance"]
@@ -482,9 +505,21 @@ class JS06_Setting_Widget(QDialog):
             result["right_range"] = self.right_range
             result["distance"] = self.distance
             result.to_csv(f"{save_path}/PNM_9030V.csv", mode="w", index=False)
+            self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target("PNM_9030V")
+            
+        else:
+            col = ["target_name", "left_range", "right_range", "distance"]
+            result = pd.DataFrame(columns=col)
+            result.to_csv(f"{save_path}/PNM_9030V.csv", mode="w", index=False)
     
     def show_target_table(self):
         """ Target의 정보들을 테이블로 보여준다 """
+        
+        if len(self.left_range) > 0:
+            self.no_target_label.hide()
+        else:
+            self.no_target_label.show()
+            
         min_x = []
         min_y = []
         self.r_list = []
@@ -503,6 +538,7 @@ class JS06_Setting_Widget(QDialog):
             min_x.append(result[0])
             min_y.append(result[1])
             
+            print(result)
             self.r_list.append(copy_image[result[1],result[0],0])
             self.g_list.append(copy_image[result[1],result[0],1])
             self.b_list.append(copy_image[result[1],result[0],2])
@@ -511,6 +547,7 @@ class JS06_Setting_Widget(QDialog):
             
             # 이미지 넣기            
             crop_image = copy_image[min_y[i] - 50: min_y[i] + 50, min_x[i] - 50: min_x[i] + 50, :].copy()
+            print(crop_image.shape)
             cv2.rectangle(crop_image, (40, 40), (60, 60), (127, 0, 255), 2)
             item1 = self.getImagelabel(crop_image)
             self.tableWidget.setCellWidget(i, 0, item1)
@@ -543,6 +580,9 @@ class JS06_Setting_Widget(QDialog):
         
         imageLabel_1.setPixmap(QPixmap.fromImage(qImg))
         return imageLabel_1
+
+    def no_data_print():
+        return
     
 if __name__ == '__main__':
     app = QApplication(sys.argv)
