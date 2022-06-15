@@ -13,10 +13,12 @@ import time
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 import target_info
-
+import save_path_info
 
 def producer(q):
-    proc = mp.current_process()    
+    proc = mp.current_process()
+    
+    rtsp_path = save_path_info.get_data_path("camera_ip_path")
     
     while True:
         epoch = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
@@ -36,7 +38,7 @@ def producer(q):
                 else:                    
                     pass
                 
-                cap = cv2.VideoCapture("rtsp://admin:sijung5520@192.168.100.132/profile5/media.smp")
+                cap = cv2.VideoCapture(f"rtsp://admin:sijung5520@{rtsp_path}/profile2/media.smp")
                 ret, cv_img = cap.read()
                 
                 if ret:
@@ -48,7 +50,7 @@ def producer(q):
             except Exception as e:
                 print(e)
                 cap.release()
-                cap = cv2.VideoCapture("rtsp://admin:sijung5520@192.168.100.132/profile5/media.smp")
+                cap = cv2.VideoCapture(f"rtsp://admin:sijung5520@{rtsp_path}/profile2/media.smp")
                 continue
 
 class CurveThread(QtCore.QThread):

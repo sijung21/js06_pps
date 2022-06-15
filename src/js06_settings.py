@@ -59,10 +59,25 @@ class JS06_Setting_Widget(QDialog):
         self.b_list = []
         self.x = None
         self.chart_view = None
+        self.rtsp_path = None
         
         self.running_ave_checked = run_ave_flag
         
         self.radio_flag = radio_flag
+        
+        data_path_text = save_path_info.get_data_path('data_path')
+        
+        self.data_path_textEdit.setPlainText(data_path_text)
+        
+        image_path_text = save_path_info.get_data_path('image_path')
+        
+        self.image_path_textEdit.setPlainText(image_path_text)
+        
+        log_path_text = save_path_info.get_data_path('log_path')
+        
+        self.log_path_textEdit.setPlainText(log_path_text)
+        
+        self.rtsp_path = save_path_info.get_data_path('camera_ip_path')
         
         self.image_load()
         
@@ -103,18 +118,6 @@ class JS06_Setting_Widget(QDialog):
         else:
             pass
         
-        
-        data_path_text = save_path_info.get_data_path('data_path')
-        
-        self.data_path_textEdit.setPlainText(data_path_text)
-        
-        image_path_text = save_path_info.get_data_path('image_path')
-        
-        self.image_path_textEdit.setPlainText(image_path_text)
-        
-        log_path_text = save_path_info.get_data_path('log_path')
-        
-        self.log_path_textEdit.setPlainText(log_path_text)
         
         
         self.data_path_pbtn.clicked.connect(self.data_path_folder_open)
@@ -327,7 +330,7 @@ class JS06_Setting_Widget(QDialog):
         
     def image_load(self):
         
-        src = "rtsp://admin:sijung5520@192.168.100.132/profile5/media.smp"
+        src = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile2/media.smp"
         # src = "C:/Users/user/Workspace/water_gauge/src/video_files/daejeon_1.mp4"
         try:
             cap = cv2.VideoCapture(src)
@@ -539,7 +542,6 @@ class JS06_Setting_Widget(QDialog):
             min_x.append(result[0])
             min_y.append(result[1])
             
-            print(result)
             self.r_list.append(copy_image[result[1],result[0],0])
             self.g_list.append(copy_image[result[1],result[0],1])
             self.b_list.append(copy_image[result[1],result[0],2])
@@ -548,7 +550,6 @@ class JS06_Setting_Widget(QDialog):
             
             # 이미지 넣기            
             crop_image = copy_image[min_y[i] - 50: min_y[i] + 50, min_x[i] - 50: min_x[i] + 50, :].copy()
-            print(crop_image.shape)
             cv2.rectangle(crop_image, (40, 40), (60, 60), (127, 0, 255), 2)
             item1 = self.getImagelabel(crop_image)
             self.tableWidget.setCellWidget(i, 0, item1)
