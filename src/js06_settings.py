@@ -103,6 +103,7 @@ class JS06_Setting_Widget(QDialog):
         else:
             pass
         
+        
         data_path_text = save_path_info.get_data_path('data_path')
         
         self.data_path_textEdit.setPlainText(data_path_text)

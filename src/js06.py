@@ -71,7 +71,7 @@ class JS06MainWindow(QWidget):
         self.timer.timeout.connect(self.timeout_run)
         
         # JS06의 설정 정보들을 초기화 하거나 이미 있으면 패쓰
-        if os.path.isdir("./path_info"):
+        if os.path.isfile("./path_info/path_info.csv"):
             pass        
         else:
             save_path_info.init_data_path()
