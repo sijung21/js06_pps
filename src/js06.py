@@ -40,16 +40,24 @@ class JS06MainWindow(QWidget):
         self.visibility_copy = 0
         self.running_ave_checked = None
         self.q_list = []
-        self.q_list_scale = 300        
+        self.q_list_scale = 300
+        self.rtsp_path = None
         
+        # JS06의 설정 정보들을 초기화 하거나 이미 있으면 패쓰
+        if os.path.isfile("./path_info/path_info.csv"):
+            pass        
+        else:
+            save_path_info.init_data_path()
+        
+        self.rtsp_path = save_path_info.get_data_path("camera_ip_path")        
 
         # 실시간 카메라 영상을 출력할 QFrame을 선언
         self.video_frame = QFrame()        
         # layout 위젯에 QFrame 위젯을 탑재
-        self.verticallayout.addWidget(self.video_frame)     
+        self.verticallayout.addWidget(self.video_frame)
   
         # 카메라 IP 주소, 계정, 비밀번호를 rtsp 문법 구조에 맞게 선언
-        VIDEO_SRC3 = "rtsp://admin:sijung5520@192.168.100.132/profile5/media.smp"        
+        VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
         CAM_NAME = "PNM_9030V"
         # 송수신 시작 함수
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")        
@@ -70,11 +78,7 @@ class JS06MainWindow(QWidget):
         self.timer.start(1000)
         self.timer.timeout.connect(self.timeout_run)
         
-        # JS06의 설정 정보들을 초기화 하거나 이미 있으면 패쓰
-        if os.path.isdir("./path_info"):
-            pass        
-        else:
-            save_path_info.init_data_path()
+        
         
         # 설정 버튼 클릭시 설정창 출력
         self.settings_button.clicked.connect(self.setting_btn_click)
