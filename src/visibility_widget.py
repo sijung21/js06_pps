@@ -18,6 +18,9 @@ class ValueWorker(QThread):
         self.alive = True
         
     def run(self):
+        
+        data = None
+        
         while self.alive:
             # InfluxDB에 접속
             client = InfluxDBClient('localhost', 8086)
@@ -33,8 +36,11 @@ class ValueWorker(QThread):
                 data = item['visbility']
                 
             client.close()
-            # QThread를 선언한 곳에 전송
-            self.dataSent.emit(data)
+            if data is not None:
+                # QThread를 선언한 곳에 전송
+                self.dataSent.emit(data)
+            else:
+                self.dataSent.emit(0)
             # 30초마다 실행
             time.sleep(30)
             
