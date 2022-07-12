@@ -39,6 +39,7 @@ def producer(q):
                     pass
                 
                 cap = cv2.VideoCapture(f"rtsp://admin:sijung5520@{rtsp_path}/profile2/media.smp")
+                # cap = cv2.VideoCapture(f"rtsp://admin:sijung5520@192.168.100.132/profile2/media.smp")
                 ret, cv_img = cap.read()
                 
                 if ret:
@@ -46,7 +47,7 @@ def producer(q):
                     cap.release()
                     
                     q.put(visibility)
-                    time.sleep(1)
+                    time.sleep(10)
             except Exception as e:
                 print(e)
                 cap.release()
@@ -74,6 +75,7 @@ class CurveThread(QtCore.QThread):
                     visibility = self.q.get()
                     print("visibility: ", visibility)
                     self.update_visibility_signal.emit(visibility)
+                    
             # shut down capture system
 
     def stop(self):
