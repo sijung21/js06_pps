@@ -25,14 +25,17 @@ try:
 except Exception as e:
     pass
 
-
-
+log_file_name = 'my.log'
+file_path = os.path.join(log_save_path, log_file_name)
 # log를 파일에 출력
-file_handler = logging.FileHandler('my.log')
+file_handler = logging.FileHandler(file_path)
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 for i in range(10):
 	logger.info(f'{i}번째 방문입니다.')
     
-logger.info(f'hahahahahahaha')
+logger.debug(f'hahahahahahaha')
+
+def myfunction():
+    logger.debug(f'testtest')
