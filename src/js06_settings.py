@@ -22,6 +22,8 @@ from PyQt5.QtChart import QChart, QChartView, QLineSeries, QValueAxis
 import target_info
 import save_path_info
 
+import js06_log
+
 class JS06_Setting_Widget(QDialog):
 
     def __init__(self, radio_flag=None, run_ave_flag=None, *args, **kwargs):
@@ -60,6 +62,8 @@ class JS06_Setting_Widget(QDialog):
         self.x = None
         self.chart_view = None
         self.rtsp_path = None
+        self.logger = js06_log.CreateLogger(__name__)
+        self.logger.info('Setup window initialization complete')
         
         self.running_ave_checked = run_ave_flag
         
@@ -79,7 +83,7 @@ class JS06_Setting_Widget(QDialog):
         
         self.rtsp_path = save_path_info.get_data_path('camera_ip_path')
         
-        self.image_load()
+        self.image_load()        
         
         # 그림 그리는 Q레이블 생성
         self.blank_lbl = QLabel(self.target_setting_image_label)
@@ -137,7 +141,7 @@ class JS06_Setting_Widget(QDialog):
         self.five_radio_btn.clicked.connect(self.running_avr_time_settings_function)
         self.ten_radio_btn.clicked.connect(self.running_avr_time_settings_function)
     
-    
+
     # path_setting
     def data_path_folder_open(self):
         folder = None
@@ -199,6 +203,7 @@ class JS06_Setting_Widget(QDialog):
             self.chart_view = new_chart_view
             
         print("update chart!")
+        self.logger.info('update chart!')
         
     def chart_draw(self):
         """세팅창 그래프 칸에 소산계수 차트를 그리는 함수"""
@@ -206,7 +211,9 @@ class JS06_Setting_Widget(QDialog):
         global x   
         
         # if self.x is None:
+        self.logger.debug(f'distance list : {str(self.distance)}')
         print("distance 리스트", self.distance)
+        
         self.x = np.linspace(self.distance[0], self.distance[-1], 100, endpoint=True)
         self.x.sort()
         
@@ -465,6 +472,7 @@ class JS06_Setting_Widget(QDialog):
                 self.isDrawing = False
                 self.end_drawing = True
                 self.show_target_table()
+                self.logger.info(f'Add target')
             else:
                 self.isDrawing = False
                 self.blank_lbl.update()
@@ -481,6 +489,7 @@ class JS06_Setting_Widget(QDialog):
                     del self.left_range[self.target_name.index(rm_target_name)]
                     del self.right_range[self.target_name.index(rm_target_name)]
                     del self.target_name[self.target_name.index(rm_target_name)]
+                    self.logger.info(f'Delete target num : {text}')
                 self.save_target()
                 self.show_target_table()
                 self.blank_lbl.update()
@@ -493,6 +502,7 @@ class JS06_Setting_Widget(QDialog):
         try:
             save_path = os.path.join(f"target/PNM_9030V")
             os.makedirs(save_path)
+            
 
         except Exception as e:
             pass
@@ -510,6 +520,7 @@ class JS06_Setting_Widget(QDialog):
             result["distance"] = self.distance
             result.to_csv(f"{save_path}/PNM_9030V.csv", mode="w", index=False)
             self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target("PNM_9030V")
+            self.logger.info(f'Save target information')
             
         else:
             col = ["target_name", "left_range", "right_range", "distance"]
@@ -566,7 +577,7 @@ class JS06_Setting_Widget(QDialog):
             item3.setForeground(QBrush(QColor(255, 255, 255)))
             self.tableWidget.setItem(i, 2, item3)
             
-        
+        self.logger.info(f'Show target table')
         self.tableWidget.verticalHeader().setDefaultSectionSize(90)
     
     def getImagelabel(self, image):

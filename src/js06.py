@@ -21,7 +21,8 @@ import save_db
 import save_path_info
 from js06_settings import JS06_Setting_Widget
 from visibility_widget import Vis_Chart
-        
+import js06_log
+
 class JS06MainWindow(QWidget):
 
     def __init__(self, *args, **kwargs):
@@ -42,6 +43,7 @@ class JS06MainWindow(QWidget):
         self.q_list = []
         self.q_list_scale = 300
         self.rtsp_path = None
+        self.logger = js06_log.CreateLogger(__name__)
         
         # JS06의 설정 정보들을 초기화 하거나 이미 있으면 패쓰
         if os.path.isfile("./path_info/path_info.csv"):
@@ -60,11 +62,13 @@ class JS06MainWindow(QWidget):
         VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
         CAM_NAME = "PNM_9030RV"
         # 송수신 시작 함수
-        self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")        
+        self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")   
+        
         
         # 시정 실시간 출력 차트 클래스 선언
         self.chart_view = Vis_Chart()
         self.web_verticalLayout.addWidget(self.chart_view.chart_view)
+        
         
         # 소산계수, 시정, 미세먼지 산출하는 쓰레드 선언
         self.video_thread = CurveThread(VIDEO_SRC3, "Video", q)
@@ -76,15 +80,15 @@ class JS06MainWindow(QWidget):
         # 실제 지금 PC 시간을 출력
         self.timer = QTimer()
         self.timer.start(1000)
-        self.timer.timeout.connect(self.timeout_run)
-        
-        
+        self.timer.timeout.connect(self.timeout_run)        
         
         # 설정 버튼 클릭시 설정창 출력
         self.settings_button.clicked.connect(self.setting_btn_click)
         
         # 현재 실행 파일 위치 확인
-        self.filepath = os.path.join(os.getcwd())      
+        self.filepath = os.path.join(os.getcwd())
+        
+        
     
     @pyqtSlot(str)
     def onCameraChange(self, url, camera_name, src_type):
@@ -116,6 +120,7 @@ class JS06MainWindow(QWidget):
             self.media_player.play()
         else:
             pass
+        self.logger.info("Video playback success")
                         
     @pyqtSlot(str)
     def print_data(self, visibility):
@@ -129,9 +134,11 @@ class JS06MainWindow(QWidget):
                 self.q_list.append(visibility_float)
                 
             print("q 리스트 길이", len(self.q_list))
+            self.logger.info(f"q list length : {len(self.q_list)}")
             result_vis = np.mean(self.q_list)
         else:
             print("q 리스트 길이2", len(self.q_list))
+            self.logger.info(f"q list length : {len(self.q_list)}")
             self.q_list.pop(0)
             self.q_list.append(visibility_float)
             result_vis = np.mean(self.q_list)            
@@ -160,8 +167,7 @@ class JS06MainWindow(QWidget):
         """Store visibility and fine dust values ​​in the database."""
 
         save_db.SaveDB(vis_data)
-        print("data storage!")    
-
+        print("data storage!")
 
     def timeout_run(self):
         """Print the current time."""
@@ -182,9 +188,11 @@ class JS06MainWindow(QWidget):
         
         self.radio_checked = dlg.radio_flag
         print(self.radio_checked, "변환 완료")
+        self.logger.info(f"{self.radio_checked} Conversion done")
         
         self.running_ave_checked = dlg.running_ave_checked
         print(self.running_ave_checked, "변환 완료")
+        self.logger.info(f"{self.running_ave_checked} Conversion done")
         
         if self.running_ave_checked == "One":
             self.q_list_scale = 30
@@ -196,6 +204,7 @@ class JS06MainWindow(QWidget):
     def save_frame(self, image: np.ndarray, epoch: str, g_ext, pm_25):
         """Save the image of the calculation time."""
         print("save_frame 시작")
+        self.logger.info(f"Start save frame")
         image_path = os.path.join(self.filepath, f"{self.test_name}")
         file_name = f"{epoch}"
         if not os.path.isdir(image_path):
@@ -214,7 +223,9 @@ class JS06MainWindow(QWidget):
     def keyPressEvent(self, e):
         """Override function QMainwindow KeyPressEvent that works when key is pressed"""
         if e.key() == Qt.Key_Escape:
+            self.logger.info(f"Click the End Program button")
             sys.exit()
+            
         if e.key() == Qt.Key_F:
             self.widget_toggle_flag()
         
@@ -222,8 +233,10 @@ class JS06MainWindow(QWidget):
         """ JS06 메인 화면 풀 스크린 토글 기능 함수"""
         if self.windowState() & Qt.WindowFullScreen:
             self.showNormal()
+            self.logger.info(f"View in normal screen")
         else:
             self.showFullScreen()
+            self.logger.info(f"View in full screen")
 
 if __name__ == '__main__':    
     

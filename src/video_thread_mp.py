@@ -14,6 +14,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 
 import target_info
 import save_path_info
+import js06_log
 
 def producer(q):
     proc = mp.current_process()
@@ -63,6 +64,7 @@ class CurveThread(QtCore.QThread):
         self.src = src
         self.file_type = file_type
         self.q = q
+        self.logger = js06_log.CreateLogger(__name__)
 
 
     def run(self):
@@ -70,10 +72,12 @@ class CurveThread(QtCore.QThread):
         ## 영상 입력이 카메라일 때
         if self.file_type == "Video":
             print("Start curve thread")
+            self.logger.info('Start curve thread')
             while self._run_flag:
                 if not self.q.empty():
                     visibility = self.q.get()
                     print("visibility: ", visibility)
+                    self.logger.info(f'visibility: {visibility}')
                     self.update_visibility_signal.emit(visibility)
                     
             # shut down capture system

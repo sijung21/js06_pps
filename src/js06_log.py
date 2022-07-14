@@ -6,7 +6,7 @@ import save_path_info
 def CreateLogger(logger_name):
     
     # 로그 생성
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger(logger_name)
 
     # 로그의 출력 기준 설정
     logger.setLevel(logging.DEBUG)
@@ -33,21 +33,21 @@ def CreateLogger(logger_name):
     
     return logger
 
-def debug_log(msg):
-    logger = CreateLogger("MyLogger")
-    logger.debug(msg)
+# def debug_log(msg):
+#     logger = CreateLogger("MyLogger")
+#     logger.debug(msg)
 
-def info_log(msg):
-    logger = CreateLogger("MyLogger")
-    logger.info(msg)
+# def info_log(module_name, msg):
+#     logger = CreateLogger(module_name)
+#     logger.info(msg)
 
-def error_log(msg):
-    logger = CreateLogger("MyLogger")
-    logger.error(msg)
+# def error_log(msg):
+#     logger = CreateLogger("MyLogger")
+#     logger.error(msg)
     
-if __name__ == '__main__':
-    debug_log()
-    debug_log()
+# if __name__ == '__main__':
+    # debug_log()
+    # debug_log()
 
 
 

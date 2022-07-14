@@ -9,17 +9,13 @@ import struct
 import time
 
 from influxdb import InfluxDBClient, exceptions
+import js06_log
 
+logger = js06_log.CreateLogger(__name__)
 
 def SaveDB(vis_value):
     client = InfluxDBClient('localhost', 8086)
-    save_time = time.time_ns()
-    try:        
-        client.create_database("Sijung")
-    except TypeError:
-        print(e)
-        print("create except")
-        pass    
+    save_time = time.time_ns()  
     try:
         client.switch_database("Sijung")
         points = [{"measurement": "JS06",
@@ -28,9 +24,14 @@ def SaveDB(vis_value):
                 "time": save_time}]
         client.write_points(points=points, protocol="json")
         client.close()
+        logger.info('data storage')
     except Exception as e:
+        
         print(e)
         print("save error")
+        
+        logger.error(f'save error')
+        logger.error(f'{e}')
         # Save every 1 minute.
         # time.sleep(3)
         return

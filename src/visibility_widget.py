@@ -7,6 +7,7 @@ from PyQt5.QtCore import QPoint, QRect, Qt, QRectF, QSize, QCoreApplication, pyq
 from PyQt5.QtChart import QChart, QChartView, QLineSeries, QValueAxis, QDateTimeAxis, QScatterSeries
 
 from influxdb import InfluxDBClient
+import js06_log
 
 class ValueWorker(QThread):   
     """Influx에 저장된 시정 값을 읽어 실시간 시정 출력 그래프에 전송하는 QThread 클래스"""
@@ -16,6 +17,8 @@ class ValueWorker(QThread):
         super().__init__()
         self.value = value
         self.alive = True
+        self.logger = js06_log.CreateLogger(__name__)
+        
         
     def run(self):
         
@@ -25,7 +28,18 @@ class ValueWorker(QThread):
             # InfluxDB에 접속
             client = InfluxDBClient('localhost', 8086)
             save_time = time.time_ns()
+            
+            try:        
+                client.create_database("Sijung")
+                self.logger.info("Create Sijung Database")
+            except TypeError as e:        
+                print(e)
+                print("create except")                
+                pass
+            
             client.switch_database("Sijung")
+            
+            
             
             # 최근에 저장된 시정을 조회하는 쿼리문
             query = 'SELECT "visbility" FROM "JS06" ORDER BY "time" DESC LIMIT 1'
@@ -39,6 +53,7 @@ class ValueWorker(QThread):
             if data is not None:
                 # QThread를 선언한 곳에 전송
                 self.dataSent.emit(data)
+                self.logger.info("Complete transfer of values to Visiblity chart")
             else:
                 self.dataSent.emit(0)
             # 30초마다 실행
@@ -157,6 +172,9 @@ class Vis_Chart(QWidget):
         self.pw.dataSent.connect(self.appendData)
         # QThread 시작
         self.pw.start()
+        
+        self.logger = js06_log.CreateLogger(__name__)
+        self.logger.info("Success drawing the visibility chart")
         
     
     def appendData(self, value):
