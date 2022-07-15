@@ -7,6 +7,8 @@ import pandas as pd
 import scipy
 from scipy.optimize import curve_fit
 
+import js06_log
+
 curved_flag = True
 # cam_name = cam_name
 hanhwa_dist = []
@@ -14,6 +16,8 @@ hanhwa_x = []
 hanhwa_r = []
 hanhwa_g = []
 hanhwa_b = []
+
+logger = js06_log.CreateLogger(__name__)
 
 def select_max_rgb(r, g, b):
 
@@ -65,6 +69,7 @@ def cal_curve(hanhwa: pd.DataFrame):
 
     except Exception as e:
         print("error msg: ", e)
+        logger.error(e)
         return
     list1 = []
     list2 = []
@@ -86,8 +91,13 @@ def cal_curve(hanhwa: pd.DataFrame):
     hanhwa_err_g = np.sqrt(np.diag(hanhwa_cov_g))
     hanhwa_err_b = np.sqrt(np.diag(hanhwa_cov_b))
 
+    
     print_result(hanhwa_opt_r, hanhwa_opt_g, hanhwa_opt_b, hanhwa_err_r, hanhwa_err_g, hanhwa_err_b)
 
+    logger.info(f"Red channel: {extcoeff_to_vis(hanhwa_opt_r[2], hanhwa_err_r[2], 3)} km")
+    logger.info(f"Green channel: {extcoeff_to_vis(hanhwa_opt_g[2], hanhwa_err_g[2], 3)} km")
+    logger.info(f"Blue channel: {extcoeff_to_vis(hanhwa_opt_b[2], hanhwa_err_b[2], 3)} km")
+    
     print(f"Red channel: {extcoeff_to_vis(hanhwa_opt_r[2], hanhwa_err_r[2], 3)} km")
     print(f"Green channel: {extcoeff_to_vis(hanhwa_opt_g[2], hanhwa_err_g[2], 3)} km")
     print(f"Blue channel: {extcoeff_to_vis(hanhwa_opt_b[2], hanhwa_err_b[2], 3)} km")

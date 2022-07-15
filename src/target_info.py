@@ -9,6 +9,9 @@ import cv2
 import time
 import cal_ext_coef
 import save_path_info
+import js06_log
+
+logger = js06_log.CreateLogger(__name__)
 
 def minprint(epoch, left_range, right_range, distance, cv_img):
     """A function that outputs pixels for calculating the dissipation coefficient in the specified areas"""
@@ -83,6 +86,7 @@ def save_rgb(r_list, g_list, b_list, epoch, distance):
     try:
         save_path = os.path.join(f"{data_save_path}/rgb/PNM_9030V")
         os.makedirs(save_path)
+        logger.info(f'Create folder RGB save path')
 
     except Exception as e:
         pass
@@ -102,7 +106,8 @@ def save_rgb(r_list, g_list, b_list, epoch, distance):
         result["distance"] = distance
         list1, list2, list3, select_color = cal_ext_coef.cal_curve(result)
         visibility = extinc_print(list1, list2, list3, select_color)
-        print("Save rgb") 
+        print("Save rgb")
+        logger.info(f'Save RGB values')
         
         result = result.sort_values(by=['distance'])
         
@@ -127,6 +132,7 @@ def save_rgb_value(value_list, distance_list, ext_value, select_color, epoch):
     
     try:
         os.makedirs(rgbsavedir)
+        logger.info(f'Create folder {select_color} channel save path')
         
     except Exception as e:
         pass
@@ -150,6 +156,7 @@ def save_rgb_value(value_list, distance_list, ext_value, select_color, epoch):
     
     rgb_df.to_csv(rgb_file_path,mode="w", index=False)
     print(f"Save {select_color} channel value")
+    logger.info(f'Save {select_color} channel value')
     
     
 def save_ext(ext_list, epoch):
@@ -159,6 +166,7 @@ def save_ext(ext_list, epoch):
     extsavedir = os.path.join(f"{data_save_path}/data/ext/PNM_9030V")
     try:
         os.makedirs(extsavedir)
+        logger.info(f'Create folder RGB Ext save path')
     except Exception as e:
         pass
     
@@ -177,6 +185,7 @@ def save_ext(ext_list, epoch):
     ext_df.to_csv(ext_file_path,mode="w", index=False)
     
     print("Save extinction")
+    logger.info(f'Save extinction')
     
 
 def extinc_print(c1_list: list = [0, 0, 0], c2_list: list = [0, 0, 0], alp_list: list = [0, 0, 0], select_color: str = ""):
@@ -211,6 +220,7 @@ def get_target(camera_name: str):
 
     save_path = os.path.join(f"target/{camera_name}")
     print("Get target information")
+    logger.info(f'Get target information')
     if os.path.isfile(f"{save_path}/{camera_name}.csv"):
         target_df = pd.read_csv(f"{save_path}/{camera_name}.csv")
         target_df = target_df.sort_values(by=['distance'])
@@ -223,6 +233,7 @@ def get_target(camera_name: str):
         return target_name, left_range, right_range, distance
     else:
         print("Target Information Not Found")
+        logger.info('Target Information Not Found')
         return [], [], [], []
 
 def str_to_tuple(before_list):
