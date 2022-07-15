@@ -242,13 +242,20 @@ if __name__ == '__main__':
     
     # MultiProcess 선언
     # MultiProcess의 프로세스 수 고정
+    logger = js06_log.CreateLogger(__name__)
+    logger.info(f'Start JS06 Program')
+    
     mp.freeze_support()
     q = Queue()
     p = Process(name="producer", target=video_thread_mp.producer, args=(q, ), daemon=True)
+    logger.info(f'Start video multiprocess')
     p.start()
+    
     
     # JS06 메인 윈도우 실행
     app = QApplication(sys.argv)
     ui = JS06MainWindow()
-    ui.show()  
+    ui.show()
+    logger.info(f'Open JS06 main winodw ')
     sys.exit(app.exec_())
+    
