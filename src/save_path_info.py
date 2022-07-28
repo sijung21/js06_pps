@@ -25,7 +25,12 @@ def init_data_path():
 
 def get_data_path(path_name):
     
-    path_df = pd.read_csv(file_path)    
+    try:
+        path_df = pd.read_csv(file_path)    
+    
+    except Exception as e:
+        init_data_path()
+        path_df = pd.read_csv(file_path)        
         
     get_text = path_df.loc[0,path_name]
     
