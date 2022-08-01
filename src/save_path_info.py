@@ -14,7 +14,7 @@ def init_data_path():
     except Exception as e:
         pass
     
-    data_path = [('./', './data/image', './log', '192.168.100.132')]
+    data_path = [('./', './images', './log', '192.168.100.132')]
     
     cols = ['data_path', 'image_path', 'log_path', 'camera_ip_path']
     path_info_df = pd.DataFrame(data_path, columns=cols)
