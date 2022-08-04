@@ -26,11 +26,11 @@ def producer(q):
     while True:
         epoch = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
         
-        # 2초에 한번
-        # if int(epoch[-2:]) % 2 == 00:
+        # 5초에 한번
+        if int(epoch[-2:]) % 5 == 00:
         
         # 1분에 한번
-        if epoch[-2:] == "00":
+        # if epoch[-2:] == "00":
             print(epoch)
             try:
                 target_name, left_range, right_range, distance = target_info.get_target("PNM_9030V")
@@ -60,7 +60,7 @@ def producer(q):
                     cap.release()
                     
                     q.put(visibility)
-                    time.sleep(10)
+                    # time.sleep(10)
             except Exception as e:
                 print(e)
                 cap.release()

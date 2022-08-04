@@ -41,7 +41,7 @@ class JS06MainWindow(QWidget):
         self.visibility_copy = 0
         self.running_ave_checked = None
         self.q_list = []
-        self.q_list_scale = 300
+        self.q_list_scale = 120
         self.rtsp_path = None
         self.logger = js06_log.CreateLogger(__name__)
         
@@ -195,11 +195,11 @@ class JS06MainWindow(QWidget):
         self.logger.info(f"{self.running_ave_checked} Conversion done")
         
         if self.running_ave_checked == "One":
-            self.q_list_scale = 30
+            self.q_list_scale = 12
         elif self.running_ave_checked == "Five":
-            self.q_list_scale = 150
+            self.q_list_scale = 60
         elif self.running_ave_checked == "Ten":
-            self.q_list_scale = 300
+            self.q_list_scale = 120
     
     def save_frame(self, image: np.ndarray, epoch: str, g_ext, pm_25):
         """Save the image of the calculation time."""
