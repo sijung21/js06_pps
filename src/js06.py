@@ -145,6 +145,7 @@ class JS06MainWindow(QWidget):
         
         self.visibility_copy = round(float(result_vis), 3)
         
+        
         if self.radio_checked == None or self.radio_checked == "Km":
             visibility_text = str(self.visibility_copy) + " km"
         elif self.radio_checked == "Mile":
@@ -163,11 +164,14 @@ class JS06MainWindow(QWidget):
         self.data_storage(self.visibility_copy)
         
         
+        
     def data_storage(self, vis_data):
         """Store visibility and fine dust values ​​in the database."""
 
         save_db.SaveDB(vis_data)
         print("data storage!")
+        self.chart_view.appendData(self.visibility_copy)
+        
 
     def timeout_run(self):
         """Print the current time."""
@@ -189,6 +193,14 @@ class JS06MainWindow(QWidget):
         self.radio_checked = dlg.radio_flag
         print(self.radio_checked, "변환 완료")
         self.logger.info(f"{self.radio_checked} Conversion done")
+        
+        if self.radio_checked == None or self.radio_checked == "Km":
+            visibility_text = str(self.visibility_copy) + " km"
+        elif self.radio_checked == "Mile":
+            visibility_mile = round(self.visibility_copy / 1.609, 1)
+            visibility_text = str(visibility_mile) + " mi"
+            
+        self.c_vis_label.setText(visibility_text)
         
         self.running_ave_checked = dlg.running_ave_checked
         print(self.running_ave_checked, "변환 완료")
