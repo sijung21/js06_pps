@@ -14,7 +14,7 @@ def init_data_path():
     except Exception as e:
         pass
     
-    data_path = [('./', './data/image', './log', '192.168.100.132')]
+    data_path = [('./', './images', './log', '192.168.100.132')]
     
     cols = ['data_path', 'image_path', 'log_path', 'camera_ip_path']
     path_info_df = pd.DataFrame(data_path, columns=cols)
@@ -25,7 +25,12 @@ def init_data_path():
 
 def get_data_path(path_name):
     
-    path_df = pd.read_csv(file_path)    
+    try:
+        path_df = pd.read_csv(file_path)    
+    
+    except Exception as e:
+        init_data_path()
+        path_df = pd.read_csv(file_path)        
         
     get_text = path_df.loc[0,path_name]
     

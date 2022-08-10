@@ -57,7 +57,7 @@ class ValueWorker(QThread):
             else:
                 self.dataSent.emit(0)
             # 30초마다 실행
-            time.sleep(30)
+            # time.sleep(30)
             
     
     def close(self):
@@ -91,9 +91,9 @@ class Vis_Chart(QWidget):
         # 현재 시간 저장
         self.now = QDateTime.currentDateTime()
         # 몇초 전까지 보여주는지 설정 값
-        self.viewLimit = 600
+        self.viewLimit = 300
         # 몇초 단위로 저장하는지 설정
-        self.timetick = 30
+        self.timetick = 10
         # 각 Series에 랜덤으로 몇초 전까지의 데이터들을 임의로 저장 
         for i in range(self.viewLimit, 1, -self.timetick):
             cur = 20 * random.random()
@@ -167,11 +167,11 @@ class Vis_Chart(QWidget):
         self.vis_scatter_2.attachAxis(cur_axis_y)
 
         # 새로운 데이터를 계속 호출하는 QThread 클래스 선언
-        self.pw = ValueWorker("Test")
+        # self.pw = ValueWorker("Test")
         # 전송 받은 시정 값을 appendData 함수의 value 인자값에 직접 전달
-        self.pw.dataSent.connect(self.appendData)
+        # self.pw.dataSent.connect(self.appendData)
         # QThread 시작
-        self.pw.start()
+        # self.pw.start()
         
         self.logger = js06_log.CreateLogger(__name__)
         self.logger.info("Success drawing the visibility chart")
@@ -184,6 +184,7 @@ class Vis_Chart(QWidget):
             self.vis_scatter.remove(0)
             self.vis_scatter_2.remove(0)
         dt = QDateTime.currentDateTime()
+        print("QDate time",dt)
         self.vis_series.append(dt.toMSecsSinceEpoch(), value)
         self.vis_scatter.append(dt.toMSecsSinceEpoch(), value)
         self.vis_scatter_2.append(dt.toMSecsSinceEpoch(), value)
@@ -197,7 +198,7 @@ class Vis_Chart(QWidget):
             dtLast = QDateTime.fromMSecsSinceEpoch(int(pvs[-1].x()))
         else:
             dtLast = dtStart.addSecs(self.viewLimit)
-        
+        print("qchart recent time : ", dtLast)
         ax = self.chart.axisX()
         ax.setRange(dtStart, dtLast)
         # return chart_view

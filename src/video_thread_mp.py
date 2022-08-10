@@ -1,6 +1,7 @@
 
 #!/usr/bin/env python3
 import os
+from tkinter import image_names
 import pandas as pd
 import numpy as np
 
@@ -21,14 +22,15 @@ def producer(q):
     
     rtsp_path = save_path_info.get_data_path("camera_ip_path")
     
+    
     while True:
         epoch = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
         
-        # 2초에 한번
-        # if int(epoch[-2:]) % 2 == 00:
+        # 5초에 한번
+        if int(epoch[-2:]) % 10 == 00:
         
         # 1분에 한번
-        if epoch[-2:] == "00":
+        # if epoch[-2:] == "00":
             print(epoch)
             try:
                 target_name, left_range, right_range, distance = target_info.get_target("PNM_9030V")
@@ -45,14 +47,24 @@ def producer(q):
                 
                 if ret:
                     visibility = target_info.minprint(epoch[:-2], left_range, right_range, distance, cv_img)
+                    
+                    img_path = save_path_info.get_data_path('image_path')
+                    
+                    try:
+                        os.makedirs(img_path)
+                    except Exception as e:
+                        pass
+                    
+                    cv2.imwrite(f'{img_path}/{epoch[:-2]}.jpg', cv_img)
+                    
                     cap.release()
                     
                     q.put(visibility)
-                    time.sleep(10)
+                    # time.sleep(10)
             except Exception as e:
                 print(e)
                 cap.release()
-                cap = cv2.VideoCapture(f"rtsp://admin:sijung5520@{rtsp_path}/profile2/media.smp")
+                cap = cv2.VideoCapture(f"rtsp://admin:sijung5520@{rtsp_path}/profile2/media.smp")                
                 continue
 
 class CurveThread(QtCore.QThread):

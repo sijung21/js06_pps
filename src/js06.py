@@ -41,7 +41,7 @@ class JS06MainWindow(QWidget):
         self.visibility_copy = 0
         self.running_ave_checked = None
         self.q_list = []
-        self.q_list_scale = 300
+        self.q_list_scale = 120
         self.rtsp_path = None
         self.logger = js06_log.CreateLogger(__name__)
         
@@ -145,6 +145,7 @@ class JS06MainWindow(QWidget):
         
         self.visibility_copy = round(float(result_vis), 3)
         
+        
         if self.radio_checked == None or self.radio_checked == "Km":
             visibility_text = str(self.visibility_copy) + " km"
         elif self.radio_checked == "Mile":
@@ -163,11 +164,14 @@ class JS06MainWindow(QWidget):
         self.data_storage(self.visibility_copy)
         
         
+        
     def data_storage(self, vis_data):
         """Store visibility and fine dust values ​​in the database."""
 
         save_db.SaveDB(vis_data)
         print("data storage!")
+        self.chart_view.appendData(self.visibility_copy)
+        
 
     def timeout_run(self):
         """Print the current time."""
@@ -190,16 +194,24 @@ class JS06MainWindow(QWidget):
         print(self.radio_checked, "변환 완료")
         self.logger.info(f"{self.radio_checked} Conversion done")
         
+        if self.radio_checked == None or self.radio_checked == "Km":
+            visibility_text = str(self.visibility_copy) + " km"
+        elif self.radio_checked == "Mile":
+            visibility_mile = round(self.visibility_copy / 1.609, 1)
+            visibility_text = str(visibility_mile) + " mi"
+            
+        self.c_vis_label.setText(visibility_text)
+        
         self.running_ave_checked = dlg.running_ave_checked
         print(self.running_ave_checked, "변환 완료")
         self.logger.info(f"{self.running_ave_checked} Conversion done")
         
         if self.running_ave_checked == "One":
-            self.q_list_scale = 30
+            self.q_list_scale = 12
         elif self.running_ave_checked == "Five":
-            self.q_list_scale = 150
+            self.q_list_scale = 60
         elif self.running_ave_checked == "Ten":
-            self.q_list_scale = 300
+            self.q_list_scale = 120
     
     def save_frame(self, image: np.ndarray, epoch: str, g_ext, pm_25):
         """Save the image of the calculation time."""
@@ -242,13 +254,20 @@ if __name__ == '__main__':
     
     # MultiProcess 선언
     # MultiProcess의 프로세스 수 고정
+    logger = js06_log.CreateLogger(__name__)
+    logger.info(f'Start JS06 Program')
+    
     mp.freeze_support()
     q = Queue()
     p = Process(name="producer", target=video_thread_mp.producer, args=(q, ), daemon=True)
+    logger.info(f'Start video multiprocess')
     p.start()
+    
     
     # JS06 메인 윈도우 실행
     app = QApplication(sys.argv)
     ui = JS06MainWindow()
-    ui.show()  
+    ui.show()
+    logger.info(f'Open JS06 main winodw ')
     sys.exit(app.exec_())
+    
