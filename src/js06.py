@@ -3,6 +3,7 @@ import sys
 import os
 import time
 import vlc
+import ctypes
 
 import cv2
 import numpy as np
@@ -29,7 +30,7 @@ class JS06MainWindow(QWidget):
 
         super().__init__(*args, **kwargs)
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                               "ui/js06_1920_new_new.ui")
+                               "ui/js06_1920_new.ui")
         uic.loadUi(ui_path, self)
         
         
@@ -110,7 +111,19 @@ class JS06MainWindow(QWidget):
         ]
 
         self.instance = vlc.Instance(args)
-        self.instance.log_unset()
+        self.instance.log_open()
+        # self.instance.log_unset()
+        fopen = ctypes.cdll.msvcrt.fopen
+        fopen.restype = vlc.FILE_ptr
+        fopen.argtypes = (ctypes.c_char_p, ctypes.c_char_p)
+        # ctypes에 문자열 인자값들을 넣으려면 모두 byte 형태로 변환해줘야 함
+        
+        current_time = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
+        f = fopen(bytes(f'vlc_log_{current_time}.log', encoding='utf-8'), b'w')
+        
+        self.instance.log_set_file(f)
+        
+        
         self.media_player = self.instance.media_player_new()
         
         # 실행 OS가 윈도우일 경우 설정
@@ -182,7 +195,6 @@ class JS06MainWindow(QWidget):
     def timeout_run(self):
         """Print the current time."""
         current_time = time.strftime("%Y.%m.%d %H:%M:%S", time.localtime(time.time()))
-        self.test_label = QLabel('Label111111', self)
         self.real_time_label.setText(current_time)
         # self.real_time_label.raise_()
         
