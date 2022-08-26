@@ -3,6 +3,7 @@ import sys
 import os
 import time
 import vlc
+import ctypes
 
 import cv2
 import numpy as np
@@ -11,7 +12,7 @@ from multiprocessing import Process, Queue
 import multiprocessing as mp
 
 from PyQt5.QtGui import QPixmap, QPixmap
-from PyQt5.QtWidgets import QApplication, QWidget, QFrame
+from PyQt5.QtWidgets import QApplication, QWidget, QFrame, QLabel
 from PyQt5.QtCore import QPoint, Qt, pyqtSlot, QTimer
 from PyQt5 import uic
 
@@ -31,6 +32,8 @@ class JS06MainWindow(QWidget):
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                "ui/js06_1920_new.ui")
         uic.loadUi(ui_path, self)
+        
+        
 
         self.camera_name = ""
         self.video_thread = None
@@ -44,6 +47,7 @@ class JS06MainWindow(QWidget):
         self.q_list_scale = 120
         self.rtsp_path = None
         self.logger = js06_log.CreateLogger(__name__)
+        self.vis_list = []
         
         # JS06의 설정 정보들을 초기화 하거나 이미 있으면 패쓰
         if os.path.isfile("./path_info/path_info.csv"):
@@ -57,25 +61,28 @@ class JS06MainWindow(QWidget):
         self.video_frame = QFrame()        
         # layout 위젯에 QFrame 위젯을 탑재
         self.verticallayout.addWidget(self.video_frame)
+        
+        # self.video_frame.move(20, 110)
   
         # 카메라 IP 주소, 계정, 비밀번호를 rtsp 문법 구조에 맞게 선언
         VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
         CAM_NAME = "PNM_9030RV"
         # 송수신 시작 함수
-        self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")   
+        self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
         
         
         # 시정 실시간 출력 차트 클래스 선언
-        self.chart_view = Vis_Chart()
-        self.web_verticalLayout.addWidget(self.chart_view.chart_view)
+        
+        # self.chart_view = Vis_Chart()
+        # self.web_verticalLayout.addWidget(self.chart_view.chart_view)
         
         
         # 소산계수, 시정, 미세먼지 산출하는 쓰레드 선언
-        self.video_thread = CurveThread(VIDEO_SRC3, "Video", q)
-        # 쓰레드와 시정, 미세먼지 출력 함수를 Signal 연결
-        self.video_thread.update_visibility_signal.connect(self.print_data)
-        # 쓰레드 시작
-        self.video_thread.start()
+        # self.video_thread = CurveThread(VIDEO_SRC3, "Video", q)
+        # # 쓰레드와 시정, 미세먼지 출력 함수를 Signal 연결
+        # self.video_thread.update_visibility_signal.connect(self.print_data)
+        # # 쓰레드 시작
+        # self.video_thread.start()
 
         # 실제 지금 PC 시간을 출력
         self.timer = QTimer()
@@ -83,7 +90,7 @@ class JS06MainWindow(QWidget):
         self.timer.timeout.connect(self.timeout_run)        
         
         # 설정 버튼 클릭시 설정창 출력
-        self.settings_button.clicked.connect(self.setting_btn_click)
+        # self.settings_button.clicked.connect(self.setting_btn_click)
         
         # 현재 실행 파일 위치 확인
         self.filepath = os.path.join(os.getcwd())
@@ -104,7 +111,19 @@ class JS06MainWindow(QWidget):
         ]
 
         self.instance = vlc.Instance(args)
-        self.instance.log_unset()
+        self.instance.log_open()
+        # self.instance.log_unset()
+        fopen = ctypes.cdll.msvcrt.fopen
+        fopen.restype = vlc.FILE_ptr
+        fopen.argtypes = (ctypes.c_char_p, ctypes.c_char_p)
+        # ctypes에 문자열 인자값들을 넣으려면 모두 byte 형태로 변환해줘야 함
+        
+        current_time = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
+        f = fopen(bytes(f'vlc_log_{current_time}.log', encoding='utf-8'), b'w')
+        
+        self.instance.log_set_file(f)
+        
+        
         self.media_player = self.instance.media_player_new()
         
         # 실행 OS가 윈도우일 경우 설정
@@ -177,7 +196,7 @@ class JS06MainWindow(QWidget):
         """Print the current time."""
         current_time = time.strftime("%Y.%m.%d %H:%M:%S", time.localtime(time.time()))
         self.real_time_label.setText(current_time)
-        
+        # self.real_time_label.raise_()
         
     @pyqtSlot()
     def setting_btn_click(self):
@@ -257,11 +276,11 @@ if __name__ == '__main__':
     logger = js06_log.CreateLogger(__name__)
     logger.info(f'Start JS06 Program')
     
-    mp.freeze_support()
-    q = Queue()
-    p = Process(name="producer", target=video_thread_mp.producer, args=(q, ), daemon=True)
-    logger.info(f'Start video multiprocess')
-    p.start()
+    # mp.freeze_support()
+    # q = Queue()
+    # p = Process(name="producer", target=video_thread_mp.producer, args=(q, ), daemon=True)
+    # logger.info(f'Start video multiprocess')
+    # p.start()
     
     
     # JS06 메인 윈도우 실행
