@@ -30,10 +30,10 @@
    </property>
    <property name="font">
     <font>
-     <family>NanumGothic</family>
+     <family>FrutigerNeue1450W04-Regular</family>
      <pointsize>32</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="styleSheet">
@@ -44,7 +44,7 @@
 }</string>
    </property>
    <property name="text">
-    <string>   Monitoring</string>
+    <string>                             JS06</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -451,6 +451,105 @@
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
   </widget>
+  <widget class="QPushButton" name="pm25_pushButton">
+   <property name="geometry">
+    <rect>
+     <x>1840</x>
+     <y>770</y>
+     <width>48</width>
+     <height>48</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+#pm25_pushButton
+{
+	background-image: url(./ui/icon/dust_2.png);
+	border:0px;
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="autoDefault">
+    <bool>true</bool>
+   </property>
+   <property name="default">
+    <bool>true</bool>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="logo_pushButton">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>32</y>
+     <width>70</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+#logo_pushButton
+{
+	background-image: url(./ui/icon/logo.png);
+	border:0px;
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="autoDefault">
+    <bool>true</bool>
+   </property>
+   <property name="default">
+    <bool>true</bool>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="company_label">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>20</y>
+     <width>171</width>
+     <height>90</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>FrutigerNeue1450W04-Regular</family>
+     <pointsize>32</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#company_label
+{
+	background-color:rgb(27,49,70);
+	color:rgb(255,255,255);
+}</string>
+   </property>
+   <property name="text">
+    <string>SIJUNG</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+  </widget>
   <zorder>c_vis_title_label</zorder>
   <zorder>title_label</zorder>
   <zorder>settings_button</zorder>
@@ -466,6 +565,9 @@
   <zorder>graph_pushButton</zorder>
   <zorder>clock_pushButton</zorder>
   <zorder>vis_pushButton</zorder>
+  <zorder>pm25_pushButton</zorder>
+  <zorder>logo_pushButton</zorder>
+  <zorder>company_label</zorder>
  </widget>
  <resources/>
  <connections/>
