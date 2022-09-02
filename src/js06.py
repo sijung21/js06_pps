@@ -62,10 +62,10 @@ class JS06MainWindow(QWidget):
         # layout 위젯에 QFrame 위젯을 탑재
         self.verticallayout.addWidget(self.video_frame)
         
-        # self.video_frame.move(20, 110)
   
         # 카메라 IP 주소, 계정, 비밀번호를 rtsp 문법 구조에 맞게 선언
-        VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
+        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
+        VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
         CAM_NAME = "PNM_9030RV"
         # 송수신 시작 함수
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
@@ -73,8 +73,8 @@ class JS06MainWindow(QWidget):
         
         # 시정 실시간 출력 차트 클래스 선언
         
-        # self.chart_view = Vis_Chart()
-        # self.web_verticalLayout.addWidget(self.chart_view.chart_view)
+        self.chart_view = Vis_Chart()
+        self.web_verticalLayout.addWidget(self.chart_view.chart_view)
         
         
         # 소산계수, 시정, 미세먼지 산출하는 쓰레드 선언
@@ -90,7 +90,7 @@ class JS06MainWindow(QWidget):
         self.timer.timeout.connect(self.timeout_run)        
         
         # 설정 버튼 클릭시 설정창 출력
-        # self.settings_button.clicked.connect(self.setting_btn_click)
+        self.settings_button.clicked.connect(self.setting_btn_click)
         
         # 현재 실행 파일 위치 확인
         self.filepath = os.path.join(os.getcwd())
@@ -110,7 +110,7 @@ class JS06MainWindow(QWidget):
             "1500000"
         ]
 
-        self.instance = vlc.Instance(args)
+        self.instance = vlc.Instance()
         self.instance.log_open()
         # self.instance.log_unset()
         fopen = ctypes.cdll.msvcrt.fopen
@@ -134,13 +134,27 @@ class JS06MainWindow(QWidget):
         if url[:4] == "rtsp":
             # vlc instance에 url 입력
             self.media_player.set_media(self.instance.media_new(url))
-            self.media_player.video_set_aspect_ratio("11:3")
+            self.media_player.video_set_aspect_ratio("7:5")
+            
+            events = self.media_player.event_manager()
+            events.event_attach(vlc.EventType.MediaPlayerStopped, self.resume, "stopped")
+            events.event_attach(vlc.EventType.MediaPlayerEncounteredError, self.resume, "encountered")
             # vlc 시작
             self.media_player.play()
+             
         else:
             pass
         self.logger.info("Video playback success")
-                        
+    
+    def resume(self, event, event_name):
+        print("resume 실행")
+        print("event name : ", event_name)
+        print(str(event))
+        VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
+        CAM_NAME = "PNM_9030RV"
+        self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
+        
+           
     @pyqtSlot(str)
     def print_data(self, visibility):
         """ 메인 화면에 산출된 소산계수로 시정과 미세먼지를 계산 및 표시하는 함수"""
