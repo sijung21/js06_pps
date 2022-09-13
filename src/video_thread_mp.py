@@ -27,10 +27,10 @@ def producer(q):
         epoch = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
         
         # 5초에 한번
-        if int(epoch[-2:]) % 10 == 00:
+        # if int(epoch[-2:]) % 10 == 00:
         
         # 1분에 한번
-        # if epoch[-2:] == "00":
+        if epoch[-2:] == "00":
             print(epoch)
             try:
                 target_name, left_range, right_range, distance = target_info.get_target("PNM_9030V")

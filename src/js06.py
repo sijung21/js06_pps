@@ -44,7 +44,7 @@ class JS06MainWindow(QWidget):
         self.visibility_copy = 0
         self.running_ave_checked = None
         self.q_list = []
-        self.q_list_scale = 120
+        self.q_list_scale = 60
         self.rtsp_path = None
         self.logger = js06_log.CreateLogger(__name__)
         self.vis_list = []
@@ -64,8 +64,8 @@ class JS06MainWindow(QWidget):
         
   
         # 카메라 IP 주소, 계정, 비밀번호를 rtsp 문법 구조에 맞게 선언
-        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
-        VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
+        VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
+        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
         CAM_NAME = "PNM_9030RV"
         # 송수신 시작 함수
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
@@ -78,11 +78,11 @@ class JS06MainWindow(QWidget):
         
         
         # 소산계수, 시정, 미세먼지 산출하는 쓰레드 선언
-        # self.video_thread = CurveThread(VIDEO_SRC3, "Video", q)
-        # # 쓰레드와 시정, 미세먼지 출력 함수를 Signal 연결
-        # self.video_thread.update_visibility_signal.connect(self.print_data)
-        # # 쓰레드 시작
-        # self.video_thread.start()
+        self.video_thread = CurveThread(VIDEO_SRC3, "Video", q)
+        # 쓰레드와 시정, 미세먼지 출력 함수를 Signal 연결
+        self.video_thread.update_visibility_signal.connect(self.print_data)
+        # 쓰레드 시작
+        self.video_thread.start()
 
         # 실제 지금 PC 시간을 출력
         self.timer = QTimer()
@@ -150,7 +150,8 @@ class JS06MainWindow(QWidget):
         print("resume 실행")
         print("event name : ", event_name)
         print(str(event))
-        VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
+        VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"  
+        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
         CAM_NAME = "PNM_9030RV"
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
         
@@ -186,13 +187,13 @@ class JS06MainWindow(QWidget):
             visibility_text = str(visibility_mile) + " mi"
         
         self.c_vis_label.setText(visibility_text)
-        
+        print("가시거리 출력")
         ext = 3.912 / self.visibility_copy
         hd = 89
         pm_value = round((ext*1000/4/2.5)/(1+5.67*((hd/100)**5.8)),2)
         pm_text = str(pm_value) + " ㎍/㎥"
         self.c_pm_label.setText(pm_text)
-        
+        print("미세먼지 출력")
         # influxdb에 시정 값 저장
         self.data_storage(self.visibility_copy)
         
@@ -240,11 +241,11 @@ class JS06MainWindow(QWidget):
         self.logger.info(f"{self.running_ave_checked} Conversion done")
         
         if self.running_ave_checked == "One":
-            self.q_list_scale = 12
+            self.q_list_scale = 6
         elif self.running_ave_checked == "Five":
-            self.q_list_scale = 60
+            self.q_list_scale = 30
         elif self.running_ave_checked == "Ten":
-            self.q_list_scale = 120
+            self.q_list_scale = 60
     
     def save_frame(self, image: np.ndarray, epoch: str, g_ext, pm_25):
         """Save the image of the calculation time."""
@@ -290,11 +291,11 @@ if __name__ == '__main__':
     logger = js06_log.CreateLogger(__name__)
     logger.info(f'Start JS06 Program')
     
-    # mp.freeze_support()
-    # q = Queue()
-    # p = Process(name="producer", target=video_thread_mp.producer, args=(q, ), daemon=True)
-    # logger.info(f'Start video multiprocess')
-    # p.start()
+    mp.freeze_support()
+    q = Queue()
+    p = Process(name="producer", target=video_thread_mp.producer, args=(q, ), daemon=True)
+    logger.info(f'Start video multiprocess')
+    p.start()
     
     
     # JS06 메인 윈도우 실행
