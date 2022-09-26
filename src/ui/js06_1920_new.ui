@@ -135,7 +135,7 @@
 }</string>
    </property>
    <property name="text">
-    <string>   Time series</string>
+    <string/>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -287,7 +287,7 @@
 }</string>
    </property>
    <property name="text">
-    <string>   Visibility</string>
+    <string/>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -445,7 +445,7 @@
 }</string>
    </property>
    <property name="text">
-    <string>   PM2.5</string>
+    <string/>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -550,6 +550,99 @@
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
   </widget>
+  <widget class="QLabel" name="time_series_name_label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>650</y>
+     <width>500</width>
+     <height>90</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>FrutigerNeue1450W04-Regular</family>
+     <pointsize>32</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#time_series_name_label
+{
+	background-image: url(./ui/icon/time_series_name.png);
+	border:0px;
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="c_vis_title_label_2">
+   <property name="geometry">
+    <rect>
+     <x>920</x>
+     <y>750</y>
+     <width>451</width>
+     <height>90</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>FrutigerNeue1450W04-Regular</family>
+     <pointsize>25</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#c_vis_title_label_2
+{
+	background-image: url(./ui/icon/visibility_name.png);
+	border:0px;
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="c_pm_title_label_2">
+   <property name="geometry">
+    <rect>
+     <x>1380</x>
+     <y>750</y>
+     <width>450</width>
+     <height>90</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>FrutigerNeue1450W04-Regular</family>
+     <pointsize>25</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#c_pm_title_label_2
+{
+	background-image: url(./ui/icon/pm25_name.png);
+	border:0px;
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+  </widget>
   <zorder>c_vis_title_label</zorder>
   <zorder>title_label</zorder>
   <zorder>settings_button</zorder>
@@ -564,10 +657,13 @@
   <zorder>c_pm_title_label</zorder>
   <zorder>graph_pushButton</zorder>
   <zorder>clock_pushButton</zorder>
-  <zorder>vis_pushButton</zorder>
   <zorder>pm25_pushButton</zorder>
   <zorder>logo_pushButton</zorder>
   <zorder>company_label</zorder>
+  <zorder>time_series_name_label</zorder>
+  <zorder>c_vis_title_label_2</zorder>
+  <zorder>c_pm_title_label_2</zorder>
+  <zorder>vis_pushButton</zorder>
  </widget>
  <resources/>
  <connections/>

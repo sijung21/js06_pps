@@ -64,8 +64,8 @@ class JS06MainWindow(QWidget):
         
   
         # 카메라 IP 주소, 계정, 비밀번호를 rtsp 문법 구조에 맞게 선언
-        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
-        VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
+        VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
+        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
         CAM_NAME = "PNM_9030RV"
         # 송수신 시작 함수
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
@@ -132,7 +132,7 @@ class JS06MainWindow(QWidget):
         if url[:4] == "rtsp":
             # vlc instance에 url 입력
             self.media_player.set_media(self.instance.media_new(url))
-            self.media_player.video_set_aspect_ratio("7:5")
+            self.media_player.video_set_aspect_ratio("8:3")
             
             events = self.media_player.event_manager()
             events.event_attach(vlc.EventType.MediaPlayerStopped, self.resume, "stopped")
@@ -148,8 +148,8 @@ class JS06MainWindow(QWidget):
         print("resume 실행")
         print("event name : ", event_name)
         print(str(event))
-        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"
-        VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
+        VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"
+        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
         CAM_NAME = "PNM_9030RV"
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
         
