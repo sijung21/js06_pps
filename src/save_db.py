@@ -15,9 +15,11 @@ logger = js06_log.CreateLogger(__name__)
 
 def SaveDB(vis_value):
     client = InfluxDBClient('localhost', 8086)
-    save_time = time.time_ns()  
+    save_time = time.time_ns()
+    print("db 접속")
     try:
         client.switch_database("Sijung")
+        print("db switch 접속")
         points = [{"measurement": "JS06",
                 "tags": {"name": "Sijung"},
                 "fields": {"visbility": float(vis_value)},
@@ -34,7 +36,7 @@ def SaveDB(vis_value):
         logger.error(f'{e}')
         # Save every 1 minute.
         # time.sleep(3)
-        return
+        pass
 
     
 def main():

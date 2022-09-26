@@ -44,7 +44,7 @@
 }</string>
    </property>
    <property name="text">
-    <string>                             JS06</string>
+    <string/>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -121,10 +121,10 @@
    </property>
    <property name="font">
     <font>
-     <family>NanumGothic</family>
+     <family>FrutigerNeue1450W04-Regular</family>
      <pointsize>32</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="styleSheet">
@@ -273,10 +273,10 @@
    </property>
    <property name="font">
     <font>
-     <family>NanumGothic</family>
+     <family>FrutigerNeue1450W04-Regular</family>
      <pointsize>25</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="styleSheet">
@@ -431,10 +431,10 @@
    </property>
    <property name="font">
     <font>
-     <family>NanumGothic</family>
+     <family>FrutigerNeue1450W04-Regular</family>
      <pointsize>25</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="styleSheet">
@@ -522,9 +522,9 @@
   <widget class="QLabel" name="company_label">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>120</x>
      <y>20</y>
-     <width>171</width>
+     <width>500</width>
      <height>90</height>
     </rect>
    </property>
@@ -539,12 +539,12 @@
    <property name="styleSheet">
     <string notr="true">#company_label
 {
-	background-color:rgb(27,49,70);
-	color:rgb(255,255,255);
+	background-image: url(./ui/icon/company_product_name.png);
+	border:0px;
 }</string>
    </property>
    <property name="text">
-    <string>SIJUNG</string>
+    <string/>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

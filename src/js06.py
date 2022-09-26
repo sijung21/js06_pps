@@ -64,8 +64,8 @@ class JS06MainWindow(QWidget):
         
   
         # 카메라 IP 주소, 계정, 비밀번호를 rtsp 문법 구조에 맞게 선언
-        VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
-        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
+        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
+        VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
         CAM_NAME = "PNM_9030RV"
         # 송수신 시작 함수
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
@@ -79,9 +79,9 @@ class JS06MainWindow(QWidget):
         
         # 소산계수, 시정, 미세먼지 산출하는 쓰레드 선언
         self.video_thread = CurveThread(VIDEO_SRC3, "Video", q)
-        # 쓰레드와 시정, 미세먼지 출력 함수를 Signal 연결
+        # # 쓰레드와 시정, 미세먼지 출력 함수를 Signal 연결
         self.video_thread.update_visibility_signal.connect(self.print_data)
-        # 쓰레드 시작
+        # # 쓰레드 시작
         self.video_thread.start()
 
         # 실제 지금 PC 시간을 출력
@@ -104,8 +104,6 @@ class JS06MainWindow(QWidget):
         # 실시간 카메라 영상 출력 부분        
         # Vlc 옵션 설정
         args = [
-            "--aspect-ratio",
-            "11:3"
             "--rtsp-frame-buffer-size",
             "1500000"
         ]
@@ -150,8 +148,8 @@ class JS06MainWindow(QWidget):
         print("resume 실행")
         print("event name : ", event_name)
         print(str(event))
-        VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"  
-        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
+        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"
+        VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
         CAM_NAME = "PNM_9030RV"
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
         
