@@ -13,7 +13,7 @@ from scipy.optimize import curve_fit
 # import PyQt5
 # print(PyQt5.__version__)
 from PyQt5.QtGui import QPixmap, QImage, QPainter, QBrush, QColor, QPen, QImage, QPixmap, QIcon, QFont
-from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QDialog, QTableWidgetItem, QHeaderView, QFileDialog
+from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayout, QWidget, QLabel, QInputDialog, QDialog, QTableWidgetItem, QHeaderView, QFileDialog, QMessageBox
 from PyQt5.QtCore import QPoint, QRect, Qt, QRectF, QSize, QCoreApplication, pyqtSlot, QTimer, QUrl
 from PyQt5 import uic
 
@@ -463,10 +463,17 @@ class JS06_Setting_Widget(QDialog):
             self.lower_right = (int((self.end.x()/self.blank_lbl.width())*self.image_width),
                                 int((self.end.y()/self.blank_lbl.height())*self.image_height))
             text, ok = QInputDialog.getText(self, '거리 입력', '거리(km)')
-            if ok:
+            if ok and len(text) > 0:
+                try:
+                    distance = float(text)
+                except Exception as e:
+                    QMessageBox.warning(self, 'Error', '거리를 다시 입력해주세요')
+                    self.isDrawing = False
+                    self.blank_lbl.update()
+                    return
                 self.left_range.append(self.upper_left)
                 self.right_range.append(self.lower_right)
-                self.distance.append(float(text))
+                self.distance.append(distance)
                 self.target_name.append("target_" + str(len(self.left_range)))
                 self.save_target()
                 self.isDrawing = False
@@ -482,14 +489,26 @@ class JS06_Setting_Widget(QDialog):
         else:
             if len(self.left_range) > 0:
                 text, ok = QInputDialog.getText(self, '타겟 제거', '제거할 타겟 번호 입력')                
-                if ok:
+                if ok and len(text) > 0:
+                    try:
+                        target_num = int(text)
+                    except Exception as e:
+                        QMessageBox.warning(self, 'Error', '타겟 번호를 다시 입력해주세요')
+                        self.isDrawing = False
+                        self.blank_lbl.update()
+                        return
+                    
                     rm_target_name = "target_" + text
-                    print(self.target_name)
-                    del self.distance[self.target_name.index(rm_target_name)]                    
-                    del self.left_range[self.target_name.index(rm_target_name)]
-                    del self.right_range[self.target_name.index(rm_target_name)]
-                    del self.target_name[self.target_name.index(rm_target_name)]
-                    self.logger.info(f'Delete target num : {text}')
+                    
+                    if rm_target_name in self.target_name:                    
+                        print(self.target_name)
+                        del self.distance[self.target_name.index(rm_target_name)]                    
+                        del self.left_range[self.target_name.index(rm_target_name)]
+                        del self.right_range[self.target_name.index(rm_target_name)]
+                        del self.target_name[self.target_name.index(rm_target_name)]
+                        self.logger.info(f'Delete target num : {text}')
+                    else:
+                        QMessageBox.warning(self, 'Error', '잘못된 타겟번호입니다.')
                 self.save_target()
                 self.show_target_table()
                 self.blank_lbl.update()
