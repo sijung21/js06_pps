@@ -13,12 +13,12 @@ import multiprocessing as mp
 
 from PyQt5.QtGui import QPixmap, QPixmap
 from PyQt5.QtWidgets import QApplication, QWidget, QFrame, QLabel
-from PyQt5.QtCore import QPoint, Qt, pyqtSlot, QTimer
+from PyQt5.QtCore import QPoint, Qt, pyqtSlot, QTimer, QDateTime
 from PyQt5 import uic
 
 from video_thread_mp import CurveThread
 import video_thread_mp
-import save_db
+# import save_db
 import save_path_info
 from js06_settings import JS06_Setting_Widget
 from visibility_widget import Vis_Chart
@@ -70,6 +70,8 @@ class JS06MainWindow(QWidget):
         # 송수신 시작 함수
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
         
+        self.uri = VIDEO_SRC3
+        
         
         # 시정 실시간 출력 차트 클래스 선언
         
@@ -109,17 +111,17 @@ class JS06MainWindow(QWidget):
         ]
 
         self.instance = vlc.Instance()
-        self.instance.log_open()
+        # self.instance.log_open()
         # self.instance.log_unset()
-        fopen = ctypes.cdll.msvcrt.fopen
-        fopen.restype = vlc.FILE_ptr
-        fopen.argtypes = (ctypes.c_char_p, ctypes.c_char_p)
+        # fopen = ctypes.cdll.msvcrt.fopen
+        # fopen.restype = vlc.FILE_ptr
+        # fopen.argtypes = (ctypes.c_char_p, ctypes.c_char_p)
         # ctypes에 문자열 인자값들을 넣으려면 모두 byte 형태로 변환해줘야 함
         
-        current_time = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
-        f = fopen(bytes(f'vlc_log_{current_time}.log', encoding='utf-8'), b'w')
+        # current_time = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
+        # f = fopen(bytes(f'vlc_log_{current_time}.log', encoding='utf-8'), b'w')
         
-        self.instance.log_set_file(f)
+        # self.instance.log_set_file(f)
         
         
         self.media_player = self.instance.media_player_new()
@@ -132,11 +134,8 @@ class JS06MainWindow(QWidget):
         if url[:4] == "rtsp":
             # vlc instance에 url 입력
             self.media_player.set_media(self.instance.media_new(url))
-            self.media_player.video_set_aspect_ratio("8:3")
+            self.media_player.video_set_aspect_ratio("8:3")           
             
-            events = self.media_player.event_manager()
-            events.event_attach(vlc.EventType.MediaPlayerStopped, self.resume, "stopped")
-            events.event_attach(vlc.EventType.MediaPlayerEncounteredError, self.resume, "encountered")
             # vlc 시작
             self.media_player.play()
              
@@ -144,14 +143,15 @@ class JS06MainWindow(QWidget):
             pass
         self.logger.info("Video playback success")
     
-    def resume(self, event, event_name):
-        print("resume 실행")
-        print("event name : ", event_name)
-        print(str(event))
-        VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"
-        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
-        CAM_NAME = "PNM_9030RV"
-        self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
+    def get_status(self):
+        """vlc 플레이어 상태 확인 플레이어가 중단되어 있으면 다시 재연결해주는 함수"""
+        if self.media_player.is_playing() == 0:
+            print(f'Player is not playing! in '
+                    f'{time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(QDateTime.currentSecsSinceEpoch()))}')
+            self.media_player.set_media(self.instance.media_new(self.uri))
+            self.media_player.play()
+        else:
+            pass
         
            
     @pyqtSlot(str)
@@ -195,12 +195,15 @@ class JS06MainWindow(QWidget):
         # influxdb에 시정 값 저장
         self.data_storage(self.visibility_copy)
         
+        # vlc 상태 확인
+        self.get_status()
+        
         
         
     def data_storage(self, vis_data):
         """Store visibility and fine dust values ​​in the database."""
 
-        save_db.SaveDB(vis_data)
+        # save_db.SaveDB(vis_data)
         print("data storage!")
         self.chart_view.appendData(self.visibility_copy)
         
@@ -239,11 +242,11 @@ class JS06MainWindow(QWidget):
         self.logger.info(f"{self.running_ave_checked} Conversion done")
         
         if self.running_ave_checked == "One":
-            self.q_list_scale = 6
+            self.q_list_scale = 1
         elif self.running_ave_checked == "Five":
-            self.q_list_scale = 30
+            self.q_list_scale = 5
         elif self.running_ave_checked == "Ten":
-            self.q_list_scale = 60
+            self.q_list_scale = 10
 
     def keyPressEvent(self, e):
         """Override function QMainwindow KeyPressEvent that works when key is pressed"""
