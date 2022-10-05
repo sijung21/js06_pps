@@ -244,25 +244,6 @@ class JS06MainWindow(QWidget):
             self.q_list_scale = 30
         elif self.running_ave_checked == "Ten":
             self.q_list_scale = 60
-    
-    def save_frame(self, image: np.ndarray, epoch: str, g_ext, pm_25):
-        """Save the image of the calculation time."""
-        print("save_frame 시작")
-        self.logger.info(f"Start save frame")
-        image_path = os.path.join(self.filepath, f"{self.test_name}")
-        file_name = f"{epoch}"
-        if not os.path.isdir(image_path):
-            os.makedirs(image_path)
-
-        g_ext = round(g_ext / 1000, 4)
-
-        if not os.path.isfile(f"{image_path}/{file_name}_{g_ext}_{pm_25}.jpg"):
-            cv2.imwrite(f"{image_path}/{file_name}_{g_ext}_{pm_25}.jpg", image)
-            del image
-            del image_path
-            cv2.destroyAllWindows()
-            print(file_name , "The image has been saved.")
-            return
 
     def keyPressEvent(self, e):
         """Override function QMainwindow KeyPressEvent that works when key is pressed"""

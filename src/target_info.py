@@ -128,7 +128,7 @@ def save_rgb_value(value_list, distance_list, ext_value, select_color, epoch):
     
     data_save_path = save_path_info.get_data_path("data_path")
     days = epoch[:-4]
-    rgbsavedir = os.path.join(f"{data_save_path}/data/rgb/PNM_9030V/{select_color}")
+    rgbsavedir = os.path.join(f"{data_save_path}/rgb/PNM_9030V/{select_color}")
     
     try:
         os.makedirs(rgbsavedir)
@@ -163,7 +163,7 @@ def save_ext(ext_list, epoch):
     
     data_save_path = save_path_info.get_data_path("data_path")
     days = epoch[:-4]
-    extsavedir = os.path.join(f"{data_save_path}/data/ext/PNM_9030V")
+    extsavedir = os.path.join(f"{data_save_path}/ext/PNM_9030V")
     try:
         os.makedirs(extsavedir)
         logger.info(f'Create folder RGB Ext save path')

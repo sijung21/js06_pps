@@ -59,6 +59,7 @@ def producer(q):
                     
                     cap.release()
                     
+                    
                     q.put(visibility)
                     # time.sleep(10)
             except Exception as e:
