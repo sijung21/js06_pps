@@ -23,6 +23,7 @@ import save_path_info
 from js06_settings import JS06_Setting_Widget
 from visibility_widget import Vis_Chart
 import js06_log
+from cloud_animation import Weather_Icon
 
 class JS06MainWindow(QWidget):
 
@@ -96,6 +97,11 @@ class JS06MainWindow(QWidget):
         
         # 현재 실행 파일 위치 확인
         self.filepath = os.path.join(os.getcwd())
+        
+        self.cloud_icon = Weather_Icon(self)
+        self.cloud_icon.setGeometry(940,650,120,80)
+        
+        
         
         
     
