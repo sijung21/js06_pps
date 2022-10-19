@@ -91,16 +91,16 @@ class Vis_Chart(QWidget):
         # 현재 시간 저장
         self.now = QDateTime.currentDateTime()
         # 몇초 전까지 보여주는지 설정 값
-        self.viewLimit = 86400
+        self.viewLimit = 1800
         # 몇초 단위로 저장하는지 설정
         self.timetick = 60
         # 각 Series에 랜덤으로 몇초 전까지의 데이터들을 임의로 저장 
         for i in range(self.viewLimit, 1, -self.timetick):
-            cur = 20 * random.random()
+            # cur = 20 * random.random()
             time = self.now.addSecs(-i).toMSecsSinceEpoch()  #Processing to append to QLineSeries
             self.vis_series.append(time, 0)
-            # self.vis_scatter.append(time, cur)
-            # self.vis_scatter_2.append(time, cur)
+            self.vis_scatter.append(time, 0)
+            self.vis_scatter_2.append(time, 0)
 
         # Seires를 담을 Qchart를 선언
         self.chart = QChart()
@@ -110,8 +110,8 @@ class Vis_Chart(QWidget):
         
         # Qchart에 Series들 추가
         self.chart.addSeries(self.vis_series)
-        # self.chart.addSeries(self.vis_scatter)
-        # self.chart.addSeries(self.vis_scatter_2)
+        self.chart.addSeries(self.vis_scatter)
+        self.chart.addSeries(self.vis_scatter_2)
         
         # Qchart 설정
         self.chart.legend().hide()        
@@ -163,8 +163,8 @@ class Vis_Chart(QWidget):
         cur_axis_y.setTickCount(6)
         self.chart.addAxis(cur_axis_y, Qt.AlignLeft)
         self.vis_series.attachAxis(cur_axis_y)
-        # self.vis_scatter.attachAxis(cur_axis_y)
-        # self.vis_scatter_2.attachAxis(cur_axis_y)
+        self.vis_scatter.attachAxis(cur_axis_y)
+        self.vis_scatter_2.attachAxis(cur_axis_y)
 
         # 새로운 데이터를 계속 호출하는 QThread 클래스 선언
         # self.pw = ValueWorker("Test")
@@ -181,13 +181,13 @@ class Vis_Chart(QWidget):
         """ Series에 가장 오래된 데이터를 지우고 새로운 데이터를 추가하는 함수 """
         if len(self.vis_series) == (self.viewLimit//self.timetick):
             self.vis_series.remove(0)
-            # self.vis_scatter.remove(0)
-            # self.vis_scatter_2.remove(0)
+            self.vis_scatter.remove(0)
+            self.vis_scatter_2.remove(0)
         dt = QDateTime.currentDateTime()
         print("QDate time",dt)
         self.vis_series.append(dt.toMSecsSinceEpoch(), value)
-        # self.vis_scatter.append(dt.toMSecsSinceEpoch(), value)
-        # self.vis_scatter_2.append(dt.toMSecsSinceEpoch(), value)
+        self.vis_scatter.append(dt.toMSecsSinceEpoch(), value)
+        self.vis_scatter_2.append(dt.toMSecsSinceEpoch(), value)
         self.__updateAxis()
     
     def __updateAxis(self):

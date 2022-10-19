@@ -36,7 +36,8 @@ def producer(q):
                 target_name, left_range, right_range, distance = target_info.get_target("PNM_9030V")
                 
                 if len(left_range) < 4:
-                    time.sleep(10)
+                    q.put("0")
+                    time.sleep(5)
                     continue
                 else:                    
                     pass

@@ -98,6 +98,7 @@ class JS06MainWindow(QWidget):
         # 현재 실행 파일 위치 확인
         self.filepath = os.path.join(os.getcwd())
         
+        # 구름 애니메이션
         self.cloud_icon = Weather_Icon(self)
         self.cloud_icon.setGeometry(940,650,120,80)
         
@@ -166,6 +167,10 @@ class JS06MainWindow(QWidget):
         
         visibility_float = round(float(visibility), 3)
         
+        if visibility == "0":
+            self.data_storage(0)
+            return
+        
         if len(self.q_list) == 0 or self.q_list_scale != len(self.q_list):
             self.q_list = []
             for i in range(self.q_list_scale):
@@ -211,7 +216,7 @@ class JS06MainWindow(QWidget):
 
         # save_db.SaveDB(vis_data)
         print("data storage!")
-        self.chart_view.appendData(self.visibility_copy)
+        self.chart_view.appendData(vis_data)
         
 
     def timeout_run(self):
