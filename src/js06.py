@@ -65,8 +65,8 @@ class JS06MainWindow(QWidget):
         
   
         # 카메라 IP 주소, 계정, 비밀번호를 rtsp 문법 구조에 맞게 선언
-        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
-        VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
+        VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
+        # VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
         CAM_NAME = "PNM_9030RV"
         # 송수신 시작 함수
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")

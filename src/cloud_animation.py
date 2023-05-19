@@ -62,7 +62,7 @@ class Weather_Icon(QLabel):
     def paintEvent(self, e):
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
-        cloud_color = QColor(180, 180, 250)
+        cloud_color = QColor(7, 56, 120)
         br = QBrush(cloud_color)
         p.setBrush(br)
         p.setPen(QPen(cloud_color, 2, Qt.SolidLine))
