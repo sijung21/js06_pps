@@ -38,7 +38,7 @@ class JS06MainWindow(QWidget):
         # self.setAttribute(Qt.WA_NoSystemBackground, True)
         # self.setAttribute(Qt.WA_TranslucentBackground, True)
         
-        self.rtsp_path = save_path_info.get_data_path("camera_ip_path")        
+        self.rtsp_path = save_path_info.get_data_path("SETTING", "camera_ip")        
 
         # 실시간 카메라 영상을 출력할 QFrame을 선언
         self.video_frame = QFrame()        

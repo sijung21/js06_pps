@@ -82,7 +82,7 @@ def get_rgb(epoch: str, min_x, min_y, cp_image, distance):
 def save_rgb(r_list, g_list, b_list, epoch, distance):
     """Save the rgb information for each target."""
     
-    data_save_path = save_path_info.get_data_path("data_path")
+    data_save_path = save_path_info.get_data_path("Path", "data_path")
     try:
         save_path = os.path.join(f"{data_save_path}/rgb/PNM_9030V")
         os.makedirs(save_path)
@@ -126,7 +126,7 @@ def save_rgb(r_list, g_list, b_list, epoch, distance):
 
 def save_rgb_value(value_list, distance_list, ext_value, select_color, epoch):
     
-    data_save_path = save_path_info.get_data_path("data_path")
+    data_save_path = save_path_info.get_data_path("Path", "data_path")
     days = epoch[:-4]
     rgbsavedir = os.path.join(f"{data_save_path}/rgb/PNM_9030V/{select_color}")
     
@@ -161,7 +161,7 @@ def save_rgb_value(value_list, distance_list, ext_value, select_color, epoch):
     
 def save_ext(ext_list, epoch):
     
-    data_save_path = save_path_info.get_data_path("data_path")
+    data_save_path = save_path_info.get_data_path("Path", "data_path")
     days = epoch[:-4]
     extsavedir = os.path.join(f"{data_save_path}/ext/PNM_9030V")
     try:

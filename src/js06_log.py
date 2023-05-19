@@ -13,7 +13,7 @@ def CreateLogger(logger_name):
     # log 출력 형식
     formatter = logging.Formatter('%(asctime)s - %(name)s :%(lineno)s- %(levelname)s - %(message)s')
     
-    log_path_text = save_path_info.get_data_path('log_path')
+    log_path_text = save_path_info.get_data_path('Path', 'log_path')
 
     try:
         log_save_path = os.path.join(log_path_text)

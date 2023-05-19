@@ -69,19 +69,19 @@ class JS06_Setting_Widget(QDialog):
         
         self.radio_flag = radio_flag
         
-        data_path_text = save_path_info.get_data_path('data_path')
+        data_path_text = save_path_info.get_data_path('Path', 'data_csv_path')
         
         self.data_path_textEdit.setPlainText(data_path_text)
         
-        image_path_text = save_path_info.get_data_path('image_path')
+        image_path_text = save_path_info.get_data_path('Path','image_save_path')
         
         self.image_path_textEdit.setPlainText(image_path_text)
         
-        log_path_text = save_path_info.get_data_path('log_path')
+        log_path_text = save_path_info.get_data_path('Path','log_path')
         
         self.log_path_textEdit.setPlainText(log_path_text)
         
-        self.rtsp_path = save_path_info.get_data_path('camera_ip_path')
+        self.rtsp_path = save_path_info.get_data_path('SETTING','camera_ip')
         
         self.image_load()        
         

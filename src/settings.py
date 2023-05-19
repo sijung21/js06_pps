@@ -20,6 +20,8 @@ settings = QSettings('config.ini', QSettings.IniFormat)
 
 class Setting_Widget(QDialog):
 # JS06의 설정 값들을 저장 및 수정하는 Dialog
+# SETTING : 카메라 관련 설정 그룹
+# Path : 데이터 저장 경로 설정 그룹
 
     def __init__(self, *args, **kwargs):
 

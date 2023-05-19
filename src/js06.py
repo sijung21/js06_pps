@@ -50,24 +50,27 @@ class JS06MainWindow(QWidget):
         self.logger = js06_log.CreateLogger(__name__)
         self.vis_list = []
         
-        # JS06의 설정 정보들을 초기화 하거나 이미 있으면 패쓰
-        if os.path.isfile("D:/path_info/path_info.csv"):
-            pass        
-        else:
-            save_path_info.init_data_path()
+        # # JS06의 설정 정보들을 초기화 하거나 이미 있으면 패쓰
+        # if os.path.isfile("D:/path_info/path_info.csv"):
+        #     pass        
+        # else:
+        #     save_path_info.init_data_path()
         
-        self.rtsp_path = save_path_info.get_data_path("camera_ip_path")        
+        self.rtsp_path = save_path_info.get_data_path("SETTING", "camera_ip")
 
         # 실시간 카메라 영상을 출력할 QFrame을 선언
         self.video_frame = QFrame()        
         # layout 위젯에 QFrame 위젯을 탑재
         self.verticallayout.addWidget(self.video_frame)
         
+        cam_id = save_path_info.get_data_path("SETTING", "camera_id")
+        cam_pwd = save_path_info.get_data_path("SETTING", "camera_pw")
+        view_profile = save_path_info.get_data_path("SETTING", "view_profile")
   
         # 카메라 IP 주소, 계정, 비밀번호를 rtsp 문법 구조에 맞게 선언
-        VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
+        VIDEO_SRC3 = f"rtsp://{cam_id}:{cam_pwd}@{self.rtsp_path}/{view_profile}/media.smp"     
         # VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
-        CAM_NAME = "PNM_9030RV"
+        CAM_NAME = save_path_info.get_data_path("SETTING", "camera_name")
         # 송수신 시작 함수
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
         

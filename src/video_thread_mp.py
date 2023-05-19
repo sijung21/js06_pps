@@ -20,7 +20,7 @@ import js06_log
 def producer(q):
     proc = mp.current_process()
     
-    rtsp_path = save_path_info.get_data_path("camera_ip_path")
+    rtsp_path = save_path_info.get_data_path("SETTING", "camera_ip")
     
     
     while True:
@@ -49,7 +49,7 @@ def producer(q):
                 if ret:
                     visibility = target_info.minprint(epoch[:-2], left_range, right_range, distance, cv_img)
                     
-                    img_path = save_path_info.get_data_path('image_path')
+                    img_path = save_path_info.get_data_path('Path', 'image_path')
                     
                     try:
                         os.makedirs(img_path)
