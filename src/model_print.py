@@ -5,6 +5,8 @@ import cv2
 import numpy as np
 import pandas as pd
 
+from datetime import datetime
+
 import tensorflow as tf
 
 import save_path_info
@@ -116,6 +118,23 @@ class Tf_model():
         # visibility print
         print(f" visibility : ", visibility)
 
+        days = epoch[:-4]
+        vis_folder_path = os.path.join(save_path_info.get_data_path('Path', 'data_csv_path'))
+        vis_file_path = os.path.join(vis_folder_path,f"{days}.csv")
+        os.makedirs(vis_folder_path, exist_ok=True)
+        
+        if os.path.isfile(vis_file_path):
+            vis_df = pd.read_csv(vis_file_path)
+        else:
+            cols = ["time",'visibility']
+            vis_df = pd.DataFrame(columns=cols)
+        
+        dt_epoch = datetime.strptime(epoch, '%Y%m%d%H%M')
+        vis_df = vis_df.append({'time': dt_epoch,'visibility': visibility}, ignore_index=True)
+        
+        vis_df.to_csv(vis_file_path,mode="w", index=False)
+            
+        
         # 이미지 저장
         self.result_save(result_list, epoch, visibility)
         print("실행시간 : ", time.time() - start_time)

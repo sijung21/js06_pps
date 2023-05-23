@@ -52,20 +52,21 @@ def producer(q):
                 
                 if ret:
                     method = save_path_info.get_data_path("Method", "method")
-                    if method == "EXT":
+                    print(method)
+                    if str(method) == "EXT":
                         visibility = target_info.minprint(epoch[:-2], left_range, right_range, distance, cv_img)
                     
                         
-                    elif method == "AI":
+                    elif str(method) == "AI":
                         visibility = tf_model.inference(epoch[:-2], left_range, right_range,
                                                            distance, cv_img)
                         
                     
-                    try:
-                        os.makedirs(img_path)
-                    except Exception as e:
-                        pass
                     img_path = save_path_info.get_data_path('Path', 'image_save_path')
+                    img_path = os.path.join(img_path, epoch[:-6])
+                    
+                    os.makedirs(img_path, exist_ok=True)
+                    
                     cv2.imwrite(f'{img_path}/{epoch[:-2]}.jpg', cv_img)
                     
                     cap.release()
