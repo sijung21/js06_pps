@@ -3,8 +3,7 @@ import pandas as pd
 from PyQt5.QtCore import QSettings
 
 
-# config.ini 파일의 설정값들을 읽어들어 settings에 저장
-settings = QSettings('config.ini', QSettings.IniFormat)
+
     
 # logger = js06_log.CreateLogger(__name__)
 
@@ -26,14 +25,16 @@ settings = QSettings('config.ini', QSettings.IniFormat)
 #     # logger.info("Initialization path settings")
 
 def get_data_path(group, key):
-    
+    # config.ini 파일의 설정값들을 읽어들어 settings에 저장
+    settings = QSettings('config.ini', QSettings.IniFormat)
     get_text = settings.value(f"{group}/{key}")
     return str(get_text)
 
 
 def set_data_path(group, key, new_value):    
     
-    
+    # config.ini 파일의 설정값들을 읽어들어 settings에 저장
+    settings = QSettings('config.ini', QSettings.IniFormat)
     settings.setValue(f"{group}/{key}", new_value)
     # path_df = pd.read_csv(file_path)
     

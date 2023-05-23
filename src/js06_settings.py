@@ -69,6 +69,8 @@ class JS06_Setting_Widget(QDialog):
         
         self.radio_flag = radio_flag
         
+        self.cal_radio_flag = save_path_info.get_data_path('Method', 'method')
+        
         data_path_text = save_path_info.get_data_path('Path', 'data_csv_path')
         
         self.data_path_textEdit.setPlainText(data_path_text)
@@ -98,6 +100,11 @@ class JS06_Setting_Widget(QDialog):
             self.km_radio_btn.setChecked(True)
         elif self.radio_flag == "Mile":
             self.mile_radio_btn.setChecked(True)
+        
+        if self.cal_radio_flag == None or self.cal_radio_flag == "EXT":
+            self.ext_radio_btn.setChecked(True)
+        elif self.cal_radio_flag == "AI":
+            self.ai_radio_btn.setChecked(True)
         
         self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target("PNM_9030V")
     
@@ -132,6 +139,9 @@ class JS06_Setting_Widget(QDialog):
         
         self.km_radio_btn.clicked.connect(self.radio_function)
         self.mile_radio_btn.clicked.connect(self.radio_function)  
+        
+        self.ai_radio_btn.clicked.connect(self.cal_radio_function)
+        self.ext_radio_btn.clicked.connect(self.cal_radio_function)  
         
         self.red_checkBox.clicked.connect(self.chart_update)
         self.green_checkBox.clicked.connect(self.chart_update)
@@ -330,10 +340,20 @@ class JS06_Setting_Widget(QDialog):
         """radio button 설정에 따라 시정 단위를 변경해서 출력하는 함수"""
         if self.km_radio_btn.isChecked():
             self.radio_flag = "Km"
+            
             # print(self.radio_flag)
         elif self.mile_radio_btn.isChecked():
             self.radio_flag = "Mile"
             # print(self.radio_flag)
+    
+    def cal_radio_function(self):
+        """radio button 설정에 따라 계산 방법을 변경하는 함수"""
+        if self.ai_radio_btn.isChecked():
+            self.cal_radio_flag = "AI"
+            save_path_info.set_data_path("Method", "method", "AI")
+        elif self.ext_radio_btn.isChecked():
+            self.cal_radio_flag = "EXT"
+            save_path_info.set_data_path("Method", "method", "EXT")
         
     def image_load(self):
         
