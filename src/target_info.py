@@ -204,10 +204,17 @@ def extinc_print(c1_list: list = [0, 0, 0], c2_list: list = [0, 0, 0], alp_list:
 def visibility_print(ext_g: float = 0.0):
     """Print the visibility"""
     vis_value = 0
+    cam_name = save_path_info.get_data_path('SETTING','camera_name')
+    _, _, _, distance_list = get_target(cam_name)
+    print(distance_list)
+    try:
+        max_value = float(distance_list[-2])
+    except Exception as e:
+        max_value = 20
 
     vis_value = (3.912/ext_g)
-    if vis_value > 20:
-        vis_value = 20
+    if vis_value > max_value:
+        vis_value = max_value
     elif vis_value < 0.01:
         vis_value = 0.01
 

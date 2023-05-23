@@ -26,7 +26,7 @@ import js06_log
 
 class JS06_Setting_Widget(QDialog):
 
-    def __init__(self, radio_flag=None, run_ave_flag=None, *args, **kwargs):
+    def __init__(self, radio_flag=None, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
@@ -65,7 +65,8 @@ class JS06_Setting_Widget(QDialog):
         self.logger = js06_log.CreateLogger(__name__)
         self.logger.info('Setup window initialization complete')
         
-        self.running_ave_checked = run_ave_flag
+        # self.running_ave_checked = run_ave_flag
+        run_ave = save_path_info.get_data_path('SETTING','running_average')
         
         self.radio_flag = radio_flag
         
@@ -84,6 +85,8 @@ class JS06_Setting_Widget(QDialog):
         self.log_path_textEdit.setPlainText(log_path_text)
         
         self.rtsp_path = save_path_info.get_data_path('SETTING','camera_ip')
+        
+        cam_name = save_path_info.get_data_path('SETTING','camera_name')
         
         self.image_load()        
         
@@ -106,11 +109,11 @@ class JS06_Setting_Widget(QDialog):
         elif self.cal_radio_flag == "AI":
             self.ai_radio_btn.setChecked(True)
         
-        self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target("PNM_9030V")
+        self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target(cam_name)
     
-        if run_ave_flag == "Ten":
+        if run_ave == "10":
             self.ten_radio_btn.setChecked(True)
-        elif run_ave_flag == "Five":
+        elif run_ave == "5":
             self.five_radio_btn.setChecked(True)
         else:
             self.one_radio_btn.setChecked(True)
@@ -328,13 +331,16 @@ class JS06_Setting_Widget(QDialog):
     def running_avr_time_settings_function(self):
         """radio button 설정에 따라 Running Average 단위를 변경해서 설정하는 함수"""
         if self.one_radio_btn.isChecked():
-            self.running_ave_checked = "One"
+            # self.running_ave_checked = "One"
+            save_path_info.set_data_path("SETTING", "running_average", "1")
             
         elif self.five_radio_btn.isChecked():
-            self.running_ave_checked = "Five"
+            # self.running_ave_checked = "Five"
+            save_path_info.set_data_path("SETTING", "running_average", "5")
             
         elif self.ten_radio_btn.isChecked():
-            self.running_ave_checked = "Ten"
+            # self.running_ave_checked = "Ten"
+            save_path_info.set_data_path("SETTING", "running_average", "10")
 
     def radio_function(self):
         """radio button 설정에 따라 시정 단위를 변경해서 출력하는 함수"""

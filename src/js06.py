@@ -41,11 +41,12 @@ class JS06MainWindow(QWidget):
         self.g_ext = None
         self.pm_25 = None
         self.test_name = None
-        self.radio_checked = None
+        self.radio_checked = save_path_info.get_data_path("SETTING", "distance_unit")
+        self.running_ave_checked = save_path_info.get_data_path("SETTING", "running_average")
         self.visibility_copy = 0
-        self.running_ave_checked = None
+        # self.running_average = 1
         self.q_list = []
-        self.q_list_scale = 60
+        self.q_list_scale = int(save_path_info.get_data_path("SETTING", "running_average"))
         self.rtsp_path = None
         self.logger = js06_log.CreateLogger(__name__)
         self.vis_list = []
@@ -179,11 +180,10 @@ class JS06MainWindow(QWidget):
             for i in range(self.q_list_scale):
                 self.q_list.append(visibility_float)
                 
-            print("q 리스트 길이", len(self.q_list))
+            # print("q 리스트 길이", len(self.q_list))
             self.logger.info(f"q list length : {len(self.q_list)}")
             result_vis = np.mean(self.q_list)
         else:
-            print("q 리스트 길이2", len(self.q_list))
             self.logger.info(f"q list length : {len(self.q_list)}")
             self.q_list.pop(0)
             self.q_list.append(visibility_float)
@@ -191,6 +191,7 @@ class JS06MainWindow(QWidget):
         
         self.visibility_copy = round(float(result_vis), 3)
         
+        self.radio_checked = save_path_info.get_data_path("SETTING","distance_unit")
         
         if self.radio_checked == None or self.radio_checked == "Km":
             visibility_text = str(self.visibility_copy) + " km"
@@ -199,13 +200,14 @@ class JS06MainWindow(QWidget):
             visibility_text = str(visibility_mile) + " mi"
         
         self.c_vis_label.setText(visibility_text)
-        print("가시거리 출력")
         ext = 3.912 / self.visibility_copy
         hd = 89
         pm_value = round((ext*1000/4/2.5)/(1+5.67*((hd/100)**5.8)),2)
+        
+        # Error Note: 미세먼지 단위를 ini 파일에 넣으면 깨짐.
+        concentration_text = save_path_info.get_data_path("SETTING","concentration_unit")
         pm_text = str(pm_value) + " ㎍/㎥"
         self.c_pm_label.setText(pm_text)
-        print("미세먼지 출력")
         # influxdb에 시정 값 저장
         self.data_storage(self.visibility_copy)
         
@@ -232,9 +234,9 @@ class JS06MainWindow(QWidget):
     def setting_btn_click(self):
         """ 설정 버튼 클릭 이벤트를 했을 때 환경설정(Setting) 창을 띄우는 함수 """
         if self.radio_checked == None:
-            dlg = JS06_Setting_Widget("Km","Ten")
+            dlg = JS06_Setting_Widget("Km")
         else:
-            dlg = JS06_Setting_Widget(self.radio_checked, self.running_ave_checked)
+            dlg = JS06_Setting_Widget(self.radio_checked)
         dlg.show()
         dlg.setWindowModality(Qt.ApplicationModal)
         dlg.exec_()
@@ -251,16 +253,11 @@ class JS06MainWindow(QWidget):
             
         self.c_vis_label.setText(visibility_text)
         
-        self.running_ave_checked = dlg.running_ave_checked
-        print(self.running_ave_checked, "변환 완료")
-        self.logger.info(f"{self.running_ave_checked} Conversion done")
+        # self.running_ave_checked = dlg.running_ave_checked
+        # print(self.running_ave_checked, "변환 완료")
+        # self.logger.info(f"{self.running_ave_checked} Conversion done")
         
-        if self.running_ave_checked == "One":
-            self.q_list_scale = 1
-        elif self.running_ave_checked == "Five":
-            self.q_list_scale = 5
-        elif self.running_ave_checked == "Ten":
-            self.q_list_scale = 10
+        self.q_list_scale = int(save_path_info.get_data_path("SETTING", "running_average"))
 
     def keyPressEvent(self, e):
         """Override function QMainwindow KeyPressEvent that works when key is pressed"""

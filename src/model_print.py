@@ -62,7 +62,18 @@ class Tf_model():
 
     def inference(self, epoch, left_range, right_range, distance, cv_img):
         """"분류 모델에 영상을 넣어 추론해 visibility 출력하는 함수"""
-
+        
+        
+        if int(distance[-1]) < 30:
+            pass
+            
+        else:
+            left_range = left_range[:-1]
+            right_range = right_range[:-1]
+            distance = distance[:-1]
+            
+        
+        
         print("inferece start")
         start_time = time.time()
         visibility = 0
