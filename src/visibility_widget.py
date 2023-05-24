@@ -128,6 +128,8 @@ class Vis_Chart(QWidget):
         self.chart.setBackgroundRoundness(0)
         # Qchart 배경색 지정
         self.chart.setBackgroundBrush(QBrush(QColor(22,32,42)))
+        
+        # self.chart.setPlotArea(QRectF(0,0,1000,500))
 
         
         # ChartView 선언

@@ -31,7 +31,7 @@ class JS06MainWindow(QWidget):
 
         super().__init__(*args, **kwargs)
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                               "ui/js06_1920_new.ui")
+                               "ui/js06_1920_grid_test.ui")
         uic.loadUi(ui_path, self)
         
         
@@ -60,9 +60,9 @@ class JS06MainWindow(QWidget):
         self.rtsp_path = save_path_info.get_data_path("SETTING", "camera_ip")
 
         # 실시간 카메라 영상을 출력할 QFrame을 선언
-        self.video_frame = QFrame()        
+        # self.video_frame = QFrame()        
         # layout 위젯에 QFrame 위젯을 탑재
-        self.verticallayout.addWidget(self.video_frame)
+        # self.verticallayout.addWidget(self.video_frame)
         
         cam_id = save_path_info.get_data_path("SETTING", "camera_id")
         cam_pwd = save_path_info.get_data_path("SETTING", "camera_pw")

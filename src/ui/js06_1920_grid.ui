@@ -2,9 +2,6 @@
 <ui version="4.0">
  <class>js06_1920</class>
  <widget class="QWidget" name="js06_1920">
-  <property name="windowModality">
-   <enum>Qt::NonModal</enum>
-  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -22,6 +19,37 @@
 	background-color:rgb(22,32,42);
 }</string>
   </property>
+  <widget class="QLabel" name="title_label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>1880</width>
+     <height>90</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>FrutigerNeue1450W04-Regular</family>
+     <pointsize>32</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#title_label
+{
+	background-color:rgb(27,49,70);
+	color:rgb(28,136,227);
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+  </widget>
   <widget class="QPushButton" name="settings_button">
    <property name="geometry">
     <rect>
@@ -491,6 +519,37 @@
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="QLabel" name="company_label">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>20</y>
+     <width>500</width>
+     <height>90</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>FrutigerNeue1450W04-Regular</family>
+     <pointsize>32</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#company_label
+{
+	background-image: url(./ui/icon/company_product_name.png);
+	border:0px;
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+  </widget>
   <widget class="QLabel" name="time_series_name_label">
    <property name="geometry">
     <rect>
@@ -584,69 +643,8 @@
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QWidget" name="gridLayoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>250</x>
-     <y>10</y>
-     <width>160</width>
-     <height>124</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="QLabel" name="title_label">
-      <property name="font">
-       <font>
-        <family>FrutigerNeue1450W04-Regular</family>
-        <pointsize>32</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">#title_label
-{
-	background-color:rgb(27,49,70);
-	color:rgb(28,136,227);
-}</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="company_label">
-      <property name="font">
-       <font>
-        <family>FrutigerNeue1450W04-Regular</family>
-        <pointsize>32</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">#company_label
-{
-	background-image: url(./ui/icon/company_product_name.png);
-	border:0px;
-}</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
   <zorder>c_vis_title_label</zorder>
+  <zorder>title_label</zorder>
   <zorder>settings_button</zorder>
   <zorder>image_label</zorder>
   <zorder>visibility_label</zorder>
@@ -661,11 +659,11 @@
   <zorder>clock_pushButton</zorder>
   <zorder>pm25_pushButton</zorder>
   <zorder>logo_pushButton</zorder>
+  <zorder>company_label</zorder>
   <zorder>time_series_name_label</zorder>
   <zorder>c_vis_title_label_2</zorder>
   <zorder>c_pm_title_label_2</zorder>
   <zorder>vis_pushButton</zorder>
-  <zorder>gridLayoutWidget</zorder>
  </widget>
  <resources/>
  <connections/>
