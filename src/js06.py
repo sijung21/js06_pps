@@ -145,7 +145,8 @@ class JS06MainWindow(QWidget):
         if url[:4] == "rtsp":
             # vlc instance에 url 입력
             self.media_player.set_media(self.instance.media_new(url))
-            self.media_player.video_set_aspect_ratio("8:3")           
+            set_ratio = save_path_info.get_data_path("SETTING", "video_set_aspect_ratio")
+            self.media_player.video_set_aspect_ratio(set_ratio)           
             
             # vlc 시작
             self.media_player.play()
@@ -239,7 +240,9 @@ class JS06MainWindow(QWidget):
             dlg = JS06_Setting_Widget(self.radio_checked)
         dlg.show()
         dlg.setWindowModality(Qt.ApplicationModal)
+        dlg.deleteLater()
         dlg.exec_()
+        
         
         self.radio_checked = dlg.radio_flag
         print(self.radio_checked, "변환 완료")

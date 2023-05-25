@@ -641,6 +641,11 @@ class JS06_Setting_Widget(QDialog):
 
     def no_data_print():
         return
+
+    def closeEvent(self, QCloseEvent):
+        self.deleteLater()
+        print("Enter CloseEvent")
+        QCloseEvent.accept()
     
 if __name__ == '__main__':
     app = QApplication(sys.argv)
