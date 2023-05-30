@@ -8,7 +8,9 @@ import numpy as np
 import cv2
 from multiprocessing import Process, Queue
 import multiprocessing as mp
-import datetime
+import ephem
+from datetime import datetime
+import pytz
 import time
 
 from PyQt5 import QtWidgets, QtGui, QtCore
@@ -27,6 +29,16 @@ def producer(q):
     view_profile = save_path_info.get_data_path("SETTING", "save_profile")
     
     tf_model = Tf_model()
+    
+    latitude = '37.5665'  # 서울의 위도
+    longitude = '126.9780'  # 서울의 경도
+    
+    # Observer 객체 생성
+    observer = ephem.Observer()
+    observer.lat = latitude
+    observer.lon = longitude
+    
+    
     while True:
         epoch = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
         
@@ -36,6 +48,13 @@ def producer(q):
         # 1분에 한번
         if epoch[-2:] == "00":
             print(epoch)
+            
+            # 일출과 일몰 시간 계산
+            sun = ephem.Sun()
+            sun.compute(observer)
+            sunrise = observer.next_rising(sun).datetime()
+            sunset = observer.next_setting(sun).datetime()
+            
             try:
                 target_name, left_range, right_range, distance = target_info.get_target("PNM_9030V")
                 
