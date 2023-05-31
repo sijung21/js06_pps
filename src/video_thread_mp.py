@@ -8,9 +8,6 @@ import numpy as np
 import cv2
 from multiprocessing import Process, Queue
 import multiprocessing as mp
-import ephem
-from datetime import datetime
-import pytz
 import time
 
 from PyQt5 import QtWidgets, QtGui, QtCore
@@ -19,6 +16,7 @@ import target_info
 import save_path_info
 import js06_log
 from model_print import Tf_model
+import sun_observer
 
 def producer(q):
     proc = mp.current_process()
@@ -30,17 +28,9 @@ def producer(q):
     
     tf_model = Tf_model()
     
-    latitude = '37.5665'  # 서울의 위도
-    longitude = '126.9780'  # 서울의 경도
-    
-    # Observer 객체 생성
-    observer = ephem.Observer()
-    observer.lat = latitude
-    observer.lon = longitude
-    
-    
     while True:
-        epoch = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
+        now_time = time.time()
+        epoch = time.strftime("%Y%m%d%H%M%S", time.localtime(now_time))
         
         # 5초에 한번
         # if int(epoch[-2:]) % 10 == 00:
@@ -48,12 +38,6 @@ def producer(q):
         # 1분에 한번
         if epoch[-2:] == "00":
             print(epoch)
-            
-            # 일출과 일몰 시간 계산
-            sun = ephem.Sun()
-            sun.compute(observer)
-            sunrise = observer.next_rising(sun).datetime()
-            sunset = observer.next_setting(sun).datetime()
             
             try:
                 target_name, left_range, right_range, distance = target_info.get_target("PNM_9030V")
@@ -70,10 +54,20 @@ def producer(q):
                 ret, cv_img = cap.read()
                 
                 if ret:
+                    
                     method = save_path_info.get_data_path("Method", "method")
-                    print(method)
+                    
+                    
+                                        
                     if str(method) == "EXT":
-                        visibility = target_info.minprint(epoch[:-2], left_range, right_range, distance, cv_img)
+                        
+                        dn_time = sun_observer.sun_observer(now_time)
+                        
+                        if dn_time == "daytime":
+                            visibility = target_info.minprint(epoch[:-2], left_range, right_range, distance, cv_img)
+                        else:
+                            visibility = tf_model.inference(epoch[:-2], left_range, right_range,
+                                                           distance, cv_img)
                     
                         
                     elif str(method) == "AI":
