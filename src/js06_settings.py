@@ -32,6 +32,8 @@ class JS06_Setting_Widget(QDialog):
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                "ui/js06_settings.ui")
         uic.loadUi(ui_path, self)
+        appIcon = QIcon('logo.png')
+        self.setWindowIcon(appIcon)
         
         self.begin = QPoint()
         self.end = QPoint()
@@ -363,7 +365,11 @@ class JS06_Setting_Widget(QDialog):
         
     def image_load(self):
         
-        src = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile2/media.smp"
+        cam_id = save_path_info.get_data_path("SETTING", "camera_id")
+        cam_pwd = save_path_info.get_data_path("SETTING", "camera_pw")
+        save_profile = save_path_info.get_data_path("SETTING", "save_profile")
+        
+        src = f"rtsp://{cam_id}:{cam_pwd}@{self.rtsp_path}/{save_profile}/media.smp" 
         # src = "C:/Users/user/Workspace/water_gauge/src/video_files/daejeon_1.mp4"
         try:
             cap = cv2.VideoCapture(src)
@@ -545,7 +551,9 @@ class JS06_Setting_Widget(QDialog):
     def save_target(self):
         """Save the target information for each camera."""
         try:
-            save_path = os.path.join(f"target/PNM_9030V")
+            camera_name = save_path_info.get_data_path('SETTING', 'camera_name')
+            target_path = save_path_info.get_data_path('Path', 'target_csv_path')
+            save_path = os.path.join(target_path, camera_name)
             os.makedirs(save_path)
             
 
@@ -553,9 +561,7 @@ class JS06_Setting_Widget(QDialog):
             pass
         
         
-        print("target name 갯수 : ", len(self.target_name))
-        print(self.target_name)
-        print("left 좌표 갯수 : ", len(self.left_range))
+        print("target : ", self.target_name)
         if self.left_range:
             col = ["target_name", "left_range", "right_range", "distance"]
             result = pd.DataFrame(columns=col)
@@ -563,14 +569,14 @@ class JS06_Setting_Widget(QDialog):
             result["left_range"] = self.left_range
             result["right_range"] = self.right_range
             result["distance"] = self.distance
-            result.to_csv(f"{save_path}/PNM_9030V.csv", mode="w", index=False)
-            self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target("PNM_9030V")
+            result.to_csv(f"{save_path}/{camera_name}.csv", mode="w", index=False)
+            self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target(camera_name)
             self.logger.info(f'Save target information')
             
         else:
             col = ["target_name", "left_range", "right_range", "distance"]
             result = pd.DataFrame(columns=col)
-            result.to_csv(f"{save_path}/PNM_9030V.csv", mode="w", index=False)
+            result.to_csv(f"{save_path}/{camera_name}.csv", mode="w", index=False)
     
     def show_target_table(self):
         """ Target의 정보들을 테이블로 보여준다 """

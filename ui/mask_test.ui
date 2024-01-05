@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1921</width>
+    <height>1280</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#Form
+{
+	background-color : rgb(80, 80, 80);
+}</string>
+  </property>
+  <widget class="QLabel" name="real_time_label">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>1130</y>
+     <width>621</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>28</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#real_time_label
+{
+	background : transparent;
+	color:rgb(220,220,220);
+
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="clock_pushButton">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>1155</y>
+     <width>54</width>
+     <height>54</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+#clock_pushButton
+{
+	background-image: url(./ui/icon/clock.png);
+	border:0px;
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="autoDefault">
+    <bool>true</bool>
+   </property>
+   <property name="default">
+    <bool>true</bool>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="vis_pushButton">
+   <property name="geometry">
+    <rect>
+     <x>820</x>
+     <y>1165</y>
+     <width>48</width>
+     <height>48</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+#vis_pushButton
+{
+	background-image: url(./ui/icon/vis.png);
+	border:0px;
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="autoDefault">
+    <bool>true</bool>
+   </property>
+   <property name="default">
+    <bool>true</bool>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="bg_label">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>1105</y>
+     <width>1861</width>
+     <height>200</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#bg_label
+{
+	background-color : rgba(255, 255, 255, 80);
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="c_vis_label">
+   <property name="geometry">
+    <rect>
+     <x>760</x>
+     <y>1115</y>
+     <width>621</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>NanumGothic</family>
+     <pointsize>48</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#c_vis_label
+{
+	background : transparent;
+	color:rgb(28,136,227);
+}
+</string>
+   </property>
+   <property name="text">
+    <string>0km</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="c_pm_label">
+   <property name="geometry">
+    <rect>
+     <x>1400</x>
+     <y>1110</y>
+     <width>491</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>NanumGothic</family>
+     <pointsize>48</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#c_pm_label
+
+{
+	background : transparent;
+	color:rgb(250,187,0);
+}
+</string>
+   </property>
+   <property name="text">
+    <string>0㎍/㎥</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <zorder>bg_label</zorder>
+  <zorder>real_time_label</zorder>
+  <zorder>clock_pushButton</zorder>
+  <zorder>vis_pushButton</zorder>
+  <zorder>c_vis_label</zorder>
+  <zorder>c_pm_label</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

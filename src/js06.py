@@ -11,7 +11,7 @@ import pandas as pd
 from multiprocessing import Process, Queue
 import multiprocessing as mp
 
-from PyQt5.QtGui import QPixmap, QPixmap
+from PyQt5.QtGui import QPixmap, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QFrame, QLabel
 from PyQt5.QtCore import QPoint, Qt, pyqtSlot, QTimer, QDateTime
 from PyQt5 import uic
@@ -23,7 +23,6 @@ import save_path_info
 from js06_settings import JS06_Setting_Widget
 from visibility_widget import Vis_Chart
 import js06_log
-from cloud_animation import Weather_Icon
 
 class JS06MainWindow(QWidget):
 
@@ -33,7 +32,8 @@ class JS06MainWindow(QWidget):
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                "ui/js06_1920_grid_test.ui")
         uic.loadUi(ui_path, self)
-        
+        appIcon = QIcon('logo.png')
+        self.setWindowIcon(appIcon)
         
 
         self.camera_name = ""
@@ -166,51 +166,35 @@ class JS06MainWindow(QWidget):
             pass
         
            
-    @pyqtSlot(str)
-    def print_data(self, visibility):
+    @pyqtSlot(float, float)
+    def print_data(self, ra_visibility, pm_value):
         """ 메인 화면에 산출된 소산계수로 시정과 미세먼지를 계산 및 표시하는 함수"""
         
-        visibility_float = round(float(visibility), 3)
-        
-        if visibility == "0":
+        # visibility_float = round(float(visibility), 3)
+        self.visibility_copy = ra_visibility
+        if ra_visibility == 0:
             self.data_storage(0)
             return
-        
-        if len(self.q_list) == 0 or self.q_list_scale != len(self.q_list):
-            self.q_list = []
-            for i in range(self.q_list_scale):
-                self.q_list.append(visibility_float)
-                
-            # print("q 리스트 길이", len(self.q_list))
-            self.logger.info(f"q list length : {len(self.q_list)}")
-            result_vis = np.mean(self.q_list)
-        else:
-            self.logger.info(f"q list length : {len(self.q_list)}")
-            self.q_list.pop(0)
-            self.q_list.append(visibility_float)
-            result_vis = np.mean(self.q_list)            
-        
-        self.visibility_copy = round(float(result_vis), 3)
         
         self.radio_checked = save_path_info.get_data_path("SETTING","distance_unit")
         
         if self.radio_checked == None or self.radio_checked == "Km":
-            visibility_text = str(self.visibility_copy) + " km"
+            visibility_text = str(ra_visibility) + " km"
         elif self.radio_checked == "Mile":
-            visibility_mile = round(self.visibility_copy / 1.609, 1)
+            visibility_mile = round(ra_visibility / 1.609, 1)
             visibility_text = str(visibility_mile) + " mi"
         
-        self.c_vis_label.setText(visibility_text)
-        ext = 3.912 / self.visibility_copy
-        hd = 89
-        pm_value = round((ext*1000/4/2.5)/(1+5.67*((hd/100)**5.8)),2)
+        self.c_vis_label.setText(visibility_text)        
         
         # Error Note: 미세먼지 단위를 ini 파일에 넣으면 깨짐.
         concentration_text = save_path_info.get_data_path("SETTING","concentration_unit")
         pm_text = str(pm_value) + " ㎍/㎥"
         self.c_pm_label.setText(pm_text)
+        
+        
+        
         # influxdb에 시정 값 저장
-        self.data_storage(self.visibility_copy)
+        self.data_storage(ra_visibility)
         
         # vlc 상태 확인
         self.get_status()
@@ -221,7 +205,7 @@ class JS06MainWindow(QWidget):
         """Store visibility and fine dust values ​​in the database."""
 
         # save_db.SaveDB(vis_data)
-        print("data storage!")
+        # print("data storage!")
         self.chart_view.appendData(vis_data)
         
 

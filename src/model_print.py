@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import pandas as pd
 
-from datetime import datetime
+
 
 import tensorflow as tf
 
@@ -35,7 +35,7 @@ class Tf_model():
         """" 모델을 불러오는 함수 """
         # 저장된 모델 경로 입력
         # model_path = "model_1654675043"
-        model_path = "./js02_model/andrew_20230503_1683104384"
+        model_path = "./js02_model/andrew_20230426_1682499792"
         # 모델 불러오기
         new_model = tf.keras.models.load_model(model_path, compile=False)
         new_model.trainable = False
@@ -129,21 +129,6 @@ class Tf_model():
         # visibility print
         print(f" visibility : ", visibility)
 
-        days = epoch[:-4]
-        vis_folder_path = os.path.join(save_path_info.get_data_path('Path', 'data_csv_path'))
-        vis_file_path = os.path.join(vis_folder_path,f"{days}.csv")
-        os.makedirs(vis_folder_path, exist_ok=True)
-        
-        if os.path.isfile(vis_file_path):
-            vis_df = pd.read_csv(vis_file_path)
-        else:
-            cols = ["time",'visibility']
-            vis_df = pd.DataFrame(columns=cols)
-        
-        dt_epoch = datetime.strptime(epoch, '%Y%m%d%H%M')
-        vis_df = vis_df.append({'time': dt_epoch,'visibility': visibility}, ignore_index=True)
-        
-        vis_df.to_csv(vis_file_path,mode="w", index=False)
             
         
         # 이미지 저장

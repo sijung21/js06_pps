@@ -30,6 +30,23 @@ def minprint(epoch, left_range, right_range, distance, cv_img):
         cnt += 1
 
     visibility = get_rgb(epoch, min_x, min_y, cp_image, distance)
+    
+    # days = epoch[:-4]
+    # vis_folder_path = os.path.join(save_path_info.get_data_path('Path', 'data_csv_path'))
+    # vis_file_path = os.path.join(vis_folder_path,f"{days}.csv")
+    # os.makedirs(vis_folder_path, exist_ok=True)
+    
+    # if os.path.isfile(vis_file_path):
+    #     vis_df = pd.read_csv(vis_file_path)
+    # else:
+    #     cols = ["time",'visibility']
+    #     vis_df = pd.DataFrame(columns=cols)
+    
+    # dt_epoch = datetime.strptime(epoch, '%Y%m%d%H%M')
+    # vis_df = vis_df.append({'time': dt_epoch,'visibility': visibility}, ignore_index=True)
+    
+    # vis_df.to_csv(vis_file_path,mode="w", index=False)
+    
     return visibility
 
 def minrgb(upper_left, lower_right, cp_image):
@@ -82,9 +99,10 @@ def get_rgb(epoch: str, min_x, min_y, cp_image, distance):
 def save_rgb(r_list, g_list, b_list, epoch, distance):
     """Save the rgb information for each target."""
     
-    data_save_path = save_path_info.get_data_path("Path", "data_path")
+    rgb_csv_path = save_path_info.get_data_path("Path", "rgb_csv_path")
+    camera_name = save_path_info.get_data_path('SETTING', 'camera_name')
     try:
-        save_path = os.path.join(f"{data_save_path}/rgb/PNM_9030V")
+        save_path = os.path.join(f"{rgb_csv_path}/{camera_name}")
         os.makedirs(save_path)
         logger.info(f'Create folder RGB save path')
 
@@ -126,9 +144,10 @@ def save_rgb(r_list, g_list, b_list, epoch, distance):
 
 def save_rgb_value(value_list, distance_list, ext_value, select_color, epoch):
     
-    data_save_path = save_path_info.get_data_path("Path", "data_path")
+    data_save_path = save_path_info.get_data_path("Path", "rgb_csv_path")
+    camera_name = save_path_info.get_data_path('SETTING', 'camera_name')
     days = epoch[:-4]
-    rgbsavedir = os.path.join(f"{data_save_path}/rgb/PNM_9030V/{select_color}")
+    rgbsavedir = os.path.join(f"{data_save_path}/{camera_name}/{select_color}")
     
     try:
         os.makedirs(rgbsavedir)
@@ -161,9 +180,10 @@ def save_rgb_value(value_list, distance_list, ext_value, select_color, epoch):
     
 def save_ext(ext_list, epoch):
     
-    data_save_path = save_path_info.get_data_path("Path", "data_path")
+    data_save_path = save_path_info.get_data_path("Path", "ext_csv_path")
+    camera_name = save_path_info.get_data_path('SETTING', 'camera_name')
     days = epoch[:-4]
-    extsavedir = os.path.join(f"{data_save_path}/ext/PNM_9030V")
+    extsavedir = os.path.join(f"{data_save_path}/{camera_name}")
     try:
         os.makedirs(extsavedir)
         logger.info(f'Create folder RGB Ext save path')
@@ -224,8 +244,8 @@ def visibility_print(ext_g: float = 0.0):
         
 def get_target(camera_name: str):
     """Retrieves target information of a specific camera."""
-
-    save_path = os.path.join(f"target/{camera_name}")
+    target_path = save_path_info.get_data_path('Path', 'target_csv_path')
+    save_path = os.path.join(f"{target_path}/{camera_name}")
     print("Get target information")
     logger.info(f'Get target information')
     if os.path.isfile(f"{save_path}/{camera_name}.csv"):

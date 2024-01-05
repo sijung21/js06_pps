@@ -6,62 +6,62 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QVBoxLayo
 from PyQt5.QtCore import QPoint, QRect, Qt, QRectF, QSize, QCoreApplication, pyqtSlot, QTimer, QUrl, QDateTime, pyqtSignal, QThread
 from PyQt5.QtChart import QChart, QChartView, QLineSeries, QValueAxis, QDateTimeAxis, QScatterSeries
 
-from influxdb import InfluxDBClient
+# from influxdb import InfluxDBClient
 import js06_log
 
-class ValueWorker(QThread):   
-    """Influx에 저장된 시정 값을 읽어 실시간 시정 출력 그래프에 전송하는 QThread 클래스"""
-    dataSent = pyqtSignal(float)
+# class ValueWorker(QThread):   
+#     """Influx에 저장된 시정 값을 읽어 실시간 시정 출력 그래프에 전송하는 QThread 클래스"""
+#     dataSent = pyqtSignal(float)
     
-    def __init__(self, value):
-        super().__init__()
-        self.value = value
-        self.alive = True
-        self.logger = js06_log.CreateLogger(__name__)
+#     def __init__(self, value):
+#         super().__init__()
+#         self.value = value
+#         self.alive = True
+#         self.logger = js06_log.CreateLogger(__name__)
         
         
-    def run(self):
+#     def run(self):
         
-        data = None
+#         data = None
         
-        while self.alive:
-            # InfluxDB에 접속
-            client = InfluxDBClient('localhost', 8086)
-            save_time = time.time_ns()
+#         while self.alive:
+#             # InfluxDB에 접속
+#             client = InfluxDBClient('localhost', 8086)
+#             save_time = time.time_ns()
             
-            try:        
-                client.create_database("Sijung")
-                self.logger.info("Create Sijung Database")
-            except TypeError as e:        
-                print(e)
-                print("create except")                
-                pass
+#             try:        
+#                 client.create_database("Sijung")
+#                 self.logger.info("Create Sijung Database")
+#             except TypeError as e:        
+#                 print(e)
+#                 print("create except")                
+#                 pass
             
-            client.switch_database("Sijung")
+#             client.switch_database("Sijung")
             
             
             
-            # 최근에 저장된 시정을 조회하는 쿼리문
-            query = 'SELECT "visbility" FROM "JS06" ORDER BY "time" DESC LIMIT 1'
-            result = client.query(query)
-            visiblity = result.get_points()
-            # 쿼리 조회 결과문에서 시정 값만 추출 및 저장
-            for item in list(visiblity):
-                data = item['visbility']
+#             # 최근에 저장된 시정을 조회하는 쿼리문
+#             query = 'SELECT "visbility" FROM "JS06" ORDER BY "time" DESC LIMIT 1'
+#             result = client.query(query)
+#             visiblity = result.get_points()
+#             # 쿼리 조회 결과문에서 시정 값만 추출 및 저장
+#             for item in list(visiblity):
+#                 data = item['visbility']
                 
-            client.close()
-            if data is not None:
-                # QThread를 선언한 곳에 전송
-                self.dataSent.emit(data)
-                self.logger.info("Complete transfer of values to Visiblity chart")
-            else:
-                self.dataSent.emit(0)
-            # 30초마다 실행
-            # time.sleep(30)
+#             client.close()
+#             if data is not None:
+#                 # QThread를 선언한 곳에 전송
+#                 self.dataSent.emit(data)
+#                 self.logger.info("Complete transfer of values to Visiblity chart")
+#             else:
+#                 self.dataSent.emit(0)
+#             # 30초마다 실행
+#             # time.sleep(30)
             
     
-    def close(self):
-        self.alive = False
+#     def close(self):
+#         self.alive = False
         
 class Vis_Chart(QWidget):
     """ 실시간 시정 출력 그래프 위젯 """

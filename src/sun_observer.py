@@ -3,13 +3,15 @@ from datetime import datetime
 import pytz
 import time
 
+import save_path_info
 
 
 def sun_observer(now_time):
     
     
-    latitude = '37.5665'  # 서울의 위도
-    longitude = '126.9780'  # 서울의 경도
+    
+    latitude = save_path_info.get_data_path('SETTING', 'latitude')  # 서울의 위도
+    longitude = save_path_info.get_data_path('SETTING', 'longitude')  # 서울의 경도
     
     # Observer 객체 생성
     observer = ephem.Observer()
@@ -24,7 +26,8 @@ def sun_observer(now_time):
     sunset = observer.next_setting(sun).datetime()
     
     # 서울 타임존 설정
-    seoul_timezone = pytz.timezone('Asia/Seoul')
+    time_zone = save_path_info.get_data_path('SETTING', 'timezone')
+    seoul_timezone = pytz.timezone(f'{time_zone}')
     
     sunrise_time = sunrise.replace(tzinfo=pytz.utc).astimezone(seoul_timezone).time()
     sunset_time = sunset.replace(tzinfo=pytz.utc).astimezone(seoul_timezone).time()
