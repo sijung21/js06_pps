@@ -26,12 +26,14 @@ import js06_log
 
 class JS06_Setting_Widget(QDialog):
 
-    def __init__(self, radio_flag=None, run_ave_flag=None, *args, **kwargs):
+    def __init__(self, radio_flag=None, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                "ui/js06_settings.ui")
         uic.loadUi(ui_path, self)
+        appIcon = QIcon('logo.png')
+        self.setWindowIcon(appIcon)
         
         self.begin = QPoint()
         self.end = QPoint()
@@ -65,23 +67,28 @@ class JS06_Setting_Widget(QDialog):
         self.logger = js06_log.CreateLogger(__name__)
         self.logger.info('Setup window initialization complete')
         
-        self.running_ave_checked = run_ave_flag
+        # self.running_ave_checked = run_ave_flag
+        run_ave = save_path_info.get_data_path('SETTING','running_average')
         
         self.radio_flag = radio_flag
         
-        data_path_text = save_path_info.get_data_path('data_path')
+        self.cal_radio_flag = save_path_info.get_data_path('Method', 'method')
+        
+        data_path_text = save_path_info.get_data_path('Path', 'data_csv_path')
         
         self.data_path_textEdit.setPlainText(data_path_text)
         
-        image_path_text = save_path_info.get_data_path('image_path')
+        image_path_text = save_path_info.get_data_path('Path','image_save_path')
         
         self.image_path_textEdit.setPlainText(image_path_text)
         
-        log_path_text = save_path_info.get_data_path('log_path')
+        log_path_text = save_path_info.get_data_path('Path','log_path')
         
         self.log_path_textEdit.setPlainText(log_path_text)
         
-        self.rtsp_path = save_path_info.get_data_path('camera_ip_path')
+        self.rtsp_path = save_path_info.get_data_path('SETTING','camera_ip')
+        
+        cam_name = save_path_info.get_data_path('SETTING','camera_name')
         
         self.image_load()        
         
@@ -99,11 +106,16 @@ class JS06_Setting_Widget(QDialog):
         elif self.radio_flag == "Mile":
             self.mile_radio_btn.setChecked(True)
         
-        self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target("PNM_9030V")
+        if self.cal_radio_flag == None or self.cal_radio_flag == "EXT":
+            self.ext_radio_btn.setChecked(True)
+        elif self.cal_radio_flag == "AI":
+            self.ai_radio_btn.setChecked(True)
+        
+        self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target(cam_name)
     
-        if run_ave_flag == "Ten":
+        if run_ave == "10":
             self.ten_radio_btn.setChecked(True)
-        elif run_ave_flag == "Five":
+        elif run_ave == "5":
             self.five_radio_btn.setChecked(True)
         else:
             self.one_radio_btn.setChecked(True)
@@ -132,6 +144,9 @@ class JS06_Setting_Widget(QDialog):
         
         self.km_radio_btn.clicked.connect(self.radio_function)
         self.mile_radio_btn.clicked.connect(self.radio_function)  
+        
+        self.ai_radio_btn.clicked.connect(self.cal_radio_function)
+        self.ext_radio_btn.clicked.connect(self.cal_radio_function)  
         
         self.red_checkBox.clicked.connect(self.chart_update)
         self.green_checkBox.clicked.connect(self.chart_update)
@@ -318,26 +333,43 @@ class JS06_Setting_Widget(QDialog):
     def running_avr_time_settings_function(self):
         """radio button 설정에 따라 Running Average 단위를 변경해서 설정하는 함수"""
         if self.one_radio_btn.isChecked():
-            self.running_ave_checked = "One"
+            # self.running_ave_checked = "One"
+            save_path_info.set_data_path("SETTING", "running_average", "1")
             
         elif self.five_radio_btn.isChecked():
-            self.running_ave_checked = "Five"
+            # self.running_ave_checked = "Five"
+            save_path_info.set_data_path("SETTING", "running_average", "5")
             
         elif self.ten_radio_btn.isChecked():
-            self.running_ave_checked = "Ten"
+            # self.running_ave_checked = "Ten"
+            save_path_info.set_data_path("SETTING", "running_average", "10")
 
     def radio_function(self):
         """radio button 설정에 따라 시정 단위를 변경해서 출력하는 함수"""
         if self.km_radio_btn.isChecked():
             self.radio_flag = "Km"
+            
             # print(self.radio_flag)
         elif self.mile_radio_btn.isChecked():
             self.radio_flag = "Mile"
             # print(self.radio_flag)
+    
+    def cal_radio_function(self):
+        """radio button 설정에 따라 계산 방법을 변경하는 함수"""
+        if self.ai_radio_btn.isChecked():
+            self.cal_radio_flag = "AI"
+            save_path_info.set_data_path("Method", "method", "AI")
+        elif self.ext_radio_btn.isChecked():
+            self.cal_radio_flag = "EXT"
+            save_path_info.set_data_path("Method", "method", "EXT")
         
     def image_load(self):
         
-        src = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile2/media.smp"
+        cam_id = save_path_info.get_data_path("SETTING", "camera_id")
+        cam_pwd = save_path_info.get_data_path("SETTING", "camera_pw")
+        save_profile = save_path_info.get_data_path("SETTING", "save_profile")
+        
+        src = f"rtsp://{cam_id}:{cam_pwd}@{self.rtsp_path}/{save_profile}/media.smp" 
         # src = "C:/Users/user/Workspace/water_gauge/src/video_files/daejeon_1.mp4"
         try:
             cap = cv2.VideoCapture(src)
@@ -519,7 +551,9 @@ class JS06_Setting_Widget(QDialog):
     def save_target(self):
         """Save the target information for each camera."""
         try:
-            save_path = os.path.join(f"target/PNM_9030V")
+            camera_name = save_path_info.get_data_path('SETTING', 'camera_name')
+            target_path = save_path_info.get_data_path('Path', 'target_csv_path')
+            save_path = os.path.join(target_path, camera_name)
             os.makedirs(save_path)
             
 
@@ -527,9 +561,7 @@ class JS06_Setting_Widget(QDialog):
             pass
         
         
-        print("target name 갯수 : ", len(self.target_name))
-        print(self.target_name)
-        print("left 좌표 갯수 : ", len(self.left_range))
+        print("target : ", self.target_name)
         if self.left_range:
             col = ["target_name", "left_range", "right_range", "distance"]
             result = pd.DataFrame(columns=col)
@@ -537,14 +569,14 @@ class JS06_Setting_Widget(QDialog):
             result["left_range"] = self.left_range
             result["right_range"] = self.right_range
             result["distance"] = self.distance
-            result.to_csv(f"{save_path}/PNM_9030V.csv", mode="w", index=False)
-            self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target("PNM_9030V")
+            result.to_csv(f"{save_path}/{camera_name}.csv", mode="w", index=False)
+            self.target_name, self.left_range, self.right_range, self.distance = target_info.get_target(camera_name)
             self.logger.info(f'Save target information')
             
         else:
             col = ["target_name", "left_range", "right_range", "distance"]
             result = pd.DataFrame(columns=col)
-            result.to_csv(f"{save_path}/PNM_9030V.csv", mode="w", index=False)
+            result.to_csv(f"{save_path}/{camera_name}.csv", mode="w", index=False)
     
     def show_target_table(self):
         """ Target의 정보들을 테이블로 보여준다 """
@@ -615,6 +647,11 @@ class JS06_Setting_Widget(QDialog):
 
     def no_data_print():
         return
+
+    def closeEvent(self, QCloseEvent):
+        self.deleteLater()
+        print("Enter CloseEvent")
+        QCloseEvent.accept()
     
 if __name__ == '__main__':
     app = QApplication(sys.argv)

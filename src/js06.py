@@ -11,7 +11,7 @@ import pandas as pd
 from multiprocessing import Process, Queue
 import multiprocessing as mp
 
-from PyQt5.QtGui import QPixmap, QPixmap
+from PyQt5.QtGui import QPixmap, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QFrame, QLabel
 from PyQt5.QtCore import QPoint, Qt, pyqtSlot, QTimer, QDateTime
 from PyQt5 import uic
@@ -30,9 +30,10 @@ class JS06MainWindow(QWidget):
 
         super().__init__(*args, **kwargs)
         ui_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                               "ui/js06_1920_new.ui")
+                               "ui/js06_1920_grid_test.ui")
         uic.loadUi(ui_path, self)
-        
+        appIcon = QIcon('logo.png')
+        self.setWindowIcon(appIcon)
         
 
         self.camera_name = ""
@@ -40,33 +41,37 @@ class JS06MainWindow(QWidget):
         self.g_ext = None
         self.pm_25 = None
         self.test_name = None
-        self.radio_checked = None
+        self.radio_checked = save_path_info.get_data_path("SETTING", "distance_unit")
+        self.running_ave_checked = save_path_info.get_data_path("SETTING", "running_average")
         self.visibility_copy = 0
-        self.running_ave_checked = None
+        # self.running_average = 1
         self.q_list = []
-        self.q_list_scale = 60
+        self.q_list_scale = int(save_path_info.get_data_path("SETTING", "running_average"))
         self.rtsp_path = None
         self.logger = js06_log.CreateLogger(__name__)
         self.vis_list = []
         
-        # JS06의 설정 정보들을 초기화 하거나 이미 있으면 패쓰
-        if os.path.isfile("./path_info/path_info.csv"):
-            pass        
-        else:
-            save_path_info.init_data_path()
+        # # JS06의 설정 정보들을 초기화 하거나 이미 있으면 패쓰
+        # if os.path.isfile("D:/path_info/path_info.csv"):
+        #     pass        
+        # else:
+        #     save_path_info.init_data_path()
         
-        self.rtsp_path = save_path_info.get_data_path("camera_ip_path")        
+        self.rtsp_path = save_path_info.get_data_path("SETTING", "camera_ip")
 
         # 실시간 카메라 영상을 출력할 QFrame을 선언
-        self.video_frame = QFrame()        
+        # self.video_frame = QFrame()        
         # layout 위젯에 QFrame 위젯을 탑재
-        self.verticallayout.addWidget(self.video_frame)
+        # self.verticallayout.addWidget(self.video_frame)
         
+        cam_id = save_path_info.get_data_path("SETTING", "camera_id")
+        cam_pwd = save_path_info.get_data_path("SETTING", "camera_pw")
+        view_profile = save_path_info.get_data_path("SETTING", "view_profile")
   
         # 카메라 IP 주소, 계정, 비밀번호를 rtsp 문법 구조에 맞게 선언
-        VIDEO_SRC3 = f"rtsp://admin:sijung5520@{self.rtsp_path}/profile5/media.smp"        
+        VIDEO_SRC3 = f"rtsp://{cam_id}:{cam_pwd}@{self.rtsp_path}/{view_profile}/media.smp"     
         # VIDEO_SRC3 = f"rtsp://admin:sijung5520@121.149.204.221/profile2/media.smp"
-        CAM_NAME = "PNM_9030RV"
+        CAM_NAME = save_path_info.get_data_path("SETTING", "camera_name")
         # 송수신 시작 함수
         self.onCameraChange(VIDEO_SRC3, CAM_NAME, "Video")
         
@@ -96,6 +101,12 @@ class JS06MainWindow(QWidget):
         
         # 현재 실행 파일 위치 확인
         self.filepath = os.path.join(os.getcwd())
+        
+        # 구름 애니메이션
+        # self.cloud_icon = Weather_Icon(self)
+        # self.cloud_icon.setGeometry(940,650,120,80)
+        
+        
         
         
     
@@ -134,7 +145,8 @@ class JS06MainWindow(QWidget):
         if url[:4] == "rtsp":
             # vlc instance에 url 입력
             self.media_player.set_media(self.instance.media_new(url))
-            self.media_player.video_set_aspect_ratio("8:3")           
+            set_ratio = save_path_info.get_data_path("SETTING", "video_set_aspect_ratio")
+            self.media_player.video_set_aspect_ratio(set_ratio)           
             
             # vlc 시작
             self.media_player.play()
@@ -154,46 +166,35 @@ class JS06MainWindow(QWidget):
             pass
         
            
-    @pyqtSlot(str)
-    def print_data(self, visibility):
+    @pyqtSlot(float, float)
+    def print_data(self, ra_visibility, pm_value):
         """ 메인 화면에 산출된 소산계수로 시정과 미세먼지를 계산 및 표시하는 함수"""
         
-        visibility_float = round(float(visibility), 3)
+        # visibility_float = round(float(visibility), 3)
+        self.visibility_copy = ra_visibility
+        if ra_visibility == 0:
+            self.data_storage(0)
+            return
         
-        if len(self.q_list) == 0 or self.q_list_scale != len(self.q_list):
-            self.q_list = []
-            for i in range(self.q_list_scale):
-                self.q_list.append(visibility_float)
-                
-            print("q 리스트 길이", len(self.q_list))
-            self.logger.info(f"q list length : {len(self.q_list)}")
-            result_vis = np.mean(self.q_list)
-        else:
-            print("q 리스트 길이2", len(self.q_list))
-            self.logger.info(f"q list length : {len(self.q_list)}")
-            self.q_list.pop(0)
-            self.q_list.append(visibility_float)
-            result_vis = np.mean(self.q_list)            
-        
-        self.visibility_copy = round(float(result_vis), 3)
-        
+        self.radio_checked = save_path_info.get_data_path("SETTING","distance_unit")
         
         if self.radio_checked == None or self.radio_checked == "Km":
-            visibility_text = str(self.visibility_copy) + " km"
+            visibility_text = str(ra_visibility) + " km"
         elif self.radio_checked == "Mile":
-            visibility_mile = round(self.visibility_copy / 1.609, 1)
+            visibility_mile = round(ra_visibility / 1.609, 1)
             visibility_text = str(visibility_mile) + " mi"
         
-        self.c_vis_label.setText(visibility_text)
-        print("가시거리 출력")
-        ext = 3.912 / self.visibility_copy
-        hd = 89
-        pm_value = round((ext*1000/4/2.5)/(1+5.67*((hd/100)**5.8)),2)
+        self.c_vis_label.setText(visibility_text)        
+        
+        # Error Note: 미세먼지 단위를 ini 파일에 넣으면 깨짐.
+        concentration_text = save_path_info.get_data_path("SETTING","concentration_unit")
         pm_text = str(pm_value) + " ㎍/㎥"
         self.c_pm_label.setText(pm_text)
-        print("미세먼지 출력")
+        
+        
+        
         # influxdb에 시정 값 저장
-        self.data_storage(self.visibility_copy)
+        self.data_storage(ra_visibility)
         
         # vlc 상태 확인
         self.get_status()
@@ -204,8 +205,8 @@ class JS06MainWindow(QWidget):
         """Store visibility and fine dust values ​​in the database."""
 
         # save_db.SaveDB(vis_data)
-        print("data storage!")
-        self.chart_view.appendData(self.visibility_copy)
+        # print("data storage!")
+        self.chart_view.appendData(vis_data)
         
 
     def timeout_run(self):
@@ -218,12 +219,14 @@ class JS06MainWindow(QWidget):
     def setting_btn_click(self):
         """ 설정 버튼 클릭 이벤트를 했을 때 환경설정(Setting) 창을 띄우는 함수 """
         if self.radio_checked == None:
-            dlg = JS06_Setting_Widget("Km","Ten")
+            dlg = JS06_Setting_Widget("Km")
         else:
-            dlg = JS06_Setting_Widget(self.radio_checked, self.running_ave_checked)
+            dlg = JS06_Setting_Widget(self.radio_checked)
         dlg.show()
         dlg.setWindowModality(Qt.ApplicationModal)
+        dlg.deleteLater()
         dlg.exec_()
+        
         
         self.radio_checked = dlg.radio_flag
         print(self.radio_checked, "변환 완료")
@@ -237,16 +240,11 @@ class JS06MainWindow(QWidget):
             
         self.c_vis_label.setText(visibility_text)
         
-        self.running_ave_checked = dlg.running_ave_checked
-        print(self.running_ave_checked, "변환 완료")
-        self.logger.info(f"{self.running_ave_checked} Conversion done")
+        # self.running_ave_checked = dlg.running_ave_checked
+        # print(self.running_ave_checked, "변환 완료")
+        # self.logger.info(f"{self.running_ave_checked} Conversion done")
         
-        if self.running_ave_checked == "One":
-            self.q_list_scale = 1
-        elif self.running_ave_checked == "Five":
-            self.q_list_scale = 5
-        elif self.running_ave_checked == "Ten":
-            self.q_list_scale = 10
+        self.q_list_scale = int(save_path_info.get_data_path("SETTING", "running_average"))
 
     def keyPressEvent(self, e):
         """Override function QMainwindow KeyPressEvent that works when key is pressed"""

@@ -9,6 +9,11 @@ __pycache__/
 # Ignore data files
 *.csv
 
+# Ignore model files
+*.pb
+*.h5
+
+
 # C extensions
 *.so
 
@@ -32,6 +37,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+js02_model/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

@@ -30,10 +30,10 @@
    </property>
    <property name="font">
     <font>
-     <family>FrutigerNeue1450W04-Regular</family>
+     <family>NanumGothic</family>
      <pointsize>32</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
@@ -44,7 +44,7 @@
 }</string>
    </property>
    <property name="text">
-    <string/>
+    <string>   Monitoring</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -53,7 +53,7 @@
   <widget class="QPushButton" name="settings_button">
    <property name="geometry">
     <rect>
-     <x>1820</x>
+     <x>1830</x>
      <y>35</y>
      <width>57</width>
      <height>58</height>
@@ -96,7 +96,7 @@
      <x>20</x>
      <y>110</y>
      <width>1880</width>
-     <height>521</height>
+     <height>410</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -114,17 +114,17 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>650</y>
-     <width>871</width>
+     <y>530</y>
+     <width>1290</width>
      <height>90</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>FrutigerNeue1450W04-Regular</family>
+     <family>NanumGothic</family>
      <pointsize>32</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
@@ -135,7 +135,7 @@
 }</string>
    </property>
    <property name="text">
-    <string/>
+    <string>   Time series</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -145,9 +145,9 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>739</y>
-     <width>871</width>
-     <height>321</height>
+     <y>620</y>
+     <width>1290</width>
+     <height>440</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -164,8 +164,8 @@
   <widget class="QPushButton" name="graph_pushButton">
    <property name="geometry">
     <rect>
-     <x>820</x>
-     <y>665</y>
+     <x>1230</x>
+     <y>550</y>
      <width>57</width>
      <height>56</height>
     </rect>
@@ -195,11 +195,42 @@
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="QLabel" name="time_label">
+   <property name="geometry">
+    <rect>
+     <x>1330</x>
+     <y>530</y>
+     <width>570</width>
+     <height>90</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>NanumGothic</family>
+     <pointsize>24</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#time_label
+{
+	background-color:rgb(27,49,70);
+	color:rgb(220,220,220);
+}</string>
+   </property>
+   <property name="text">
+    <string>   Current time</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+  </widget>
   <widget class="QPushButton" name="clock_pushButton">
    <property name="geometry">
     <rect>
      <x>1830</x>
-     <y>670</y>
+     <y>550</y>
      <width>54</width>
      <height>54</height>
     </rect>
@@ -232,10 +263,10 @@
   <widget class="QLabel" name="real_time_label">
    <property name="geometry">
     <rect>
-     <x>920</x>
-     <y>650</y>
-     <width>981</width>
-     <height>91</height>
+     <x>1330</x>
+     <y>620</y>
+     <width>570</width>
+     <height>120</height>
     </rect>
    </property>
    <property name="font">
@@ -265,18 +296,18 @@
   <widget class="QLabel" name="c_vis_title_label">
    <property name="geometry">
     <rect>
-     <x>920</x>
+     <x>1330</x>
      <y>750</y>
-     <width>451</width>
+     <width>270</width>
      <height>90</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>FrutigerNeue1450W04-Regular</family>
+     <family>NanumGothic</family>
      <pointsize>25</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
@@ -287,7 +318,7 @@
 }</string>
    </property>
    <property name="text">
-    <string/>
+    <string>   Visibility</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -296,18 +327,18 @@
   <widget class="QLabel" name="c_vis_label">
    <property name="geometry">
     <rect>
-     <x>920</x>
+     <x>1330</x>
      <y>840</y>
-     <width>451</width>
+     <width>270</width>
      <height>220</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <family>NanumGothic</family>
-     <pointsize>48</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <pointsize>35</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="contextMenuPolicy">
@@ -331,7 +362,7 @@
   <widget class="QPushButton" name="vis_pushButton">
    <property name="geometry">
     <rect>
-     <x>1300</x>
+     <x>1520</x>
      <y>770</y>
      <width>48</width>
      <height>48</height>
@@ -368,7 +399,7 @@
      <x>20</x>
      <y>110</y>
      <width>1881</width>
-     <height>521</height>
+     <height>411</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticallayout"/>
@@ -377,9 +408,9 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>740</y>
-     <width>871</width>
-     <height>321</height>
+     <y>620</y>
+     <width>1291</width>
+     <height>441</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="web_verticalLayout"/>
@@ -387,18 +418,18 @@
   <widget class="QLabel" name="c_pm_label">
    <property name="geometry">
     <rect>
-     <x>1380</x>
+     <x>1630</x>
      <y>840</y>
-     <width>521</width>
+     <width>270</width>
      <height>220</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <family>NanumGothic</family>
-     <pointsize>48</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <pointsize>35</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="contextMenuPolicy">
@@ -409,7 +440,7 @@
 
 {
 	background-color:rgb(25,39,52);
-	color:rgb(250,187,0);
+	color:rgb(28,136,227);
 }
 </string>
    </property>
@@ -423,18 +454,18 @@
   <widget class="QLabel" name="c_pm_title_label">
    <property name="geometry">
     <rect>
-     <x>1380</x>
+     <x>1630</x>
      <y>750</y>
-     <width>521</width>
+     <width>270</width>
      <height>90</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>FrutigerNeue1450W04-Regular</family>
+     <family>NanumGothic</family>
      <pointsize>25</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">
@@ -445,225 +476,12 @@
 }</string>
    </property>
    <property name="text">
-    <string/>
+    <string>   PM2.5</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QPushButton" name="pm25_pushButton">
-   <property name="geometry">
-    <rect>
-     <x>1830</x>
-     <y>770</y>
-     <width>48</width>
-     <height>48</height>
-    </rect>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">
-#pm25_pushButton
-{
-	background-image: url(./ui/icon/dust_2.png);
-	border:0px;
-}
-</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="autoDefault">
-    <bool>true</bool>
-   </property>
-   <property name="default">
-    <bool>true</bool>
-   </property>
-   <property name="flat">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="logo_pushButton">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>32</y>
-     <width>70</width>
-     <height>60</height>
-    </rect>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">
-#logo_pushButton
-{
-	background-image: url(./ui/icon/logo.png);
-	border:0px;
-}
-</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="autoDefault">
-    <bool>true</bool>
-   </property>
-   <property name="default">
-    <bool>true</bool>
-   </property>
-   <property name="flat">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="company_label">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>20</y>
-     <width>500</width>
-     <height>90</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>FrutigerNeue1450W04-Regular</family>
-     <pointsize>32</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">#company_label
-{
-	background-image: url(./ui/icon/company_product_name.png);
-	border:0px;
-}</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="time_series_name_label">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>650</y>
-     <width>500</width>
-     <height>90</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>FrutigerNeue1450W04-Regular</family>
-     <pointsize>32</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">#time_series_name_label
-{
-	background-image: url(./ui/icon/time_series_name.png);
-	border:0px;
-}</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="c_vis_title_label_2">
-   <property name="geometry">
-    <rect>
-     <x>920</x>
-     <y>750</y>
-     <width>451</width>
-     <height>90</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>FrutigerNeue1450W04-Regular</family>
-     <pointsize>25</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">#c_vis_title_label_2
-{
-	background-image: url(./ui/icon/visibility_name.png);
-	border:0px;
-}</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="c_pm_title_label_2">
-   <property name="geometry">
-    <rect>
-     <x>1380</x>
-     <y>750</y>
-     <width>450</width>
-     <height>90</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>FrutigerNeue1450W04-Regular</family>
-     <pointsize>25</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">#c_pm_title_label_2
-{
-	background-image: url(./ui/icon/pm25_name.png);
-	border:0px;
-}</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <zorder>c_vis_title_label</zorder>
-  <zorder>title_label</zorder>
-  <zorder>settings_button</zorder>
-  <zorder>image_label</zorder>
-  <zorder>visibility_label</zorder>
-  <zorder>graph_label</zorder>
-  <zorder>real_time_label</zorder>
-  <zorder>c_vis_label</zorder>
-  <zorder>verticalLayoutWidget</zorder>
-  <zorder>verticalLayoutWidget_2</zorder>
-  <zorder>c_pm_label</zorder>
-  <zorder>c_pm_title_label</zorder>
-  <zorder>graph_pushButton</zorder>
-  <zorder>clock_pushButton</zorder>
-  <zorder>pm25_pushButton</zorder>
-  <zorder>logo_pushButton</zorder>
-  <zorder>company_label</zorder>
-  <zorder>time_series_name_label</zorder>
-  <zorder>c_vis_title_label_2</zorder>
-  <zorder>c_pm_title_label_2</zorder>
-  <zorder>vis_pushButton</zorder>
  </widget>
  <resources/>
  <connections/>

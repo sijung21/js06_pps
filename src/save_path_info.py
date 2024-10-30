@@ -1,51 +1,47 @@
 import os
 import pandas as pd
-# import js06_log
+from PyQt5.QtCore import QSettings
 
-save_path = os.path.join("D:/path_info")
-file_path = os.path.join(f"{save_path}/path_info.csv")    
+
+
+    
 # logger = js06_log.CreateLogger(__name__)
 
-def init_data_path():
+# def init_data_path():
     
-    try:
-        os.makedirs(f"{save_path}")
-        print("Initialization path settings")
-    except Exception as e:
-        pass
+#     try:
+#         os.makedirs(f"{save_path}")
+#         print("Initialization path settings")
+#     except Exception as e:
+#         pass
     
-    data_path = [('D:/data', 'D:/images', 'D:/log', '192.168.100.132')]
+#     data_path = [('D:/data', 'D:/images', 'D:/log', '192.168.100.132')]
     
-    cols = ['data_path', 'image_path', 'log_path', 'camera_ip_path']
-    path_info_df = pd.DataFrame(data_path, columns=cols)
+#     cols = ['data_path', 'image_path', 'log_path', 'camera_ip_path']
+#     path_info_df = pd.DataFrame(data_path, columns=cols)
     
-    path_info_df.to_csv(file_path, mode="w", index=True)
+#     path_info_df.to_csv(file_path, mode="w", index=True)
     
-    # logger.info("Initialization path settings")
+#     # logger.info("Initialization path settings")
 
-def get_data_path(path_name):
-    
-    try:
-        path_df = pd.read_csv(file_path)    
-    
-    except Exception as e:
-        init_data_path()
-        path_df = pd.read_csv(file_path)        
-        
-    get_text = path_df.loc[0,path_name]
-    
-    # logger.info(f'Get {path_name} value')
-    return get_text
+def get_data_path(group, key):
+    # config.ini 파일의 설정값들을 읽어들어 settings에 저장
+    settings = QSettings('config.ini', QSettings.IniFormat)
+    get_text = settings.value(f"{group}/{key}")
+    return str(get_text)
 
 
-def set_data_path(path_name, new_folder_path):    
+def set_data_path(group, key, new_value):    
     
-    path_df = pd.read_csv(file_path)
+    # config.ini 파일의 설정값들을 읽어들어 settings에 저장
+    settings = QSettings('config.ini', QSettings.IniFormat)
+    settings.setValue(f"{group}/{key}", new_value)
+    # path_df = pd.read_csv(file_path)
     
-    old_folder_path = path_df.loc[0, path_name]
-    path_df = path_df.replace({path_name: old_folder_path}, {path_name: new_folder_path})
+    # old_folder_path = path_df.loc[0, path_name]
+    # path_df = path_df.replace({path_name: old_folder_path}, {path_name: new_folder_path})
     
-    path_df.to_csv(file_path, mode="w", index=False)
+    # path_df.to_csv(file_path, mode="w", index=False)
     
     
         
