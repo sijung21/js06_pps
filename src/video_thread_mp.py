@@ -192,6 +192,6 @@ class CurveThread(QtCore.QThread):
         self._run_flag = False
         self.quit()
         self.wait()
-
+######123445
 
         
